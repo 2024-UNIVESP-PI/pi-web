@@ -1,0 +1,55 @@
+#produtos-page {
+    flex: 1;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+
+    .line {
+        display: flex;
+        gap: 8px;
+    }
+
+    section.produtos {
+        table {
+            width: 100%;
+
+            thead {
+                th {
+                    font-size: .9em;
+                    font-weight: 400;
+                    padding: 8px 12px;
+
+                    &.nome {
+                        text-align: left;
+                    }
+                    // &.medida
+                    // &.estoque
+                    &.preco {
+                        text-align: end;
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+// @media screen and (max-width: 1023px) {
+//     #produtos-page {
+//         section.produtos {
+//             grid-template-columns: repeat(3, 1fr);
+//         }
+//     }
+// }
+
+// @media screen and (max-width: 767px) {
+//     #produtos-page {
+//         padding: 16px;
+//         gap: 16px;
+
+//         section.produtos {
+//             grid-template-columns: repeat(2, 1fr);
+//         }
+//     }
+// }

@@ -1,0 +1,32 @@
+#caixa-selector {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    >.title {
+        font-size: .75em;
+        font-weight: 600;
+        color: var(--color-dark-grey);
+    }
+
+    >.caixa-select {
+        color: var(--color-blue);
+        background-color: var(--color-light-blue);
+        border-color: transparent;
+
+        &:hover, &:focus {
+            color: var(--color-blue);
+            border-color: var(--color-blue);
+        }
+
+        &.off {
+            color: var(--color-yellow);
+            background-color: var(--color-light-yellow);
+            
+            &:hover, &:focus {
+                border-color: var(--color-yellow);
+            }
+        }
+    }
+}

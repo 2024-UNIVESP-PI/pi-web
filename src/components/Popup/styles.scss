@@ -1,0 +1,72 @@
+.popup-component {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-transparent-white);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.hidden {
+        display: none;
+    }
+
+    >.popup-content {
+        flex: 1;
+        max-width: 400px;
+        background-color: white;
+        padding: 16px;
+        border: 1px solid var(--color-light-grey);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        >.popup-header {
+            display: flex;
+            justify-content: space-between;
+
+            >.header-info {
+                display: flex;
+                gap: 8px;
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+
+            >.close-popup {
+                padding: 4px;
+                font-size: 1.2em;
+            }
+        }
+
+        >.popup-main {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+            form {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            div.line {
+                flex: 1;
+                display: flex;
+                gap: 16px;
+                // overflow-x: hidden;
+
+                @media screen and (max-width: 767px) {
+                    &:not(.fixed) {
+                        flex-direction: column;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+.card-component {
+    background-color: var(--color-white);
+    padding: 12px;
+    border: 1px solid var(--color-light-grey);
+    border-radius: 8px;
+    transition: .3s;
+    
+    &.low-opacity {
+        opacity: .5;
+
+        &:hover {
+            opacity: unset;
+        }
+    }
+
+    &.colored {
+        color: color-mix(in srgb, var(--card-color), black 5%);
+        background-color: color-mix(in srgb, var(--card-color) 5%, white);
+        border-color: color-mix(in srgb, var(--card-color) 30%, white);
+    }
+
+    &.clickable {
+        cursor: pointer;
+    }
+}

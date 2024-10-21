@@ -1,0 +1,19 @@
+#layout {
+    flex: 1;
+    height: 100vh;
+    display: flex;
+
+    > main {
+        position: relative;
+        background-color: var(--color-extra-light-grey);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 1023px) {
+    #layout {
+        flex-direction: column;
+    }
+}
