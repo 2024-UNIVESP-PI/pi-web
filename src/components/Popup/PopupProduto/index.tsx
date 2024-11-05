@@ -25,7 +25,7 @@ export type PopupProdutoProps = {
 
 export default function PopupProduto(props: PopupProdutoProps) {
     const caixaContext = useContext(CaixaContext.Context)
-    
+
     const [entradaEstoque, setEntradaEstoque] = useState(0)
 
     const estoqueColor = (estoque: number) => {
@@ -100,9 +100,11 @@ export default function PopupProduto(props: PopupProdutoProps) {
                             >
                                 <Input
                                     type='intenger'
+                                    inputMode='numeric'
                                     id={'entrada-estoque'}
-                                    value={entradaEstoque}
+                                    value={String(entradaEstoque)}
                                     onChange={(e) => setEntradaEstoque(Number(e.target.value))}
+                                    required
                                     min={1}
                                 />
                                 <Button

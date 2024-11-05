@@ -28,7 +28,7 @@ export default function PopupVenda(props: PopupVendaProps) {
 
     const [ficha, setFicha] = useState<number>(0)
     const [selectedFichaData, setSelectedFichaData] = useState<Ficha>()
-    const [quantidade, setQuantidade] = useState<number>(0)
+    const [quantidade, setQuantidade] = useState(0)
     const [precoFinal, setPrecoFinal] = useState<number>()
     const [quantidadeMax, setQuantidadeMax] = useState<number>(0)
 
