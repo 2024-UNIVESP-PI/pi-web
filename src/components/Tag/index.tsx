@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import './styles.scss'
 export type TagProps = {
-    className: string
+    className?: string
     color?: string
     children: ReactNode | ReactNode[]
 }

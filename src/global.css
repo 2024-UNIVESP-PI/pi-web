@@ -47,6 +47,11 @@ body {
   flex: 1;
 }
 
+ul {
+  padding: unset;
+  list-style: none;
+}
+
 strong {
   font-weight: 600;
 }
@@ -72,9 +77,6 @@ button {
 }
 
 button:hover {
-  /* color: var(--color-blue);
-  background-color: var(--color-light-blue);
-  border-color: var(--color-blue); */
   opacity: .8;
 }
 
@@ -83,22 +85,27 @@ a {
   transition: .3s;
 }
 
-input {
+input, select {
   font-size: 1em;
+  color: var(--color-light-black);
+  background-color: var(--color-white);
   border: 1px solid var(--color-light-black);
   border-radius: 4px;
   padding: 8px 12px;
+  transition: .3s;
 
   &:focus {
     outline: 1px solid var(--color-blue);
   }
 }
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
@@ -109,13 +116,6 @@ select {
   -moz-appearance: none;
   appearance: none;
 
-  font-size: 1em;
-  color: var(--color-light-black);
-  padding: 8px;
-  border: 1px solid var(--color-light-black);
-  border-radius: 4px;
-  transition: .3s;
-
   &:focus {
     outline: none;
   }
@@ -124,11 +124,25 @@ select {
 .flex-1 {
   flex: 1;
 }
+
 .flex-2 {
   flex: 2;
 }
+
 .flex-3 {
   flex: 3;
+}
+
+@media screen and (max-width: 1023px) {
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .mobile-hide {
+    display: none;
+  }
 }
 
 /* @media (prefers-color-scheme: light) {

@@ -1,37 +1,41 @@
 span.tag-component {
-    color: var(--color-blue);
-    background-color: var(--color-light-blue);
+    color: var(--color-light-black);
+    background-color: var(--color-extra-light-grey);
 
     font-size: .9em;
     font-weight: 500;
-    padding: 8px;
+    padding: 6px;
     border-radius: 4px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 32px;
+    gap: 8px 32px;
 
     &.colored {
         color: color-mix(in srgb, var(--tag-color), black 5%);
-        background-color: color-mix(in srgb, var(--tag-color) 5%, white);
+        background-color: color-mix(in srgb, var(--tag-color) 10%, white);
     }
 
     &.medium {
         padding: 12px;
     }
 
-    &.center {
-        justify-content: center;
+    &.column {
+        flex-direction: column;
     }
 
     svg {
         opacity: .8;
     }
 
-    >span {
+    >span.group {
         display: flex;
         align-items: center;
         gap: 4px;
+    }
+
+    p.center {
+        text-align: center;
     }
 
     .title {

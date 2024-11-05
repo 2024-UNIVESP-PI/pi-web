@@ -4,6 +4,10 @@
     border: 1px solid var(--color-light-grey);
     border-radius: 8px;
     transition: .3s;
+
+    &:hover {
+        border-color: var(--color-dark-grey);
+    }
     
     &.low-opacity {
         opacity: .5;
@@ -17,6 +21,10 @@
         color: color-mix(in srgb, var(--card-color), black 5%);
         background-color: color-mix(in srgb, var(--card-color) 5%, white);
         border-color: color-mix(in srgb, var(--card-color) 30%, white);
+        
+        &:hover {
+            border-color: color-mix(in srgb, var(--card-color) 50%, white);
+        }
     }
 
     &.clickable {

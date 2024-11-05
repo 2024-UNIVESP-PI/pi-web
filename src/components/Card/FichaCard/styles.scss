@@ -1,0 +1,20 @@
+.ficha-card {
+    text-align: center;
+    height: 160px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .numero {
+        font-size: 1.8em;
+        font-weight: 600;
+        margin: 8px 0;
+    }
+
+    .saldo {
+        font-size: .8em;
+        font-weight: 500;
+    }
+}

@@ -5,51 +5,44 @@
     flex-direction: column;
     gap: 32px;
 
-    .line {
+    .options {
         display: flex;
         gap: 8px;
     }
 
     section.produtos {
-        table {
-            width: 100%;
+        .list-header {
+            color: var(--color-light-black);
+            font-size: .9em;
+            padding: 0 12px 8px;
+            border-bottom: 1px solid var(--color-grey);
+            margin-bottom: 16px;
+            display: flex;
+            gap: 8px;
 
-            thead {
-                th {
-                    font-size: .9em;
-                    font-weight: 400;
-                    padding: 8px 12px;
+            p {
+                flex: 1;
+                font-size: .9em;
+                text-align: center;
 
-                    &.nome {
-                        text-align: left;
-                    }
-                    // &.medida
-                    // &.estoque
-                    &.preco {
-                        text-align: end;
-                    }
+                &.nome {
+                    flex: 3;
+                    text-align: left;
                 }
             }
+        }
 
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
     }
 }
 
-// @media screen and (max-width: 1023px) {
-//     #produtos-page {
-//         section.produtos {
-//             grid-template-columns: repeat(3, 1fr);
-//         }
-//     }
-// }
-
-// @media screen and (max-width: 767px) {
-//     #produtos-page {
-//         padding: 16px;
-//         gap: 16px;
-
-//         section.produtos {
-//             grid-template-columns: repeat(2, 1fr);
-//         }
-//     }
-// }
+@media screen and (max-width: 767px) {
+    #produtos-page {
+        padding: 16px;
+        gap: 16px;
+    }
+}

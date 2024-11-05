@@ -1,4 +1,6 @@
-import {MouseEventHandler, ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
+
+import ActivityIndicator from '../ActivityIndicator'
 
 import './styles.scss'
 export type ButtonProps = {
@@ -8,6 +10,7 @@ export type ButtonProps = {
     opacity?: boolean
     onClick?: MouseEventHandler<HTMLButtonElement>
     children: ReactNode | ReactNode[]
+    loading?: boolean
 }
 
 export default function Button(props: ButtonProps) {
@@ -18,13 +21,15 @@ export default function Button(props: ButtonProps) {
                 + (props.className ? ` ${props.className}` : '')
                 + (props.color ? ' colored' : '')
                 + (props.opacity ? ' opacity' : '')
+                + (props.loading ? ' loading' : '')
             }
             type={props.type || 'button'}
             style={props.color && {
                 '--button-color': props.color,
             } as React.CSSProperties || undefined}
-            onClick={props.onClick}
+            onClick={!props.loading ? props.onClick : undefined}
         >
+            {props.loading && <ActivityIndicator/>}
             {props.children}
         </button>
     )

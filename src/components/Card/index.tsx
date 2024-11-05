@@ -2,12 +2,13 @@ import { MouseEventHandler, ReactNode, ElementType } from 'react'
 
 import './styles.scss'
 export type CardProps = {
+    as?: ElementType
     className?: string
     lowOpacity?: boolean
     color?: string
-    onClick?: MouseEventHandler<HTMLDivElement>
+    onClick?: Function
     children: ReactNode | ReactNode[]
-    as?: ElementType
+    options?: ReactNode | ReactNode[]
 }
 
 export default function Card(props: CardProps) {

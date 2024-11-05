@@ -1,31 +1,20 @@
-tr.produto-card {
-    // display: flex;
-    // align-items: center;
-    margin-top: 10px;
-    border-color: red;
+li.produto-card {
+    font-size: .9em;
+    padding: 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-    td {
-        padding: 12px;
+    >span {
+        flex: 1;
+        text-align: center;
 
         &.nome {
+            flex: 3;
             font-size: 1.1em;
-            font-weight: 600;
-        }
-
-        &.estoque {
-            span {
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-
-            svg {
-                opacity: .8;
-            }
-        }
-
-        &.preco {
-            text-align: right;
+            font-weight: 500;
+            text-align: left;
         }
     }
 }

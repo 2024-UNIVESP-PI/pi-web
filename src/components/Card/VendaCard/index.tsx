@@ -1,11 +1,9 @@
 import { MouseEventHandler } from "react"
-import {
-    FaBoxOpen
-} from "react-icons/fa6"
-
-import { Produto } from "../../../services/produtoService"
 
 import Card from '..'
+import Estoque from "../../Estoque"
+
+import { Produto } from "../../../services/produtoService"
 
 import './styles.scss'
 export type VendaCardProps = {
@@ -24,11 +22,7 @@ export default function VendaCard(props: VendaCardProps) {
             <p className="produto">{props.produto.nome}</p>
 
             <div className="produto-data">
-                <span className="estoque">
-                    <FaBoxOpen />
-                    <p>{props.produto.estoque}</p>
-                </span>
-
+                <Estoque number={props.produto.estoque}/>
                 <p className="preco">R${Number(props.produto.preco).toFixed(2)}</p>
             </div>
         </Card>

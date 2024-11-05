@@ -10,5 +10,8 @@ export default defineConfig({
         api: 'modern-compiler' // or "modern"
       }
     }
-  }
+  },
+  build: {
+    outDir: 'dist',
+  },
 })

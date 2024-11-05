@@ -18,7 +18,12 @@ export default function VendasPage(props: VendasPageProps) {
     const [popupVisible, setPopupVisible] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<Produto>()
 
-    const { produtos, fetching } = useProdutos()
+    const { produtos, fetching, updateStateProduto } = useProdutos()
+
+    function onVenda(produto: Produto, quantidade: number) {
+        produto.estoque -= quantidade
+        updateStateProduto(produto)
+    }
 
     return (
         <div id='vendas-page'>
@@ -51,9 +56,8 @@ export default function VendasPage(props: VendasPageProps) {
                                 visible={popupVisible}
                                 setVisible={setPopupVisible}
                                 produto={selectedProduct}
-                            >
-                                <p>teste</p>
-                            </PopupVenda>
+                                onVenda={onVenda}
+                            />
                         </>
                         :
                         <Notice margin>

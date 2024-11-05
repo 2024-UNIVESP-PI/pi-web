@@ -22,4 +22,23 @@
     >input {
         width: 100%;
     }
+
+    >select {
+        flex: 1;
+    }
+
+    &.error {
+        color: var(--color-red);
+
+        >input,
+        >select {
+            border-color: var(--color-red);
+        }
+    }
+    
+    span.error {
+        margin-top: 4px;
+        font-size: .8em;
+        line-height: 1;
+    }
 }

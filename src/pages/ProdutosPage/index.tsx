@@ -8,6 +8,10 @@ import ActivityIndicator from '../../components/ActivityIndicator'
 import Notice from '../../components/Notice'
 import ProdutoCard from '../../components/Card/ProdutoCard'
 
+import PopupNovoProduto from '../../components/Popup/PopupNovoProduto'
+import PopupProduto from '../../components/Popup/PopupProduto'
+
+import { Produto } from '../../services/produtoService'
 import useProdutos from '../../hooks/useProdutos'
 
 import './styles.scss'
@@ -15,14 +19,44 @@ export type ProdutosPageProps = {
 }
 
 export default function ProdutosPage(props: ProdutosPageProps) {
-    const [searchProduct, setSearchProduct] = useState('')
+    const [search, setSearch] = useState('')
+    const [popupNovoProdutoVisible, setPopupNovoProdutoVisible] = useState(false)
+    const [popupProdutoVisible, setPopupProdutoVisible] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState<Produto>()
+
+    const {
+        produtos,
+        fetching,
+        readProdutos,
+        removeStateProduto,
+        updateStateProduto,
+        insertStateProduto,
+    } = useProdutos()
 
     function onSubmit(e: FormEvent) {
         e.preventDefault()
-        console.log(searchProduct)
+        console.log(search)
+        readProdutos(search)
     }
 
-    const { produtos, fetching } = useProdutos()
+    function onCreate(produto: Produto) {
+        insertStateProduto(produto)
+        setSelectedProduct(produto)
+        setPopupProdutoVisible(true)
+        setPopupNovoProdutoVisible(false)
+    }
+    
+    function onEntradaEstoque(produto: Produto, quantidade: number) {
+        produto.estoque += quantidade
+        setSelectedProduct(produto)
+        updateStateProduto(produto)
+    }
+
+    function onDelete(id: number) {
+        removeStateProduto(id)
+        setPopupProdutoVisible(false)
+        setSelectedProduct(undefined)
+    }
 
     return (
         <div id='produtos-page'>
@@ -30,16 +64,23 @@ export default function ProdutosPage(props: ProdutosPageProps) {
                 title="Produtos"
             />
 
-            <div className='line'>
+            <div className='options'>
                 <SearchBar
-                    value={searchProduct}
-                    onChange={(e) => setSearchProduct(e.target.value)}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     onSubmit={onSubmit}
                 />
-                <Button>
-                    <p>Novo produto</p>
-                    <FaPlus />
-                </Button>
+                <>
+                    <Button onClick={() => setPopupNovoProdutoVisible(true)}>
+                        <p className='mobile-hide'>Novo produto</p>
+                        <FaPlus />
+                    </Button>
+                    <PopupNovoProduto
+                        visible={popupNovoProdutoVisible}
+                        setVisible={setPopupNovoProdutoVisible}
+                        onCreate={onCreate}
+                    />
+                </>
             </div>
 
             {
@@ -49,38 +90,34 @@ export default function ProdutosPage(props: ProdutosPageProps) {
                     (produtos && produtos.length > 0) ?
                         <>
                             <section className='produtos'>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th className='nome'>Nome</th>
-                                            <th className='medida'>Medida</th>
-                                            <th className='estoque'>Estoque</th>
-                                            <th className='preco'>Preço</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            produtos?.map(produto => (
-                                                <ProdutoCard
-                                                    key={produto.id}
-                                                    produto={produto}
-                                                // onClick={() => {
-                                                //     setSelectedProduct(produto)
-                                                //     setPopupVisible(true)
-                                                // }}
-                                                />
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
+                                <div className='list-header'>
+                                    <p className='nome'>Nome</p>
+                                    <p className='medida mobile-hide'>Medida</p>
+                                    <p className='estoque'>Estoque</p>
+                                    <p className='preco'>Preço</p>
+                                </div>
+                                <ul>
+                                    {
+                                        produtos?.map(produto => (
+                                            <ProdutoCard
+                                                key={produto.id}
+                                                produto={produto}
+                                                onClick={() => {
+                                                    setSelectedProduct(produto)
+                                                    setPopupProdutoVisible(true)
+                                                }}
+                                            />
+                                        ))
+                                    }
+                                </ul>
                             </section>
-                            {/* <PopupVenda
-                                visible={popupVisible}
-                                setVisible={setPopupVisible}
+                            <PopupProduto
+                                visible={popupProdutoVisible}
+                                setVisible={setPopupProdutoVisible}
                                 produto={selectedProduct}
-                            >
-                                <p>teste</p>
-                            </PopupVenda> */}
+                                onEntradaEstoque={onEntradaEstoque}
+                                onDelete={onDelete}
+                            />
                         </>
                         :
                         <Notice margin>

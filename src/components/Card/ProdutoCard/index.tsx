@@ -1,11 +1,9 @@
 import { MouseEventHandler } from "react"
-import {
-    FaBoxOpen
-} from "react-icons/fa6"
-
-import { Produto } from "../../../services/produtoService"
 
 import Card from '..'
+import Estoque from "../../Estoque"
+
+import { Produto } from "../../../services/produtoService"
 
 import './styles.scss'
 export type ProdutoCardProps = {
@@ -14,23 +12,21 @@ export type ProdutoCardProps = {
 }
 
 export default function ProdutoCard(props: ProdutoCardProps) {
+    const options = <>
+        <p>Teste</p>
+    </>
+
     return (
         <Card
-            as={'tr'}
+            as={'li'}
             className={'produto-card'}
-            // lowOpacity={props.produto.estoque <= 0}
-            // color={props.produto.estoque <= 0 ? "var(--color-red)" : undefined}
             onClick={props.onClick}
+            options={options}
         >
-            <td className="nome">{props.produto.nome}</td>
-            <td className="medida">{props.produto.unidade}</td>
-            <td className="estoque">
-                <span>
-                    <FaBoxOpen />
-                    <p>{props.produto.estoque}</p>
-                </span>
-            </td>
-            <td className="preco">R${Number(props.produto.preco).toFixed(2)}</td>
+            <span className="nome">{props.produto.nome}</span>
+            <span className="medida mobile-hide">{props.produto.medida}</span>
+            <Estoque number={props.produto.estoque}/>
+            <span className="preco">R${Number(props.produto.preco).toFixed(2)}</span>
         </Card>
     )
 }

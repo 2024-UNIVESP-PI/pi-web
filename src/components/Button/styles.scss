@@ -1,19 +1,34 @@
 .button-component {
+    position: relative;
+
     &.colored {
         color: color-mix(in srgb, var(--button-color) 5%, white);
         background-color: color-mix(in srgb, var(--button-color), black 0%);
         border-color: transparent;
+    }
 
-        // &:hover {
-        //     &:not(.opacity) {
-        //         color: color-mix(in srgb, var(--button-color), black 0%);
-        //         background-color: color-mix(in srgb, var(--button-color) 5%, white);
-        //         border-color: color-mix(in srgb, var(--button-color) 30%, white);
-        //     }
+    &.opacity {
+        opacity: .6;
 
-        //     &.opacity {
-        //         opacity: .8;
-        //     }
-        // }
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &.loading {
+        >*:not(.activity-indicator-component) {
+            visibility: hidden;
+        }
+
+        >.activity-indicator-component {
+            visibility: visible;
+        }
+    }
+
+    .activity-indicator-component {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin-bottom: 2px;
     }
 }

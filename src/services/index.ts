@@ -14,3 +14,11 @@ api.interceptors.response.use(function (response) {
 })
 
 export default api
+
+export type Map = {
+    [id: number | string]: number
+}
+
+export type Errors = {
+    [key: string]: string[],
+}
