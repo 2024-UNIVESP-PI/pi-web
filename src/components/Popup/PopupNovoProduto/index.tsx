@@ -31,7 +31,6 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
     const {
         createProduto,
         fetchingCreate,
-        errorCreate,
     } = useProduto()
 
     const [nome, setNome] = useState('')

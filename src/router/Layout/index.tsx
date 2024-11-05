@@ -8,10 +8,8 @@ import ActivityIndicator from "../../components/ActivityIndicator"
 import Notice from "../../components/Notice"
 
 import './styles.scss'
-export type LayoutProps = {
-}
 
-export default function Layout(props: LayoutProps) {
+export default function Layout() {
     const caixaContext = useContext(CaixaContext.Context)
 
     return (

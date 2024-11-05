@@ -1,5 +1,5 @@
 import { Dispatch, FormEvent, SetStateAction, useState, useEffect } from 'react'
-import { FaMoneyCheckDollar, FaTrash } from 'react-icons/fa6'
+import { FaMoneyCheckDollar } from 'react-icons/fa6'
 
 import Popup from '..'
 import Notice from '../../Notice'

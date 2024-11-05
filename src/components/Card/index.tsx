@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode, ElementType } from 'react'
+import { ReactNode, ElementType } from 'react'
 
 import './styles.scss'
 export type CardProps = {

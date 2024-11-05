@@ -35,7 +35,7 @@ export default function PopupVenda(props: PopupVendaProps) {
     const [ultimaVenda, setUltimaVenda] = useState<Venda>()
     const [hasError, setHasError] = useState(false)
 
-    const { fichas, fetching, error, readFichas } = useFichas()
+    const { fichas, readFichas } = useFichas()
 
     const {
         createVenda,

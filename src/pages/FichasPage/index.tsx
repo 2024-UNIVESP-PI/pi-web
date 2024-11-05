@@ -6,7 +6,6 @@ import PageTitle from '../../components/PageTitle'
 import ActivityIndicator from '../../components/ActivityIndicator'
 import Button from '../../components/Button'
 import FichaCard from '../../components/Card/FichaCard'
-import Notice from '../../components/Notice'
 
 import PopupNovaFicha from '../../components/Popup/PopupNovaFicha'
 import PopupFicha from '../../components/Popup/PopupFicha'
@@ -15,10 +14,8 @@ import { Ficha } from '../../services/fichaService'
 import useFichas from '../../hooks/useFichas'
 
 import './styles.scss'
-export type FichasPageProps = {
-}
 
-export default function FichasPage(props: FichasPageProps) {
+export default function FichasPage() {
     const [popupCreateVisible, setPopupCreateVisible] = useState(false)
     const [popupVisible, setPopupVisible] = useState(false)
     const [selectedFicha, setSelectedFicha] = useState<Ficha>()
@@ -26,7 +23,6 @@ export default function FichasPage(props: FichasPageProps) {
     const {
         fichas,
         fetching,
-        error,
         updateStateFicha,
     } = useFichas()
 

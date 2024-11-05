@@ -11,10 +11,8 @@ import PageTitle from '../../components/PageTitle'
 import HomeCard from '../../components/Card/HomeCard'
 
 import './styles.scss'
-export type HomePageProps = {
-}
 
-export default function HomePage(props: HomePageProps) {
+export default function HomePage() {
     const caixaContext = useContext(CaixaContext.Context)
 
     const navigate = useNavigate()

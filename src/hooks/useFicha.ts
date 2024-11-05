@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
-import { Ficha } from "../services/fichaService"
+// import { Ficha } from "../services/fichaService"
 import fichaService from "../services/fichaService"
-import { AxiosError } from "axios"
+// import { AxiosError } from "axios"
 
 export default function useFicha() {
     // const [ficha, setFicha] = useState<Ficha>()

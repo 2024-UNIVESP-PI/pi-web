@@ -15,10 +15,8 @@ import { Produto } from '../../services/produtoService'
 import useProdutos from '../../hooks/useProdutos'
 
 import './styles.scss'
-export type ProdutosPageProps = {
-}
 
-export default function ProdutosPage(props: ProdutosPageProps) {
+export default function ProdutosPage() {
     const [search, setSearch] = useState('')
     const [popupNovoProdutoVisible, setPopupNovoProdutoVisible] = useState(false)
     const [popupProdutoVisible, setPopupProdutoVisible] = useState(false)

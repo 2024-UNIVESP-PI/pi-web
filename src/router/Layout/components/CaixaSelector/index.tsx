@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react"
+import { useContext, useEffect } from "react"
 import useLocalStorage from "../../../../hooks/useLocalStorage"
 
 import CaixaContext from "../../../../contexts/CaixaContext"
@@ -13,7 +13,7 @@ import './styles.scss'
 export default function CaixaSelector() {
     const caixaContext = useContext(CaixaContext.Context)
 
-    const { caixas, fetching } = useCaixas()
+    const { caixas } = useCaixas()
 
     const [selectedCaixa, setSelectedCaixa] = useLocalStorage<number>('caixa', 0)
 

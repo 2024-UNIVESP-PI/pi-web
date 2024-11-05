@@ -8,8 +8,6 @@ import {
 } from "react-icons/fa6"
 
 import './styles.scss'
-export type MenuProps = {
-}
 export type MenuItemProps = {
     to: string
     icon: ReactNode
@@ -35,7 +33,7 @@ function MenuItem(props: MenuItemProps) {
     )
 }
 
-export default function Menu(props: MenuProps) {
+export default function Menu() {
 
     return (
         <nav id='menu'>
