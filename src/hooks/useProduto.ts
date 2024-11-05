@@ -17,6 +17,7 @@ export default function useProduto() {
     async function createProduto(nP: NovoProduto) {
         if (nP) {
             setFetchingCreate(true)
+            setErrorCreate(undefined)
             return await produtoService.postProduto(nP)
                 .then(response => response)
                 .catch(error => {

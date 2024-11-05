@@ -37,6 +37,16 @@ export default function useFichas() {
         }
     }
 
+    function insertStateFicha(ficha: Ficha) {
+        if (fichas) {
+            const fichasAux = [...fichas]
+            const pos = fichasAux.findIndex(f => f.numero > ficha.numero)
+            if (pos == -1) fichasAux.push(ficha)
+            else fichasAux.splice(pos, 0, ficha)
+            setFichas(fichasAux)
+        }
+    }
+
     useEffect(() => {
         readFichas()
     }, [])
@@ -48,5 +58,6 @@ export default function useFichas() {
         readFichas,
         
         updateStateFicha,
+        insertStateFicha,
     }
 }

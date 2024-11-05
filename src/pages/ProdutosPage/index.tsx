@@ -40,8 +40,8 @@ export default function ProdutosPage() {
     function onCreate(produto: Produto) {
         insertStateProduto(produto)
         setSelectedProduct(produto)
-        setPopupProdutoVisible(true)
         setPopupNovoProdutoVisible(false)
+        setPopupProdutoVisible(true)
     }
     
     function onEntradaEstoque(produto: Produto, quantidade: number) {

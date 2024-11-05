@@ -56,6 +56,7 @@ export default function useProdutos() {
         fetching,
         error,
         readProdutos,
+        
         removeStateProduto,
         updateStateProduto,
         insertStateProduto,

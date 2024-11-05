@@ -86,9 +86,10 @@ export default function PopupFicha(props: PopupFichaProps) {
                                 onSubmit={handleRecargaFicha}
                             >
                                 <Input
-                                    type='number'
+                                    type='intenger'
+                                    inputMode='numeric'
                                     id={'credito-adicional'}
-                                    value={recarga}
+                                    value={String(recarga)}
                                     onChange={(e) => setRecarga(Number(e.target.value))}
                                     min={1}
                                 />

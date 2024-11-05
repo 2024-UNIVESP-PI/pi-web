@@ -1,34 +1,31 @@
 import { useState } from "react"
 
-// import { Ficha } from "../services/fichaService"
+import { NovaFicha } from "../services/fichaService"
 import fichaService from "../services/fichaService"
-// import { AxiosError } from "axios"
+import { AxiosError } from "axios"
 
 export default function useFicha() {
-    // const [ficha, setFicha] = useState<Ficha>()
-    // const [fetching, setFetching] = useState(false)
-    // const [error, setError] = useState<AxiosError>()
+    const [fetchingCreate, setFetchingCreate] = useState<boolean>()
+    const [errorCreate, setErrorCreate] = useState<AxiosError>()
 
     const [fetchingRecarga, setFetchingRecarga] = useState(false)
+
     const [fetchingDelete, setFetchingDelete] = useState(false)
 
-    // function readFicha(id: number) {
-    //     if (id) {
-    //         setFetching(true)
-    //         return fichaService.getFicha(id)
-    //             .then(response => {
-    //                 setFicha(response.data)
-    //                 setError(undefined)
-    //                 return response
-    //             })
-    //             .catch(error => {
-    //                 setFicha(undefined)
-    //                 setError(error)
-    //                 return error.response
-    //             })
-    //             .finally(() => setFetching(false))
-    //     }
-    // }
+    async function createFicha(nF: NovaFicha) {
+        if (nF) {
+            setFetchingCreate(true)
+            setErrorCreate(undefined)
+            return await fichaService.postFicha(nF)
+                .then(response => response)
+                .catch(error => {
+                    setErrorCreate(error)
+                    return error.response
+                })
+                .finally(() => setFetchingCreate(false))
+        }
+        return false
+    }
 
     function recargaFicha(id: number, recarga: number) {
         if (id) {
@@ -51,10 +48,9 @@ export default function useFicha() {
     }
 
     return {
-        // readFicha,
-        // ficha,
-        // fetching,
-        // error,
+        createFicha,
+        fetchingCreate,
+        errorCreate,
 
         recargaFicha,
         fetchingRecarga,

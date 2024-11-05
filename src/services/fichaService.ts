@@ -10,6 +10,7 @@ export type Ficha = NovaFicha & {
 }
 
 // POST
+export const postFicha = async (nF: NovaFicha) => await api.post('movimentacao/fichas/', nF)
 export const postRecarga = async (id: number, recarga: number) => await api.post(
     `movimentacao/fichas/${id}/recarga/`,
     { valor: recarga }
@@ -27,6 +28,7 @@ export const deleteFicha = async (id: number) => await api.delete(`movimentacao/
 
 
 const fichaService = {
+    postFicha,
     postRecarga,
     getFichas,
     getFicha,

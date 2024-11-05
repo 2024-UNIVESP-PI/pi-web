@@ -24,11 +24,19 @@ export default function FichasPage() {
         fichas,
         fetching,
         updateStateFicha,
+        insertStateFicha,
     } = useFichas()
 
     function onRecarga(ficha: Ficha) {
         setSelectedFicha(ficha)
         updateStateFicha(ficha)
+    }
+
+    function onCreate(ficha: Ficha) {
+        insertStateFicha(ficha)
+        setSelectedFicha(ficha)
+        setPopupCreateVisible(false)
+        setPopupVisible(true)
     }
 
     return (
@@ -56,8 +64,7 @@ export default function FichasPage() {
                                 <PopupNovaFicha
                                     visible={popupCreateVisible}
                                     setVisible={setPopupCreateVisible}
-                                // ficha={selectedFicha}
-                                // onRecarga={onRecarga}
+                                    onCreate={onCreate}
                                 />
                             </>
                             {
