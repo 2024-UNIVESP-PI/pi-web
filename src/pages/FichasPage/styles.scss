@@ -1,5 +1,4 @@
 #fichas-page {
-    // border: 1px solid red;
     flex: 1;
     padding: 32px;
     display: flex;
@@ -7,10 +6,13 @@
     gap: 32px;
 
     section.fichas {
-        // border: 1px solid blue;
         display: grid;
         gap: 16px;
         grid-template-columns: repeat(4, 1fr);
+
+        button.nova-ficha {
+            height: 160px;
+        }
     }
 
     @media screen and (max-width: 1023px) {

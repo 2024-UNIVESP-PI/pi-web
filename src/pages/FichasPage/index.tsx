@@ -45,7 +45,11 @@ export default function FichasPage() {
                     <>
                         <section className='fichas'>
                             <>
-                                <Button opacity onClick={() => setPopupCreateVisible(true)}>
+                                <Button
+                                    className='nova-ficha'
+                                    opacity
+                                    onClick={() => setPopupCreateVisible(true)}
+                                >
                                     <p>Nova ficha</p>
                                     <FaPlus />
                                 </Button>
