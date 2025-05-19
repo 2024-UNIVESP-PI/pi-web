@@ -9,6 +9,7 @@ export type NovoProduto = {
     preco: number
     estoque: number
     caixa: number
+    categoria: string
 }
 export type Produto = NovoProduto & {
     id: number

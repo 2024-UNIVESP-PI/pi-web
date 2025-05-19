@@ -11,7 +11,6 @@ import { NovoProduto, Produto } from '../../../services/produtoService'
 import cleanDecimal from '../../../functions/cleanDecimal'
 import useProduto from '../../../hooks/useProduto'
 
-// import './styles.scss'
 export type PopupNovoProdutoProps = {
     visible: boolean
     setVisible: Dispatch<SetStateAction<boolean>>
@@ -26,6 +25,13 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
         ['KG', 'Quilograma'],
     ]
 
+    const CATEGORIA_CHOICES = [
+        ['doce', 'Doce'],
+        ['salgado', 'Salgado'],
+        ['bebida', 'Bebida'],
+        ['jogos', 'Jogos'],
+    ]
+
     const caixaContext = useContext(CaixaContext.Context)
 
     const {
@@ -36,6 +42,7 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
     const [nome, setNome] = useState('')
     const [preco, setPreco] = useState(0)
     const [medida, setMedida] = useState(MEDIDA_CHOICES[0][0])
+    const [categoria, setCategoria] = useState(CATEGORIA_CHOICES[0][0])
     const [estoqueInicial, setEstoqueInicial] = useState(0)
 
     const [formErrors, setFormErrors] = useState<Errors>()
@@ -44,6 +51,7 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
         setNome('')
         setPreco(0)
         setMedida(MEDIDA_CHOICES[0][0])
+        setCategoria(CATEGORIA_CHOICES[0][0])
         setEstoqueInicial(0)
     }
 
@@ -52,13 +60,13 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
         setFormErrors(undefined)
         if (caixaContext?.caixa) {
             const nP: NovoProduto = {
-                nome: nome,
-                preco: preco,
-                medida: medida,
+                nome,
+                preco,
+                medida,
+                categoria,
                 estoque: estoqueInicial,
-                caixa: caixaContext?.caixa,
+                caixa: caixaContext.caixa,
             }
-            console.log(nP)
             const response = await createProduto(nP)
             if (response.status == 201) {
                 setupForm()
@@ -90,13 +98,24 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
                 <Input
                     id='medida'
                     type='select'
-                    options={MEDIDA_CHOICES.map(choice => ({ value: choice[0], content: choice[1] }))}
+                    options={MEDIDA_CHOICES.map(([value, content]) => ({ value, content }))}
                     label='Medida'
                     placeholder='Selecione a medida'
                     value={medida}
                     onChange={(e) => setMedida(e.target.value)}
                     required
                     errors={formErrors?.medida}
+                />
+                <Input
+                    id='categoria'
+                    type='select'
+                    options={CATEGORIA_CHOICES.map(([value, content]) => ({ value, content }))}
+                    label='Categoria'
+                    placeholder='Selecione a categoria'
+                    value={categoria}
+                    onChange={(e) => setCategoria(e.target.value)}
+                    required
+                    errors={formErrors?.categoria}
                 />
                 <div className="line">
                     <Input

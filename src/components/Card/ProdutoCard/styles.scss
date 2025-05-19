@@ -1,5 +1,5 @@
 li.produto-card {
-    font-size: .9em;
+    font-size: 1em;
     padding: 12px;
     border-radius: 4px;
     display: flex;
@@ -12,7 +12,7 @@ li.produto-card {
 
         &.nome {
             flex: 3;
-            font-size: 1.1em;
+            font-size: 1.2em;
             font-weight: 500;
             text-align: left;
         }
