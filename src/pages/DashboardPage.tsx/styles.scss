@@ -1,0 +1,221 @@
+:root {
+    --color-bg: #f9fafb;
+    --color-white: #fff;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-red: #ef4444;
+    --color-red-hover: #dc2626;
+    --color-text-dark: #111827;
+    --color-text-light: #6b7280;
+    --color-border: #e5e7eb;
+  }
+  
+  #admin-dashboard-page {
+    flex: 1;
+    padding: 32px;
+    background-color: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  #admin-dashboard-page header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  #admin-dashboard-page header h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--color-text-dark);
+    margin: 0;
+  }
+  
+  #admin-dashboard-page header button {
+    background-color: var(--color-red);
+    color: var(--color-white);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+  }
+  
+  #admin-dashboard-page header button:hover {
+    background-color: var(--color-red-hover);
+  }
+  
+  section.overview {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  section.overview .card {
+    background: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+    padding: 24px 32px;
+    flex: 1 1 200px;
+    min-width: 200px;
+    text-align: center;
+    color: var(--color-text-dark);
+  }
+  
+  section.overview .card h3 {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1.25rem;
+  }
+  
+  section.overview .card .number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+  
+  section.vendas-por-dia.card,
+  section.top-produtos.card {
+    background: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+    padding: 24px 32px;
+    color: var(--color-text-dark);
+  }
+  
+  section.vendas-por-dia.card h2,
+  section.top-produtos.card h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Gráfico de barras simples */
+  
+  .bar-chart {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    align-items: flex-end;
+    height: 120px;
+    max-width: 100%;
+  }
+  
+  .bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32px;
+  }
+  
+  .bar {
+    background-color: var(--color-primary);
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: background-color 0.3s;
+    cursor: default;
+  }
+  
+  .bar:hover {
+    background-color: var(--color-primary-hover);
+  }
+  
+  .label {
+    margin-top: 8px;
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+  }
+  
+  /* Lista top produtos */
+  
+  section.top-produtos ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  section.top-produtos li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text-dark);
+    cursor: default;
+  }
+  
+  section.top-produtos li:last-child {
+    border-bottom: none;
+  }
+  
+  section.top-produtos .nome {
+    flex: 3;
+    text-align: left;
+  }
+  
+  section.top-produtos .vendidos {
+    flex: 1;
+    text-align: right;
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+  
+  /* Responsivo */
+  
+  @media screen and (max-width: 1023px) {
+    section.overview {
+      justify-content: space-around;
+    }
+  }
+  
+  @media screen and (max-width: 767px) {
+    #admin-dashboard-page {
+      padding: 16px;
+      gap: 16px;
+    }
+  
+    section.overview {
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    section.vendas-por-dia.card,
+    section.top-produtos.card {
+      padding: 16px;
+    }
+  }
+
+  section.vendas-por-categoria.card {
+    background: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+    padding: 24px 32px;
+    color: var(--color-text-dark);
+  }
+  
+  section.vendas-por-categoria.card h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Responsivo */
+  @media screen and (max-width: 767px) {
+    section.vendas-por-categoria.card {
+      padding: 16px;
+    }
+  }  
+  
