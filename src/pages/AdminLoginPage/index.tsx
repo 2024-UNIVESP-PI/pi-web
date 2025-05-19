@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="admin"
+            placeholder="Digite o usuário"
           />
         </div>
         <div>
@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="admin123"
+            placeholder="Digite a senha"
           />
         </div>
         <button type="submit">Entrar</button>
