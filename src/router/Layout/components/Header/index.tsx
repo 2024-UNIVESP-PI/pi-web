@@ -19,6 +19,9 @@ export default function Header() {
         if (optionsVisible) setOptionsVisible(false)
     }, [location.pathname])
 
+    // Verifica se está no admin-dashboard
+    const isAdminDashboard = location.pathname.startsWith("/admin-dashboard")
+
     return (
         <header>
             <Link to='/'>
@@ -34,7 +37,8 @@ export default function Header() {
             <div className={"options" + (optionsVisible ? ' visible' : '')}>
                 <Menu />
 
-                <CaixaSelector />
+                {/* Renderiza CaixaSelector só se NÃO estiver no admin-dashboard */}
+                {!isAdminDashboard && <CaixaSelector />}
 
                 <Button
                     className="close-options"

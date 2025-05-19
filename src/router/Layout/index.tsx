@@ -1,7 +1,7 @@
 import { useContext } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 
-import CaixaContext from "../../contexts/CaixaContext"
+import CaixaContext, { CaixaProvider } from "../../contexts/CaixaContext"
 
 import Header from "./components/Header"
 import ActivityIndicator from "../../components/ActivityIndicator"
@@ -10,6 +10,31 @@ import Notice from "../../components/Notice"
 import './styles.scss'
 
 export default function Layout() {
+    const location = useLocation()
+    const isDashboard = location.pathname.startsWith("/admin-dashboard")
+
+    if (isDashboard) {
+        // For admin dashboard routes, render layout *without* CaixaProvider
+        return (
+            <div id="layout">
+                <Header />
+
+                <main>
+                    <Outlet />
+                </main>
+            </div>
+        )
+    }
+
+    // For other routes, wrap with CaixaProvider and use CaxaContext
+    return (
+        <CaixaProvider>
+            <LayoutContent />
+        </CaixaProvider>
+    )
+}
+
+function LayoutContent() {
     const caixaContext = useContext(CaixaContext.Context)
 
     return (

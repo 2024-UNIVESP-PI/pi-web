@@ -1,4 +1,4 @@
-import { useAdmin } from "../../contexts/AdminContext"
+// import { useAdmin } from "../../contexts/AdminContext"
 import {
   PieChart,
   Pie,
@@ -10,7 +10,7 @@ import {
 import "./styles.scss"
 
 export default function AdminDashboardPage() {
-  const { logout } = useAdmin()
+  // const { logout } = useAdmin()
 
   const topProdutos = [
     { id: 1, nome: "Produto A", vendidos: 120 },
@@ -42,10 +42,9 @@ export default function AdminDashboardPage() {
 
   return (
     <div id="admin-dashboard-page">
-      <header>
+      {/* <header>
         <h1>Admin Dashboard</h1>
-        <button onClick={logout}>Sair</button>
-      </header>
+      </header> */}
 
       <section className="overview">
         <div className="card">

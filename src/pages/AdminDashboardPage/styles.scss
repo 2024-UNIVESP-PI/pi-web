@@ -99,8 +99,7 @@
     font-size: 1.5rem;
     text-align: center;
   }
-  
-  /* Gráfico de barras simples */
+
   
   .bar-chart {
     display: flex;
@@ -171,8 +170,6 @@
     font-weight: 700;
   }
   
-  /* Responsivo */
-  
   @media screen and (max-width: 1023px) {
     section.overview {
       justify-content: space-around;
@@ -212,10 +209,8 @@
     text-align: center;
   }
   
-  /* Responsivo */
   @media screen and (max-width: 767px) {
     section.vendas-por-categoria.card {
       padding: 16px;
     }
   }  
-  
