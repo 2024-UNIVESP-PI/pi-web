@@ -19,6 +19,7 @@
     gap: 32px;
     min-height: 100vh;
     box-sizing: border-box;
+    overflow-y: auto;
   }
   
   #admin-dashboard-page header {
@@ -82,7 +83,7 @@
     color: var(--color-primary);
   }
   
-  section.vendas-por-dia.card,
+  section.vendas-por-horario.card,
   section.top-produtos.card {
     background: var(--color-white);
     border-radius: 8px;
@@ -91,7 +92,7 @@
     color: var(--color-text-dark);
   }
   
-  section.vendas-por-dia.card h2,
+  section.vendas-por-horario.card h2,
   section.top-produtos.card h2 {
     margin-top: 0;
     margin-bottom: 24px;
@@ -187,7 +188,7 @@
       gap: 16px;
     }
   
-    section.vendas-por-dia.card,
+    section.vendas-por-horario.card,
     section.top-produtos.card {
       padding: 16px;
     }
@@ -214,3 +215,44 @@
       padding: 16px;
     }
   }  
+
+  .graficos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+
+  .card {
+    flex: 1 1 300px;
+    min-width: 280px;
+  }
+
+  .grafico-horario .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    height: 300px;
+    gap: 0.75rem;
+    padding: 1rem 0;
+  }
+
+  .bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+
+  .bar {
+    width: 100%;
+    max-width: 40px;
+    background-color: #3498db;
+    border-radius: 5px 5px 0 0;
+    transition: height 0.3s ease;
+  }
+
+  .label {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+}

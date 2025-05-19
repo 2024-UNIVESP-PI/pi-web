@@ -1,4 +1,3 @@
-// import { useAdmin } from "../../contexts/AdminContext"
 import {
   PieChart,
   Pie,
@@ -10,7 +9,6 @@ import {
 import "./styles.scss"
 
 export default function AdminDashboardPage() {
-  // const { logout } = useAdmin()
 
   const topProdutos = [
     { id: 1, nome: "Produto A", vendidos: 120 },
@@ -19,33 +17,26 @@ export default function AdminDashboardPage() {
     { id: 4, nome: "Produto D", vendidos: 50 },
   ]
 
-  const vendasPorDia = [
-    { dia: "Seg", vendas: 20 },
-    { dia: "Ter", vendas: 35 },
-    { dia: "Qua", vendas: 40 },
-    { dia: "Qui", vendas: 25 },
-    { dia: "Sex", vendas: 50 },
-    { dia: "Sab", vendas: 30 },
-    { dia: "Dom", vendas: 45 },
+  // Substitui vendas por dia por vendas por horário
+  const vendasPorHorario = [
+    { horario: "00h-06h", vendas: 5 },
+    { horario: "06h-12h", vendas: 40 },
+    { horario: "12h-18h", vendas: 70 },
+    { horario: "18h-24h", vendas: 80 },
   ]
 
-  // Dados para gráfico de pizza (vendas por categoria)
   const vendasPorCategoria = [
-    { name: "Eletrônicos", value: 400 },
-    { name: "Roupas", value: 300 },
-    { name: "Alimentos", value: 300 },
-    { name: "Livros", value: 200 },
-    { name: "Outros", value: 100 },
+    { name: "🍬 Doces", value: 400 },
+    { name: "🥨 Salgados", value: 300 },
+    { name: "🍹 Bebidas", value: 300 },
+    { name: "🎯 Jogos", value: 200 },
+    { name: "🎉 Outros", value: 100 },
   ]
-
-  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#8dd1e1"]
+  
+  const COLORS = ["#f39c12", "#e67e22", "#3498db", "#9b59b6", "#95a5a6"]
 
   return (
     <div id="admin-dashboard-page">
-      {/* <header>
-        <h1>Admin Dashboard</h1>
-      </header> */}
-
       <section className="overview">
         <div className="card">
           <h3>Total Vendas</h3>
@@ -61,21 +52,48 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      <section className="vendas-por-dia card">
-        <h2>Vendas por Dia</h2>
-        <div className="bar-chart">
-          {vendasPorDia.map(({ dia, vendas }) => (
-            <div key={dia} className="bar-container">
-              <div
-                className="bar"
-                style={{ height: `${vendas * 2}px` }}
-                title={`${vendas} vendas`}
-              ></div>
-              <span className="label">{dia}</span>
-            </div>
-          ))}
+      <section className="graficos">
+        <div className="card grafico-horario">
+          <h2>Vendas por Horário</h2>
+          <div className="bar-chart">
+            {vendasPorHorario.map(({ horario, vendas }) => (
+              <div key={horario} className="bar-container">
+                <div
+                  className="bar"
+                  style={{ height: `${vendas * 2}px` }}
+                  title={`${vendas} vendas`}
+                ></div>
+                <span className="label">{horario}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card grafico-categoria">
+          <h2>Vendas por Categoria</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={vendasPorCategoria}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                fill="#8884d8"
+                label
+              >
+                {vendasPorCategoria.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend verticalAlign="bottom" height={36} />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </section>
+
 
       <section className="top-produtos card">
         <h2>Top Produtos Mais Vendidos</h2>
@@ -87,30 +105,6 @@ export default function AdminDashboardPage() {
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className="vendas-por-categoria card">
-        <h2>Vendas por Categoria</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={vendasPorCategoria}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#8884d8"
-              label
-            >
-              {vendasPorCategoria.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend verticalAlign="bottom" height={36} />
-          </PieChart>
-        </ResponsiveContainer>
       </section>
     </div>
   )
