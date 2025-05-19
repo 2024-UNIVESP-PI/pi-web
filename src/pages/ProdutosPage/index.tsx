@@ -43,7 +43,12 @@ export default function ProdutosPage() {
         setPopupNovoProdutoVisible(false)
         setPopupProdutoVisible(true)
     }
-    
+
+    function onUpdate(produtoAtualizado: Produto) {
+        updateStateProduto(produtoAtualizado)
+        setSelectedProduct(produtoAtualizado)
+    }
+
     function onEntradaEstoque(produto: Produto, quantidade: number) {
         produto.estoque += quantidade
         setSelectedProduct(produto)
@@ -115,6 +120,7 @@ export default function ProdutosPage() {
                                 produto={selectedProduct}
                                 onEntradaEstoque={onEntradaEstoque}
                                 onDelete={onDelete}
+                                onUpdate={onUpdate}
                             />
                         </>
                         :

@@ -18,6 +18,7 @@ export default function SearchBar(props: SearchBarProps) {
             <input
                 value={props.value}
                 onChange={props.onChange}
+                placeholder="Digite o nome do produto"
             />
             <Button
                 type='submit'

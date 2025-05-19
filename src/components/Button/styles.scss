@@ -1,6 +1,10 @@
 .button-component {
     position: relative;
 
+    p {
+        font-size: 1.2em;
+    }
+
     &.colored {
         color: color-mix(in srgb, var(--button-color) 5%, white);
         background-color: color-mix(in srgb, var(--button-color), black 0%);

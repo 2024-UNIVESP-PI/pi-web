@@ -55,15 +55,12 @@ export default function Menu() {
 
             {!isAdmin ? (
                 <>
-                    <MenuItem
-                        text='Logar como Admin'
-                        to='/admin-login'
-                        icon={<FaUserShield />}
-                    />
-                    <div style={{ marginBottom: '16px' }} />
                     <MenuItem text='Vendas' to='/vendas' icon={<FaCashRegister />} />
                     <MenuItem text='Produtos' to='/produtos' icon={<FaBoxOpen />} />
                     <MenuItem text='Fichas' to='/fichas' icon={<FaMoneyCheckDollar />} />
+
+                    <p className="title" style={{ marginTop: '24px' }}>DASHBOARD</p>
+                    <MenuItem text='Logar como Admin' to='/admin-login' icon={<FaUserShield />}/>
                 </>
             ) : (
                 <>

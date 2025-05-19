@@ -2,7 +2,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-
+    font-size: 1.2em;
     >label {
         margin-bottom: 4px;
         display: flex;
@@ -14,7 +14,7 @@
         }
 
         .message {
-            font-size: .8em;
+            font-size: 1.2em;
         }
 
     }

@@ -1,61 +1,62 @@
-#menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    > .title {
-        font-size: 0.75em;
-        font-weight: 600;
-        color: var(--color-dark-grey);
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    > .menu-item {
-        color: var(--color-light-black);
-        padding: 12px;
-        border: 1px solid transparent;
-        border-radius: 4px;
+    #menu {
         display: flex;
-        align-items: center;
+        flex-direction: column;
         gap: 8px;
-        cursor: pointer;
-        transition:
-            background-color 0.2s ease,
-            color 0.2s ease,
-            border-color 0.2s ease,
-            transform 0.2s ease;
 
-        &:hover {
-            color: var(--color-blue);
-            border-color: var(--color-blue);
-            background-color: rgba(0, 115, 230, 0.05);
-            transform: translateX(2px);
-        }
-
-        &.on {
-            background-color: var(--color-light-blue);
-            color: var(--color-blue);
+        > .title {
+            font-size: 0.75em;
             font-weight: 600;
-            border-color: var(--color-blue);
+            color: var(--color-dark-grey);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-    }
 
-    > .menu-item.logout {
-        color: var(--color-red);
-        border-color: transparent;
+        > .menu-item {
+            color: var(--color-light-black);
+            padding: 12px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.2s ease;
 
-        &:hover {
-            background-color: rgba(255, 0, 0, 0.05);
-            border-color: var(--color-red);
+            &:hover {
+                color: var(--color-blue);
+                border-color: var(--color-blue);
+                background-color: rgba(0, 115, 230, 0.05);
+                transform: translateX(2px);
+            }
+
+            &.on {
+                background-color: var(--color-light-blue);
+                color: var(--color-blue);
+                font-weight: 600;
+                border-color: var(--color-blue);
+            }
+        }
+
+        > .menu-item.logout {
             color: var(--color-red);
+            border-color: transparent;
+
+            &:hover {
+                background-color: rgba(255, 0, 0, 0.05);
+                border-color: var(--color-red);
+                color: var(--color-red);
+            }
+
+            &.on {
+                background-color: rgba(255, 0, 0, 0.08);
+                color: var(--color-red);
+                border-color: var(--color-red);
+            }
         }
 
-        &.on {
-            background-color: rgba(255, 0, 0, 0.08);
-            color: var(--color-red);
-            border-color: var(--color-red);
-        }
     }
-}
