@@ -1,3 +1,4 @@
+import useDashboard from "../../hooks/useDashboard"
 import {
   PieChart,
   Pie,
@@ -10,45 +11,36 @@ import "./styles.scss"
 
 export default function AdminDashboardPage() {
 
-  const topProdutos = [
-    { id: 1, nome: "Produto A", vendidos: 120 },
-    { id: 2, nome: "Produto B", vendidos: 98 },
-    { id: 3, nome: "Produto C", vendidos: 75 },
-    { id: 4, nome: "Produto D", vendidos: 50 },
-  ]
+  const { data, loading } = useDashboard()
 
-  // Substitui vendas por dia por vendas por horário
-  const vendasPorHorario = [
-    { horario: "00h-06h", vendas: 5 },
-    { horario: "06h-12h", vendas: 40 },
-    { horario: "12h-18h", vendas: 70 },
-    { horario: "18h-24h", vendas: 80 },
-  ]
+  if (loading) return <p>Carregando...</p>
+  if (!data) return <p>Erro ao carregar dados</p>
 
-  const vendasPorCategoria = [
-    { name: "🍬 Doces", value: 400 },
-    { name: "🥨 Salgados", value: 300 },
-    { name: "🍹 Bebidas", value: 300 },
-    { name: "🎯 Jogos", value: 200 },
-    { name: "🎉 Outros", value: 100 },
-  ]
-  
+  const {
+    totalVendas,
+    receita,
+    clientesAtivos,
+    vendasPorHorario,
+    vendasPorCategoria,
+    topProdutos
+  } = data
+
   const COLORS = ["#f39c12", "#e67e22", "#3498db", "#9b59b6", "#95a5a6"]
-
+  
   return (
     <div id="admin-dashboard-page">
       <section className="overview">
         <div className="card">
           <h3>Total Vendas</h3>
-          <p className="number">318</p>
+          <p className="number">{totalVendas}</p>
         </div>
         <div className="card">
           <h3>Receita</h3>
-          <p className="number">R$ 25.400,00</p>
+          <p className="number">R$ {Number(receita).toFixed(2)}</p>
         </div>
         <div className="card">
           <h3>Clientes Ativos</h3>
-          <p className="number">85</p>
+          <p className="number">{clientesAtivos}</p>
         </div>
       </section>
 
@@ -56,11 +48,11 @@ export default function AdminDashboardPage() {
         <div className="card grafico-horario">
           <h2>Vendas por Horário</h2>
           <div className="bar-chart">
-            {vendasPorHorario.map(({ horario, vendas }) => (
+            {Object.entries(vendasPorHorario).map(([horario, vendas]) => (
               <div key={horario} className="bar-container">
                 <div
                   className="bar"
-                  style={{ height: `${vendas * 2}px` }}
+                  style={{ height: `${vendas as number * 2}px` }}
                   title={`${vendas} vendas`}
                 ></div>
                 <span className="label">{horario}</span>
@@ -94,12 +86,11 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-
       <section className="top-produtos card">
         <h2>Top Produtos Mais Vendidos</h2>
         <ul>
-          {topProdutos.map(({ id, nome, vendidos }) => (
-            <li key={id}>
+          {topProdutos.map(({ nome, vendidos }) => (
+            <li key={nome}>
               <span className="nome">{nome}</span>
               <span className="vendidos">{vendidos} vendidos</span>
             </li>
