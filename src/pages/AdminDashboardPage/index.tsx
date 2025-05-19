@@ -1,20 +1,27 @@
-import useDashboard from "../../hooks/useDashboard"
+import { VendaPorCategoria, TopProduto } from "../../hooks/useDashboard";
+import useDashboard from "../../hooks/useDashboard";
 import {
   PieChart,
   Pie,
   Cell,
-  Tooltip,
   Legend,
   ResponsiveContainer,
-} from "recharts"
-import "./styles.scss"
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
+import "./styles.scss";
+
+const COLORS = ["#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F"];
 
 export default function AdminDashboardPage() {
+  const { data, loading } = useDashboard();
 
-  const { data, loading } = useDashboard()
-
-  if (loading) return <p>Carregando...</p>
-  if (!data) return <p>Erro ao carregar dados</p>
+  if (loading) return <p>Carregando...</p>;
+  if (!data) return <p>Erro ao carregar dados</p>;
 
   const {
     totalVendas,
@@ -22,11 +29,17 @@ export default function AdminDashboardPage() {
     clientesAtivos,
     vendasPorHorario,
     vendasPorCategoria,
-    topProdutos
-  } = data
+    topProdutos,
+  } = data;
 
-  const COLORS = ["#f39c12", "#e67e22", "#3498db", "#9b59b6", "#95a5a6"]
-  
+  // Formatar vendasPorHorario para array para o gráfico
+  const vendasPorHorarioData = Object.entries(vendasPorHorario).map(
+    ([horario, vendas]) => ({
+      horario,
+      vendas,
+    })
+  );
+
   return (
     <div id="admin-dashboard-page">
       <section className="overview">
@@ -45,20 +58,25 @@ export default function AdminDashboardPage() {
       </section>
 
       <section className="graficos">
-        <div className="card grafico-horario">
+        <div className="card grafico-horario" style={{ width: "100%", height: 300 }}>
           <h2>Vendas por Horário</h2>
-          <div className="bar-chart">
-            {Object.entries(vendasPorHorario).map(([horario, vendas]) => (
-              <div key={horario} className="bar-container">
-                <div
-                  className="bar"
-                  style={{ height: `${vendas as number * 2}px` }}
-                  title={`${vendas} vendas`}
-                ></div>
-                <span className="label">{horario}</span>
-              </div>
-            ))}
-          </div>
+          <ResponsiveContainer>
+            <LineChart
+              data={vendasPorHorarioData}
+              margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="horario" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="vendas"
+                stroke="#007bff"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
         <div className="card grafico-categoria">
@@ -75,9 +93,14 @@ export default function AdminDashboardPage() {
                 fill="#8884d8"
                 label
               >
-                {vendasPorCategoria.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
+                {vendasPorCategoria.map(
+                  (entry: VendaPorCategoria, index: number) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  )
+                )}
               </Pie>
               <Tooltip />
               <Legend verticalAlign="bottom" height={36} />
@@ -89,14 +112,14 @@ export default function AdminDashboardPage() {
       <section className="top-produtos card">
         <h2>Top Produtos Mais Vendidos</h2>
         <ul>
-          {topProdutos.map(({ nome, vendidos }) => (
+          {topProdutos.map(({ nome, vendidos }: TopProduto, index: number) => (
             <li key={nome}>
-              <span className="nome">{nome}</span>
+              <span className="nome">{index === 0 ? "👑 " : ""}{nome}</span>
               <span className="vendidos">{vendidos} vendidos</span>
             </li>
           ))}
         </ul>
       </section>
     </div>
-  )
+  );
 }

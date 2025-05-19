@@ -1,10 +1,29 @@
 import { useEffect, useState } from "react"
 import dashboardService from "../services/dashboardService"
 
+export interface VendaPorCategoria {
+  name: string
+  value: number
+}
+
+export interface TopProduto {
+  nome: string
+  vendidos: number
+}
+
+export interface DashboardData {
+  totalVendas: number
+  receita: number
+  clientesAtivos: number
+  vendasPorHorario: Record<string, number>
+  vendasPorCategoria: VendaPorCategoria[]
+  topProdutos: TopProduto[]
+}
+
 export default function useDashboard() {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<unknown>(null)
 
   useEffect(() => {
     setLoading(true)
