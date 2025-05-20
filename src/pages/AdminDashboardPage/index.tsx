@@ -93,14 +93,12 @@ export default function AdminDashboardPage() {
                 fill="#8884d8"
                 label
               >
-                {vendasPorCategoria.map(
-                  (entry: VendaPorCategoria, index: number) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  )
-                )}
+              {vendasPorCategoria.map((_: VendaPorCategoria, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
               </Pie>
               <Tooltip />
               <Legend verticalAlign="bottom" height={36} />
