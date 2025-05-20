@@ -14,6 +14,28 @@ import {
   Tooltip,
 } from "recharts";
 import "./styles.scss";
+import Papa from "papaparse";
+
+function exportCSVGeneric<T>(
+  data: T[],
+  filename: string,
+  columns: { label: string; key: keyof T }[]
+) {
+  const mapped = data.map((item) =>
+    columns.reduce((obj, col) => {
+      obj[col.label] = item[col.key];
+      return obj;
+    }, {} as Record<string, unknown>)
+  );
+
+  const csv = Papa.unparse(mapped);
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.click();
+}
 
 const COLORS = ["#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F"];
 
@@ -30,6 +52,7 @@ export default function AdminDashboardPage() {
     vendasPorHorario,
     vendasPorCategoria,
     topProdutos,
+    vendasDetalhadas,
   } = data;
 
   // Formatar vendasPorHorario para array para o gráfico
@@ -42,6 +65,72 @@ export default function AdminDashboardPage() {
 
   return (
     <div id="admin-dashboard-page">
+      <div className="export-buttons">
+        <button
+          onClick={() =>
+            exportCSVGeneric(
+              vendasPorHorarioData,
+              "vendas-por-horario.csv",
+              [
+                { label: "Horário", key: "horario" },
+                { label: "Vendas", key: "vendas" },
+              ]
+            )
+          }
+        >
+          Exportar Vendas por Horário
+        </button>
+
+        <button
+          onClick={() =>
+            exportCSVGeneric(
+              vendasPorCategoria,
+              "vendas-por-categoria.csv",
+              [
+                { label: "Categoria", key: "name" },
+                { label: "Valor", key: "value" },
+              ]
+            )
+          }
+        >
+          Exportar Vendas por Categoria
+        </button>
+
+        <button
+          onClick={() =>
+            exportCSVGeneric(
+              topProdutos,
+              "top-produtos.csv",
+              [
+                { label: "Produto", key: "nome" },
+                { label: "Vendidos", key: "vendidos" },
+              ]
+            )
+          }
+        >
+          Exportar Top Produtos
+        </button>
+
+        <button
+          onClick={() =>
+            exportCSVGeneric(
+              vendasDetalhadas,
+              "vendas-detalhadas.csv",
+              [
+                { label: "ID", key: "id" },
+                { label: "Horário", key: "horario" },
+                { label: "Produto", key: "produto" },
+                { label: "Categoria", key: "categoria" },
+                { label: "Quantidade", key: "quantidade" },
+                { label: "Valor Total", key: "valorTotal" },
+              ]
+            )
+          }
+        >
+          Exportar Vendas Detalhadas
+        </button>
+      </div>
+
       <section className="overview">
         <div className="card">
           <h3>Total Vendas</h3>

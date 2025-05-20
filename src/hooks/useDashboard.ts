@@ -11,6 +11,15 @@ export interface TopProduto {
   vendidos: number
 }
 
+export interface VendaDetalhada {
+  id: string           
+  horario: string      
+  produto: string      
+  categoria?: string  
+  quantidade: number    
+  valorTotal: number   
+}
+
 export interface DashboardData {
   totalVendas: number
   receita: number
@@ -18,6 +27,7 @@ export interface DashboardData {
   vendasPorHorario: Record<string, number>
   vendasPorCategoria: VendaPorCategoria[]
   topProdutos: TopProduto[]
+  vendasDetalhadas: VendaDetalhada[]
 }
 
 export default function useDashboard() {
