@@ -1,8 +1,8 @@
 import axios from "axios"
 
-// export const apiBaseURL = "https://api-arraiatech.up.railway.app/"
+export const apiBaseURL = "https://api-arraiatech.up.railway.app/"
 
-export const apiBaseURL = "http://127.0.0.1:8000/"
+//export const apiBaseURL = "http://127.0.0.1:8000/"
 
 const api = axios.create({
     baseURL: apiBaseURL,
