@@ -68,12 +68,12 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
                 caixa: caixaContext.caixa,
             }
             const response = await createProduto(nP)
-            if (response.status == 201) {
+            if (response && response.status === 201) {
                 setupForm()
                 props.onCreate(response.data)
-            } else {
+            } else if (response) {
                 setFormErrors(response.data)
-            }
+            }            
         }
     }
 
