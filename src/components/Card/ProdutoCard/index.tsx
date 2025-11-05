@@ -16,6 +16,9 @@ export default function ProdutoCard(props: ProdutoCardProps) {
         <p>Teste</p>
     </>
 
+    const totalReservas = props.produto.total_reservas_antecipadas || 0;
+    const temReservas = totalReservas > 0;
+
     return (
         <Card
             as={'li'}
@@ -26,6 +29,11 @@ export default function ProdutoCard(props: ProdutoCardProps) {
             <span className="nome">{props.produto.nome}</span>
             <span className="medida mobile-hide">{props.produto.medida}</span>
             <Estoque number={props.produto.estoque}/>
+            {temReservas && (
+                <span className="reservas-antecipadas">
+                    {totalReservas} reserva{totalReservas > 1 ? 's' : ''} antecipada{totalReservas > 1 ? 's' : ''}
+                </span>
+            )}
             <span className="preco">R${Number(props.produto.preco).toFixed(2)}</span>
         </Card>
     )

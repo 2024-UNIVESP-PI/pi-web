@@ -1,119 +1,223 @@
-import { Dispatch, FormEvent, SetStateAction, useState, useEffect } from 'react'
-import { FaMoneyCheckDollar } from 'react-icons/fa6'
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
+import { FaMoneyCheckDollar, FaTrash, FaCircleCheck } from "react-icons/fa6";
 
-import Popup from '..'
-import Notice from '../../Notice'
-import Tag from '../../Tag'
-import Input from '../../Input'
-import Button from '../../Button'
+import Popup from "..";
+import Notice from "../../Notice";
+import Tag from "../../Tag";
+import Input from "../../Input";
+import Button from "../../Button";
 
-import { Ficha } from '../../../services/fichaService'
-import useFicha from '../../../hooks/useFicha'
+import { Ficha } from "../../../services/fichaService";
+import useFicha from "../../../hooks/useFicha";
+import CaixaContext from "../../../contexts/CaixaContext";
 
-import './styles.scss'
+import "./styles.scss";
 export type PopupFichaProps = {
-    visible: boolean
-    setVisible: Dispatch<SetStateAction<boolean>>
-    ficha?: Ficha
-    onRecarga: (ficha: Ficha) => void
-    // onDelete: (id: number) => void
-}
+  visible: boolean;
+  setVisible: Dispatch<SetStateAction<boolean>>;
+  ficha?: Ficha;
+  onRecarga: (ficha: Ficha) => void;
+  onDelete?: (id: number) => void;
+};
 
 export default function PopupFicha(props: PopupFichaProps) {
-    const [recarga, setRecarga] = useState(0)
+  const caixaContext = useContext(CaixaContext.Context);
+  const [recarga, setRecarga] = useState(0);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [senhaAdmin, setSenhaAdmin] = useState("");
+  const [recargaSucesso, setRecargaSucesso] = useState(false);
+  const [valorRecarga, setValorRecarga] = useState(0);
+  const [fichaAtualizada, setFichaAtualizada] = useState<Ficha>();
 
-    // const estoqueColor = (estoque: number) => {
-    //     if (estoque >= 10) return 'var(--color-green)'
-    //     if (estoque > 0) return 'var(--color-yellow)'
-    //     return 'var(--color-red)'
-    // }
+  const { recargaFicha, fetchingRecarga, deleteFicha, fetchingDelete } =
+    useFicha();
 
-    const {
-        recargaFicha,
-        fetchingRecarga,
-        // deleteFicha,
-        // fetchingDelete,
-    } = useFicha()
+  async function handleRecargaFicha(e: FormEvent) {
+    e.preventDefault();
+    if (props.ficha?.id && recarga) {
+      const caixaId = caixaContext?.caixa;
+      const response = await recargaFicha(props.ficha?.id, recarga, caixaId);
+      if (response.status == 200) {
+        // Define a mensagem de sucesso primeiro
+        setValorRecarga(recarga);
+        setFichaAtualizada(response.data);
+        setRecargaSucesso(true);
+        setRecarga(0);
 
-    async function handleRecargaFicha(e: FormEvent) {
-        e.preventDefault()
-        if (props.ficha?.id && recarga) {
-            const response = await recargaFicha(props.ficha?.id, recarga)
-            if (response.status == 200) {
-                props.onRecarga(response.data)
-                setRecarga(0)
-            }
-        }
+        // Aguarda um momento para garantir que o estado foi atualizado
+        // antes de atualizar o estado pai (que pode disparar o useEffect)
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        // Atualiza a ficha no estado pai
+        props.onRecarga(response.data);
+      }
     }
+  }
 
-    // async function handleDeleteFicha() {
-    //     if (props.ficha) {
-    //         const response = await deleteFicha()
-    //         if (response.status == 204) props.onDelete(props.ficha.id)
-    //     }
-    // }
+  async function handleDeleteFicha(e: FormEvent) {
+    e.preventDefault();
+    if (props.ficha?.id && senhaAdmin) {
+      const response = await deleteFicha(props.ficha.id, senhaAdmin);
+      if (response.status == 204) {
+        if (props.onDelete) {
+          props.onDelete(props.ficha.id);
+        }
+        setShowDeletePopup(false);
+        setSenhaAdmin("");
+        props.setVisible(false);
+      } else {
+        alert(response.data?.detail || "Erro ao deletar ficha");
+      }
+    }
+  }
 
-    useEffect(() => {
-        if (props.ficha) setRecarga(0)
-    }, [props.ficha])
+  useEffect(() => {
+    if (props.ficha) {
+      // Se a mensagem de sucesso está visível e a ficha atualizada tem o mesmo ID,
+      // significa que é uma atualização após recarga, então não limpa a mensagem
+      if (
+        recargaSucesso &&
+        fichaAtualizada &&
+        fichaAtualizada.id === props.ficha.id
+      ) {
+        // Atualiza a ficha atualizada com os novos dados, mas mantém a mensagem
+        setFichaAtualizada(props.ficha);
+        // Não limpa os outros campos para evitar resetar durante a recarga
+        return;
+      }
 
-    return (
-        <Popup
-            visible={props.visible}
-            setVisible={props.setVisible}
-            id='popup-ficha'
-            icon={<FaMoneyCheckDollar />}
-            title='Ficha'
-        >
-            {
-                !props.ficha ?
-                    <Notice><p>Selecione uma ficha para visualizar</p></Notice>
-                    :
-                    <>
-                        <div className="ficha-infos line">
-                            <p className='numero'>{props.ficha.numero}</p>
-                            <Tag
-                                className='saldo'
-                                color={props.ficha.saldo <= 0 ? 'var(--color-red)' : undefined}
-                            >
-                                <p>R${props.ficha.saldo.toFixed(2)}</p>
-                            </Tag>
-                        </div>
+      // Se não é a mesma ficha ou não há mensagem de sucesso, limpa tudo
+      // Só limpa se não estiver no meio de uma recarga bem-sucedida
+      if (
+        !recargaSucesso ||
+        !fichaAtualizada ||
+        fichaAtualizada.id !== props.ficha.id
+      ) {
+        setRecarga(0);
+        setShowDeletePopup(false);
+        setSenhaAdmin("");
+        setRecargaSucesso(false);
+        setValorRecarga(0);
+        setFichaAtualizada(undefined);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.ficha]);
 
-                        <div className="line">
-                            <form
-                                className="line close"
-                                onSubmit={handleRecargaFicha}
-                            >
-                                <Input
-                                    type='intenger'
-                                    inputMode='numeric'
-                                    id={'credito-adicional'}
-                                    value={String(recarga)}
-                                    onChange={(e) => setRecarga(Number(e.target.value))}
-                                    min={1}
-                                />
-                                <Button
-                                    className='flex-2'
-                                    color='var(--color-green)'
-                                    type='submit'
-                                    loading={fetchingRecarga}
-                                >
-                                    <p>Recarregar</p>
-                                </Button>
-                            </form>
-                            {/* <Button
-                                color='var(--color-red)'
-                                loading={fetchingDelete}
-                                onClick={() => {
-                                    if (props.ficha?.id && confirm("Deletar ficha?")) handleDeleteFicha()
-                                }}
-                            >
-                                <FaTrash />
-                            </Button> */}
-                        </div>
-                    </>
-            }
-        </Popup>
-    )
+  return (
+    <Popup
+      visible={props.visible}
+      setVisible={props.setVisible}
+      id="popup-ficha"
+      icon={<FaMoneyCheckDollar />}
+      title="Ficha"
+    >
+      {!props.ficha ? (
+        <Notice>
+          <p>Selecione uma ficha para visualizar</p>
+        </Notice>
+      ) : (
+        <>
+          <div className="ficha-infos line">
+            <p className="numero">{props.ficha.numero}</p>
+            <Tag
+              className="saldo"
+              color={props.ficha.saldo <= 0 ? "var(--color-red)" : undefined}
+            >
+              <p>R${props.ficha.saldo.toFixed(2)}</p>
+            </Tag>
+          </div>
+
+          <div className="line">
+            <form className="line close" onSubmit={handleRecargaFicha}>
+              <Input
+                type="intenger"
+                inputMode="numeric"
+                id={"credito-adicional"}
+                value={String(recarga)}
+                onChange={(e) => setRecarga(Number(e.target.value))}
+                min={1}
+              />
+              <Button
+                className="flex-2"
+                color="var(--color-green)"
+                type="submit"
+                loading={fetchingRecarga}
+              >
+                <p>Recarregar</p>
+              </Button>
+            </form>
+            <Button
+              color="var(--color-red)"
+              onClick={() => setShowDeletePopup(true)}
+            >
+              <FaTrash /> Deletar
+            </Button>
+          </div>
+
+          {recargaSucesso && fichaAtualizada && (
+            <Tag color="var(--color-green)" className="column success-message">
+              <div className="success-header">
+                <div className="success-icon">
+                  <FaCircleCheck />
+                </div>
+                <p className="success-title">Recarga realizada com sucesso!</p>
+              </div>
+              <div className="success-details">
+                <p className="detail-line">
+                  <b>R${valorRecarga.toFixed(2)}</b> adicionados à ficha{" "}
+                  <b>#{fichaAtualizada.numero}</b>
+                </p>
+                <p className="detail-line">
+                  Novo saldo: <b>R${fichaAtualizada.saldo.toFixed(2)}</b>
+                </p>
+              </div>
+            </Tag>
+          )}
+
+          {showDeletePopup && (
+            <form onSubmit={handleDeleteFicha} className="delete-form">
+              <p className="delete-warning">
+                Para deletar esta ficha, insira a senha de administrador:
+              </p>
+              <Input
+                type="password"
+                id="senha-admin-delete"
+                label="Senha de Administrador"
+                value={senhaAdmin}
+                onChange={(e) => setSenhaAdmin(e.target.value)}
+                required
+              />
+              <div className="delete-actions">
+                <Button
+                  type="button"
+                  color="var(--color-gray)"
+                  onClick={() => {
+                    setShowDeletePopup(false);
+                    setSenhaAdmin("");
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  color="var(--color-red)"
+                  loading={fetchingDelete}
+                >
+                  Confirmar Exclusão
+                </Button>
+              </div>
+            </form>
+          )}
+        </>
+      )}
+    </Popup>
+  );
 }

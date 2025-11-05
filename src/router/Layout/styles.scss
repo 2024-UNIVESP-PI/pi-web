@@ -1,19 +1,25 @@
 #layout {
-    flex: 1;
-    height: 100vh;
-    display: flex;
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  overflow: hidden; // Previne overflow do layout
 
-    > main {
-        position: relative;
-        background-color: var(--color-extra-light-grey);
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
+  > main {
+    position: relative;
+    background-color: var(--color-extra-light-grey);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden; // Previne overflow horizontal
+    overflow-y: auto; // Permite scroll vertical se necessário
+    min-width: 0; // Permite que o flex funcione corretamente
+    max-width: 100%; // Garante que não ultrapasse o container
+    box-sizing: border-box;
+  }
 }
 
 @media screen and (max-width: 1023px) {
-    #layout {
-        flex-direction: column;
-    }
+  #layout {
+    flex-direction: column;
+  }
 }

@@ -1,20 +1,71 @@
 .search-bar-component {
-    flex: 1;
-    position: relative;
-    display: flex;
+  flex: 1;
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: auto;
 
-    >input {
-        flex: 1;
-        border-color: var(--color-grey);
+  > input {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    min-width: 0;
+    width: 100%;
+    padding: 0.5rem 3.5rem 0.5rem 0.75rem; // Padding direito para o botão
+    font-size: 0.875rem;
+    background-color: white;
+    color: #374151;
+    transition: all 0.2s;
+
+    &::placeholder {
+      color: #9ca3af;
     }
-    
-    >button {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        font-size: 1em;
-        padding: 1em;
-        border-radius: 2px;
+
+    &:hover {
+      border-color: #9ca3af;
     }
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  > button {
+    position: absolute;
+    top: 50%;
+    right: 0.25rem;
+    transform: translateY(-50%);
+    height: calc(100% - 0.5rem);
+    font-size: 0.875rem;
+    padding: 0 1rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #2563eb;
+      transform: translateY(-50%) scale(1.02);
+    }
+
+    &:active {
+      transform: translateY(-50%) scale(0.98);
+    }
+
+    p {
+      margin: 0;
+      color: white;
+      font-weight: 500;
+    }
+  }
 }

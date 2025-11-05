@@ -1,230 +1,447 @@
 :root {
-    --color-bg: #f9fafb;
-    --color-white: #fff;
-    --color-primary: #2563eb;
-    --color-primary-hover: #1d4ed8;
-    --color-red: #ef4444;
-    --color-red-hover: #dc2626;
-    --color-text-dark: #111827;
-    --color-text-light: #6b7280;
-    --color-border: #e5e7eb;
+  --color-bg: #f8fafc;
+  --color-white: #fff;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #dbeafe;
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-danger: #ef4444;
+  --color-danger-light: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+  --color-red: #ef4444;
+  --color-red-hover: #dc2626;
+  --color-text-dark: #1e293b;
+  --color-text-medium: #475569;
+  --color-text-light: #64748b;
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+#admin-dashboard-page {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    gap: 1.5rem;
+
+    .dashboard-header {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 0.85rem;
+      }
+    }
+
+    .export-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      button {
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 10px 16px;
+      }
+    }
   }
-  
-  #admin-dashboard-page {
-    flex: 1;
-    padding: 32px;
-    background-color: var(--color-bg);
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    min-height: 100vh;
-    box-sizing: border-box;
-    overflow-y: auto;
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+    gap: 1rem;
+
+    .dashboard-header {
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+      }
+    }
   }
-  
-  #admin-dashboard-page header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-  }
-  
-  #admin-dashboard-page header h1 {
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--color-text-dark);
-    margin: 0;
-  }
-  
-  #admin-dashboard-page header button {
-    background-color: var(--color-red);
-    color: var(--color-white);
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: background-color 0.3s;
-    white-space: nowrap;
-  }
-  
-  #admin-dashboard-page header button:hover {
-    background-color: var(--color-red-hover);
-  }
-  
-  section.overview {
-    display: flex;
-    gap: 24px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  section.overview .card {
-    background: var(--color-white);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
-    padding: 24px 32px;
-    flex: 1 1 200px;
-    min-width: 200px;
-    text-align: center;
-    color: var(--color-text-dark);
-  }
-  
-  section.overview .card h3 {
-    font-weight: 700;
-    margin-bottom: 8px;
-    font-size: 1.25rem;
-  }
-  
-  section.overview .card .number {
+}
+
+.dashboard-header {
+  margin-bottom: 1rem;
+
+  h1 {
     font-size: 2rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-text-dark);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.5px;
   }
-  
+
+  p {
+    color: var(--color-text-medium);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}
+
+#admin-dashboard-page header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+#admin-dashboard-page header h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+#admin-dashboard-page header button {
+  background-color: var(--color-red);
+  color: var(--color-white);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+#admin-dashboard-page header button:hover {
+  background-color: var(--color-red-hover);
+}
+
+section.overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+section.overview .card {
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.75rem;
+  color: var(--color-text-dark);
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-border-light);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-info));
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-border);
+  }
+
+  h3 {
+    font-weight: 600;
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-medium);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-text-dark);
+    margin: 0.5rem 0;
+    line-height: 1.2;
+    letter-spacing: -1px;
+  }
+
+  .indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 12px;
+
+    &.positive {
+      color: var(--color-success);
+      background: var(--color-success-light);
+    }
+
+    &.negative {
+      color: var(--color-danger);
+      background: var(--color-danger-light);
+    }
+  }
+
+  .prediction {
+    font-size: 0.8125rem;
+    color: var(--color-text-medium);
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: var(--color-info-light);
+    border-radius: 8px;
+    font-weight: 500;
+
+    &::before {
+      content: "📈 ";
+      margin-right: 0.25rem;
+    }
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+section.vendas-por-horario.card,
+section.top-produtos.card {
+  background: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+  padding: 24px 32px;
+  color: var(--color-text-dark);
+}
+
+section.vendas-por-horario.card h2,
+section.top-produtos.card h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.bar-chart {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: flex-end;
+  height: 120px;
+  max-width: 100%;
+}
+
+.bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32px;
+}
+
+.bar {
+  background-color: var(--color-primary);
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: background-color 0.3s;
+  cursor: default;
+}
+
+.bar:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.label {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+}
+
+/* Lista top produtos */
+
+section.top-produtos ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+section.top-produtos li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  cursor: default;
+}
+
+section.top-produtos li:last-child {
+  border-bottom: none;
+}
+
+section.top-produtos .nome {
+  flex: 3;
+  text-align: left;
+}
+
+section.top-produtos .vendidos {
+  flex: 1;
+  text-align: right;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+@media screen and (max-width: 1023px) {
+  section.overview {
+    justify-content: space-around;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #admin-dashboard-page {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  section.overview {
+    flex-direction: column;
+    gap: 16px;
+  }
+
   section.vendas-por-horario.card,
   section.top-produtos.card {
-    background: var(--color-white);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
-    padding: 24px 32px;
-    color: var(--color-text-dark);
+    padding: 16px;
   }
-  
-  section.vendas-por-horario.card h2,
-  section.top-produtos.card h2 {
-    margin-top: 0;
-    margin-bottom: 24px;
-    font-weight: 700;
-    font-size: 1.5rem;
-    text-align: center;
-  }
+}
 
-  
-  .bar-chart {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    align-items: flex-end;
-    height: 120px;
-    max-width: 100%;
-  }
-  
-  .bar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 32px;
-  }
-  
-  .bar {
-    background-color: var(--color-primary);
-    width: 100%;
-    border-radius: 4px 4px 0 0;
-    transition: background-color 0.3s;
-    cursor: default;
-  }
-  
-  .bar:hover {
-    background-color: var(--color-primary-hover);
-  }
-  
-  .label {
-    margin-top: 8px;
-    font-size: 0.875rem;
-    color: var(--color-text-light);
-  }
-  
-  /* Lista top produtos */
-  
-  section.top-produtos ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  section.top-produtos li {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--color-border);
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--color-text-dark);
-    cursor: default;
-  }
-  
-  section.top-produtos li:last-child {
-    border-bottom: none;
-  }
-  
-  section.top-produtos .nome {
-    flex: 3;
-    text-align: left;
-  }
-  
-  section.top-produtos .vendidos {
-    flex: 1;
-    text-align: right;
-    color: var(--color-primary);
-    font-weight: 700;
-  }
-  
-  @media screen and (max-width: 1023px) {
-    section.overview {
-      justify-content: space-around;
-    }
-  }
-  
-  @media screen and (max-width: 767px) {
-    #admin-dashboard-page {
-      padding: 16px;
-      gap: 16px;
-    }
-  
-    section.overview {
-      flex-direction: column;
-      gap: 16px;
-    }
-  
-    section.vendas-por-horario.card,
-    section.top-produtos.card {
-      padding: 16px;
-    }
-  }
+section.vendas-por-categoria.card {
+  background: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+  padding: 24px 32px;
+  color: var(--color-text-dark);
+}
 
+section.vendas-por-categoria.card h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+@media screen and (max-width: 767px) {
   section.vendas-por-categoria.card {
-    background: var(--color-white);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
-    padding: 24px 32px;
-    color: var(--color-text-dark);
+    padding: 16px;
   }
-  
-  section.vendas-por-categoria.card h2 {
-    margin-top: 0;
-    margin-bottom: 24px;
-    font-weight: 700;
-    font-size: 1.5rem;
-    text-align: center;
-  }
-  
-  @media screen and (max-width: 767px) {
-    section.vendas-por-categoria.card {
-      padding: 16px;
-    }
-  }  
+}
 
-  .graficos {
+.graficos {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 0;
 
   .card {
-    flex: 1 1 300px;
-    min-width: 280px;
+    background: var(--color-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    padding: 1.75rem;
+    border: 1px solid var(--color-border-light);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-border);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--color-text-dark);
+      border-bottom: 2px solid var(--color-border-light);
+      padding-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::before {
+        content: "";
+        width: 4px;
+        height: 20px;
+        background: var(--color-primary);
+        border-radius: 2px;
+      }
+    }
+  }
+
+  .grafico-tendencia {
+    width: 100%;
+  }
+
+  .grafico-horario {
+    width: 100%;
+  }
+
+  .graficos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .grafico-categoria {
+    @media (max-width: 768px) {
+      padding: 1rem;
+
+      > div {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .card {
+      padding: 1.25rem;
+    }
   }
 
   .grafico-horario .bar-chart {
@@ -259,19 +476,493 @@
 
 .export-buttons {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-light);
 
   button {
-    background-color: #007bff;
+    background-color: var(--color-primary);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--shadow-sm);
 
     &:hover {
-      background-color: #0056b3;
+      background-color: var(--color-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+    gap: 0.5rem;
+
+    button {
+      font-size: 0.75rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--color-border);
+
+  button {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    transition: all 0.2s;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+
+    &.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+  }
+}
+
+// Alertas de Estoque
+.alertas-estoque {
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.75rem;
+  margin-top: 0;
+  border: 1px solid var(--color-border-light);
+  border-left: 4px solid var(--color-warning);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--color-border-light);
+    padding-bottom: 0.75rem;
+  }
+
+  .produtos-risco {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .produto-risco-item {
+    background: linear-gradient(135deg, #fff3cd 0%, #fef3c7 100%);
+    border: 1px solid var(--color-warning);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .produto-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      strong {
+        font-size: 1rem;
+        color: var(--color-text-dark);
+        font-weight: 700;
+      }
+
+      .dias-restantes {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+        color: #92400e;
+        font-weight: 700;
+        padding: 0.375rem 0.625rem;
+        background: rgba(217, 119, 6, 0.1);
+        border-radius: 8px;
+        width: fit-content;
+
+        &::before {
+          content: "⏰";
+        }
+      }
+    }
+
+    .estoque-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+      color: var(--color-text-medium);
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(217, 119, 6, 0.2);
+
+      span {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 500;
+
+        &:first-child {
+          font-weight: 600;
+          color: var(--color-text-dark);
+        }
+      }
+    }
+  }
+}
+
+// Previsão de Estoque
+.previsao-estoque {
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.75rem;
+  margin-top: 0;
+  border: 1px solid var(--color-border-light);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--color-border-light);
+    padding-bottom: 0.75rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-light);
+  }
+
+  .estoque-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+
+    thead {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-bottom: 2px solid var(--color-border);
+
+      th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 700;
+        color: var(--color-text-dark);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+
+        &:first-child {
+          padding-left: 1.5rem;
+        }
+
+        &:last-child {
+          padding-right: 1.5rem;
+          text-align: center;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid var(--color-border-light);
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #f8fafc;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        td {
+          padding: 1rem;
+          color: var(--color-text-dark);
+          font-weight: 500;
+
+          &:first-child {
+            padding-left: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+          }
+
+          &:last-child {
+            padding-right: 1.5rem;
+            text-align: center;
+          }
+
+          .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 0.875rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+
+            &.warning {
+              background: var(--color-warning-light);
+              color: #92400e;
+              border: 1px solid var(--color-warning);
+            }
+
+            &.ok {
+              background: var(--color-success-light);
+              color: #065f46;
+              border: 1px solid var(--color-success);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Horários de Pico
+.horarios-pico {
+  background: var(--color-white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.75rem;
+  margin-top: 0;
+  border: 1px solid var(--color-border-light);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--color-border-light);
+    padding-bottom: 0.75rem;
+  }
+
+  .pico-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pico-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 10px;
+    border-left: 4px solid var(--color-primary);
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-left-width: 6px;
+    }
+
+    &:nth-child(1) {
+      border-left-color: #fbbf24;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+
+    &:nth-child(2) {
+      border-left-color: #94a3b8;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+    &:nth-child(3) {
+      border-left-color: #f59e0b;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+
+    .pico-rank {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      min-width: 48px;
+      text-align: center;
+      background: var(--color-white);
+      border-radius: 10px;
+      padding: 0.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pico-horario {
+      flex: 1;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text-dark);
+      letter-spacing: -0.25px;
+    }
+
+    .pico-vendas {
+      font-size: 0.875rem;
+      color: var(--color-text-medium);
+      font-weight: 600;
+      padding: 0.375rem 0.75rem;
+      background: var(--color-white);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+// Seção de Análise de Reservas
+section.reservas-ml {
+  margin-top: 2rem;
+
+  .reservas-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 8px;
+      border: 1px solid var(--color-border-light);
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--color-text-medium);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-text-dark);
+      }
+    }
+  }
+
+  .produtos-reservados {
+    margin-bottom: 1.5rem;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text-dark);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--color-border-light);
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--color-border-light);
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: #f8f9fa;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .produto-nome {
+          font-weight: 500;
+          color: var(--color-text-dark);
+        }
+
+        .produto-total {
+          font-weight: 600;
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+
+  .tendencia-reservas {
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text-dark);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--color-border-light);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .reservas-stats {
+      grid-template-columns: 1fr;
     }
   }
 }

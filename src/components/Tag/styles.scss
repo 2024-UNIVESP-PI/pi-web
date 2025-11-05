@@ -1,44 +1,101 @@
 span.tag-component {
-    color: var(--color-light-black);
-    background-color: var(--color-extra-light-grey);
+  color: var(--color-light-black);
+  background-color: var(--color-extra-light-grey);
 
-    font-size: 1.2em;
-    font-weight: 500;
-    padding: 6px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px 32px;
+  font-size: 1.2em;
+  font-weight: 500;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 32px;
 
-    &.colored {
-        color: color-mix(in srgb, var(--tag-color), black 5%);
-        background-color: color-mix(in srgb, var(--tag-color) 10%, white);
-    }
+  &.colored {
+    color: color-mix(in srgb, var(--tag-color), black 5%);
+    background-color: color-mix(in srgb, var(--tag-color) 10%, white);
+  }
 
-    &.medium {
-        padding: 12px;
-    }
+  &.medium {
+    padding: 12px;
+  }
 
-    &.column {
-        flex-direction: column;
-    }
+  &.column {
+    flex-direction: column;
+  }
 
-    svg {
-        opacity: .8;
-    }
+  // Estilo específico para mensagens de sucesso
+  &.success-message {
+    padding: 20px;
+    border-radius: 8px;
+    gap: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid color-mix(in srgb, var(--tag-color) 30%, transparent);
 
-    >span.group {
+    .success-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+
+      .success-icon {
+        font-size: 1.5em;
         display: flex;
         align-items: center;
-        gap: 4px;
+        justify-content: center;
+      }
+
+      .success-title {
+        font-size: 1.15em;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 0.3px;
+      }
     }
 
-    p.center {
-        text-align: center;
-    }
+    .success-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
 
-    .title {
-        font-size: 1.1em;
+      p {
+        margin: 0;
+        font-size: 0.95em;
+        line-height: 1.5;
+
+        &.detail-line {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          flex-wrap: wrap;
+        }
+
+        b {
+          font-weight: 700;
+          color: color-mix(in srgb, var(--tag-color), black 20%);
+        }
+      }
     }
+  }
+
+  svg {
+    opacity: 0.8;
+  }
+
+  > span.group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  p.center {
+    text-align: center;
+  }
+
+  .title {
+    font-size: 1.1em;
+  }
 }

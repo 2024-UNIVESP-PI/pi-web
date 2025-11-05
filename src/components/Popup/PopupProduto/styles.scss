@@ -1,9 +1,30 @@
 #popup-produto {
-    .produto-infos {
-        .nome {
-            font-size: 1.4em;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
+  .produto-infos {
+    .nome {
+      font-size: 1.4em;
+      font-weight: 500;
+      margin-bottom: 8px;
     }
+
+    .reserva-antecipada-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
+
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        font-weight: 600;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }

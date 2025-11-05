@@ -1,97 +1,353 @@
-import { Dispatch, SetStateAction, useState, FormEvent } from 'react'
-import { FaMoneyCheckDollar } from 'react-icons/fa6'
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  FormEvent,
+  useEffect,
+  useContext,
+} from "react";
+import { FaMoneyCheckDollar, FaCircleCheck } from "react-icons/fa6";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
-import Popup from ".."
-import Input from "../../Input"
-import Button from "../../Button"
+import Popup from "..";
+import Input from "../../Input";
+import Button from "../../Button";
+import Tag from "../../Tag";
 
-import { Errors } from '../../../services'
-import cleanDecimal from '../../../functions/cleanDecimal'
-import useFicha from '../../../hooks/useFicha'
-import { Ficha, NovaFicha } from '../../../services/fichaService'
+import { Errors } from "../../../services";
+import cleanDecimal from "../../../functions/cleanDecimal";
+import useFicha from "../../../hooks/useFicha";
+import { Ficha, NovaFicha } from "../../../services/fichaService";
+import reservaService, {
+  ReservasPendentesResponse,
+} from "../../../services/reservaService";
+import CaixaContext from "../../../contexts/CaixaContext";
 
 // import './styles.scss'
 export type PopupNovaFichaProps = {
-    visible: boolean
-    setVisible: Dispatch<SetStateAction<boolean>>
-    onCreate: (ficha: Ficha) => void
-}
+  visible: boolean;
+  setVisible: Dispatch<SetStateAction<boolean>>;
+  onCreate: (ficha: Ficha) => void;
+};
 
 export default function PopupNovaFicha(props: PopupNovaFichaProps) {
-    const {
-        createFicha,
-        fetchingCreate,
-    } = useFicha()
+  const { createFicha, fetchingCreate } = useFicha();
+  const caixaContext = useContext(CaixaContext.Context);
 
-    const [numero, setNumero] = useState(0)
-    const [saldo, setSaldo] = useState(0)
+  const [numero, setNumero] = useState(0);
+  const [saldo, setSaldo] = useState(0);
+  const [cpfReserva, setCpfReserva] = useState("");
+  const [reservasPendentes, setReservasPendentes] =
+    useState<ReservasPendentesResponse | null>(null);
+  const [loadingReservas, setLoadingReservas] = useState(false);
+  const [reservaError, setReservaError] = useState<string | null>(null);
 
-    const [formErrors, setFormErrors] = useState<Errors>()
+  const [formErrors, setFormErrors] = useState<Errors>();
+  const [fichaCriada, setFichaCriada] = useState<Ficha>();
+  const [isClosing, setIsClosing] = useState(false);
 
-    function setupForm() {
-        setNumero(0)
-        setSaldo(0)
+  function setupForm() {
+    setNumero(0);
+    setSaldo(0);
+    setCpfReserva("");
+    setReservasPendentes(null);
+    setReservaError(null);
+  }
+
+  async function buscarReservas() {
+    if (!cpfReserva || cpfReserva.length !== 11) {
+      setReservaError("CPF deve ter 11 dígitos");
+      setReservasPendentes(null);
+      return;
     }
 
-    async function handleCreateFicha(e: FormEvent) {
-        e.preventDefault()
-        setFormErrors(undefined)
-        const nF: NovaFicha = {
-            numero: numero,
-            saldo: saldo
+    setLoadingReservas(true);
+    setReservaError(null);
 
-        }
-        console.log(nF)
-        const response = await createFicha(nF)
-        if (response.status == 201) {
-            setupForm()
-            props.onCreate(response.data)
-        } else {
-            setFormErrors(response.data)
-        }
+    try {
+      const data = await reservaService.getReservasPendentesPorCPF(cpfReserva);
+      setReservasPendentes(data);
+      // Define o saldo mínimo como o valor total das reservas
+      if (saldo < data.valor_total) {
+        setSaldo(data.valor_total);
+      }
+    } catch (error: unknown) {
+      const axiosError = error as {
+        response?: { status?: number; data?: { detail?: string } };
+      };
+      if (axiosError.response?.status === 404) {
+        setReservaError("Nenhuma reserva pendente encontrada para este CPF");
+      } else {
+        setReservaError(
+          axiosError.response?.data?.detail || "Erro ao buscar reservas"
+        );
+      }
+      setReservasPendentes(null);
+    } finally {
+      setLoadingReservas(false);
+    }
+  }
+
+  function limparReservas() {
+    setCpfReserva("");
+    setReservasPendentes(null);
+    setReservaError(null);
+    setSaldo(0);
+  }
+
+  async function handleCreateFicha(e: FormEvent) {
+    e.preventDefault();
+    setFormErrors(undefined);
+    setFichaCriada(undefined);
+    setIsClosing(false);
+
+    // Valida se há reservas e se o saldo é suficiente
+    if (reservasPendentes && saldo < reservasPendentes.valor_total) {
+      setFormErrors({
+        saldo: [
+          `O saldo deve ser no mínimo R$ ${reservasPendentes.valor_total.toFixed(
+            2
+          )} (valor total das reservas)`,
+        ],
+      });
+      return;
     }
 
-    return (
-        <Popup
-            visible={props.visible}
-            setVisible={props.setVisible}
-            id='popup-nova-ficha'
-            icon={<FaMoneyCheckDollar />}
-            title='Nova ficha'
-        >
-            <form onSubmit={handleCreateFicha}>
-                <div className="line">
-                    <Input
-                        id='numero'
-                        type='intenger'
-                        inputMode='numeric'
-                        label='Número'
-                        value={numero}
-                        onChange={(e) => setNumero(Number(e.target.value))}
-                        required
-                        min={0}
-                        step={0.01}
-                        errors={formErrors?.numero}
-                    />
-                    <Input
-                        id='saldo'
-                        type='number'
-                        inputMode='decimal'
-                        label='Saldo'
-                        value={saldo.toFixed(2)}
-                        onChange={(e) => setSaldo(cleanDecimal(e.target.value))}
-                        errors={formErrors?.saldo}
-                    />
-                </div>
+    const nF: NovaFicha = {
+      numero: numero,
+      saldo: saldo,
+      caixa_id: caixaContext?.caixa,
+      cpf_reserva: reservasPendentes ? cpfReserva : undefined,
+    };
+
+    const response = await createFicha(nF);
+    if (response.status == 201) {
+      setFichaCriada(response.data);
+      setupForm();
+      // Aguarda um momento para mostrar a mensagem de sucesso antes de fechar
+      setIsClosing(true);
+      setTimeout(() => {
+        props.onCreate(response.data);
+        setIsClosing(false);
+      }, 2000);
+    } else {
+      setFormErrors(response.data);
+    }
+  }
+
+  useEffect(() => {
+    // Limpa mensagem de sucesso quando o popup é fechado (mas não durante o processo de fechamento após criação)
+    if (!props.visible && !isClosing) {
+      setFichaCriada(undefined);
+      // Limpa os campos quando o popup é fechado
+      setupForm();
+    }
+  }, [props.visible, isClosing]);
+
+  return (
+    <Popup
+      visible={props.visible}
+      setVisible={props.setVisible}
+      id="popup-nova-ficha"
+      icon={<FaMoneyCheckDollar />}
+      title="Nova ficha"
+    >
+      <form onSubmit={handleCreateFicha}>
+        {/* Busca de reserva por CPF */}
+        <div className="reserva-section">
+          <div className="reserva-header">
+            <h4>Vincular a reserva (opcional)</h4>
+            <p className="reserva-subtitle">
+              Busque reservas pendentes por CPF
+            </p>
+          </div>
+
+          <div className="line">
+            <Input
+              id="cpf-reserva"
+              type="text"
+              inputMode="numeric"
+              label="CPF (11 dígitos)"
+              value={cpfReserva}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "").slice(0, 11);
+                setCpfReserva(value);
+                setReservaError(null);
+                if (value.length !== 11) {
+                  setReservasPendentes(null);
+                }
+              }}
+              placeholder="00000000000"
+              maxLength={11}
+            />
+            <div className="reserva-actions">
+              <button
+                type="button"
+                onClick={buscarReservas}
+                disabled={loadingReservas || cpfReserva.length !== 11}
+                style={{
+                  backgroundColor: "var(--color-blue)",
+                  opacity:
+                    loadingReservas || cpfReserva.length !== 11 ? 0.6 : 1,
+                  cursor:
+                    loadingReservas || cpfReserva.length !== 11
+                      ? "not-allowed"
+                      : "pointer",
+                  padding: "8px 12px",
+                  border: "none",
+                  borderRadius: "4px",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                }}
+              >
+                <FaSearch />
+                <span>{loadingReservas ? "Buscando..." : "Buscar"}</span>
+              </button>
+              {reservasPendentes && (
                 <Button
-                    type='submit'
-                    color='var(--color-green)'
-                    loading={fetchingCreate}
+                  type="button"
+                  onClick={limparReservas}
+                  color="var(--color-red)"
                 >
-                    <p>Criar</p>
+                  <FaTimes />
+                  <p>Limpar</p>
                 </Button>
-            </form>
-        </Popup>
-    )
-}
+              )}
+            </div>
+          </div>
 
+          {reservaError && (
+            <Tag color="var(--color-red)" className="reserva-error">
+              {reservaError}
+            </Tag>
+          )}
+
+          {reservasPendentes && (
+            <div className="reserva-info">
+              <div className="reserva-cliente">
+                <p>
+                  <strong>Cliente:</strong> {reservasPendentes.nome_completo}
+                </p>
+                <p>
+                  <strong>CPF:</strong> {reservasPendentes.cpf}
+                </p>
+              </div>
+
+              <div className="reserva-itens">
+                <p className="reserva-itens-title">
+                  <strong>Itens reservados:</strong>
+                </p>
+                <ul>
+                  {reservasPendentes.itens.map((item) => (
+                    <li key={item.id}>
+                      {item.produto} - {item.quantidade}x R${" "}
+                      {item.preco_unitario.toFixed(2)} = R${" "}
+                      {item.preco_total.toFixed(2)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="reserva-total">
+                <p>
+                  <strong>Valor total:</strong> R${" "}
+                  {reservasPendentes.valor_total.toFixed(2)}
+                </p>
+                <p className="reserva-minimo">
+                  Saldo mínimo necessário: R${" "}
+                  {reservasPendentes.valor_total.toFixed(2)}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="line">
+          <Input
+            id="numero"
+            type="intenger"
+            inputMode="numeric"
+            label="Número"
+            value={numero}
+            onChange={(e) => {
+              setNumero(Number(e.target.value));
+              setFichaCriada(undefined);
+            }}
+            required
+            min={0}
+            step={0.01}
+            errors={formErrors?.numero}
+          />
+          <Input
+            id="saldo"
+            type="number"
+            inputMode="decimal"
+            label="Saldo"
+            value={saldo.toFixed(2)}
+            onChange={(e) => {
+              setSaldo(cleanDecimal(e.target.value));
+              setFichaCriada(undefined);
+            }}
+            required
+            min={reservasPendentes ? reservasPendentes.valor_total : 0}
+            step={0.01}
+            errors={formErrors?.saldo}
+          />
+        </div>
+
+        {reservasPendentes && saldo > reservasPendentes.valor_total && (
+          <Tag color="var(--color-info)" className="reserva-saldo-restante">
+            Saldo restante após processar reservas: R${" "}
+            {(saldo - reservasPendentes.valor_total).toFixed(2)}
+          </Tag>
+        )}
+
+        <Button
+          type="submit"
+          color="var(--color-green)"
+          loading={fetchingCreate}
+        >
+          <p>{reservasPendentes ? "Criar ficha vinculada" : "Criar"}</p>
+        </Button>
+      </form>
+
+      {fichaCriada && (
+        <Tag color="var(--color-green)" className="column success-message">
+          <div className="success-header">
+            <div className="success-icon">
+              <FaCircleCheck />
+            </div>
+            <p className="success-title">Ficha criada com sucesso!</p>
+          </div>
+          <div className="success-details">
+            <p className="detail-line">
+              Ficha <b>#{fichaCriada.numero}</b> criada com saldo inicial de{" "}
+              <b>R${fichaCriada.saldo.toFixed(2)}</b>
+              {reservasPendentes && (
+                <>
+                  {" "}
+                  vinculada a <b>{reservasPendentes.quantidade_itens}</b>{" "}
+                  reserva(s) totalizando{" "}
+                  <b>R${reservasPendentes.valor_total.toFixed(2)}</b>
+                  {saldo > reservasPendentes.valor_total && (
+                    <>
+                      {" "}
+                      com saldo restante de{" "}
+                      <b>
+                        R${(saldo - reservasPendentes.valor_total).toFixed(2)}
+                      </b>
+                    </>
+                  )}
+                </>
+              )}
+            </p>
+          </div>
+        </Tag>
+      )}
+    </Popup>
+  );
+}

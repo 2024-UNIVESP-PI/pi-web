@@ -1,8 +1,26 @@
 #popup-ficha {
-    .ficha-infos {
-        .numero {
-            font-size: 1.8em;
-            font-weight: 500;
-        }
+  .ficha-infos {
+    .numero {
+      font-size: 1.8em;
+      font-weight: 500;
     }
+  }
+
+  .delete-form {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-grey);
+
+    .delete-warning {
+      margin-bottom: 1rem;
+      color: var(--color-red);
+      font-weight: 600;
+    }
+
+    .delete-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+  }
 }

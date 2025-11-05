@@ -1,63 +1,73 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
-import fichaService, { Ficha } from "../services/fichaService"
-import { AxiosError } from "axios"
+import fichaService, { Ficha } from "../services/fichaService";
+import { AxiosError } from "axios";
 
 export default function useFichas() {
-    const [fichas, setFichas] = useState<Ficha[]>()
-    const [fetching, setFetching] = useState(false)
-    const [error, setError] = useState<AxiosError>()
+  const [fichas, setFichas] = useState<Ficha[]>();
+  const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState<AxiosError>();
 
-    async function readFichas() {
-        setFetching(true)
-        return await fichaService.getFichas()
-            .then(response => {
-                setFichas(response.data)
-                setError(undefined)
-                return response
-            })
-            .catch(error => {
-                setFichas(undefined)
-                setError(error)
-                return error.response
-            })
-            .finally(() => setFetching(false))
+  async function readFichas() {
+    setFetching(true);
+    return await fichaService
+      .getFichas()
+      .then((response) => {
+        setFichas(response.data);
+        setError(undefined);
+        return response;
+      })
+      .catch((error) => {
+        setFichas(undefined);
+        setError(error);
+        return error.response;
+      })
+      .finally(() => setFetching(false));
+  }
+
+  // function removeStateProduto(id: number) {
+  //     if (produtos) setProdutos(produtos.filter(produto => produto.id !== id))
+  // }
+
+  function updateStateFicha(updatedFicha: Ficha) {
+    if (fichas) {
+      const fichasAux = [...fichas];
+      const index = fichasAux.findIndex(
+        (ficha) => ficha.id === updatedFicha.id
+      );
+      fichasAux[index] = updatedFicha;
+      setFichas(fichasAux);
     }
+  }
 
-    // function removeStateProduto(id: number) {
-    //     if (produtos) setProdutos(produtos.filter(produto => produto.id !== id))
-    // }
-
-    function updateStateFicha(updatedFicha: Ficha) {
-        if (fichas) {
-            const fichasAux = [...fichas]
-            const index = fichasAux.findIndex(ficha => ficha.id === updatedFicha.id)
-            fichasAux[index] = updatedFicha
-            setFichas(fichasAux)
-        }
+  function insertStateFicha(ficha: Ficha) {
+    if (fichas) {
+      const fichasAux = [...fichas];
+      const pos = fichasAux.findIndex((f) => f.numero > ficha.numero);
+      if (pos == -1) fichasAux.push(ficha);
+      else fichasAux.splice(pos, 0, ficha);
+      setFichas(fichasAux);
     }
+  }
 
-    function insertStateFicha(ficha: Ficha) {
-        if (fichas) {
-            const fichasAux = [...fichas]
-            const pos = fichasAux.findIndex(f => f.numero > ficha.numero)
-            if (pos == -1) fichasAux.push(ficha)
-            else fichasAux.splice(pos, 0, ficha)
-            setFichas(fichasAux)
-        }
+  function removeStateFicha(id: number) {
+    if (fichas) {
+      setFichas(fichas.filter((ficha) => ficha.id !== id));
     }
+  }
 
-    useEffect(() => {
-        readFichas()
-    }, [])
+  useEffect(() => {
+    readFichas();
+  }, []);
 
-    return {
-        fichas,
-        fetching,
-        error,
-        readFichas,
-        
-        updateStateFicha,
-        insertStateFicha,
-    }
+  return {
+    fichas,
+    fetching,
+    error,
+    readFichas,
+
+    updateStateFicha,
+    insertStateFicha,
+    removeStateFicha,
+  };
 }

@@ -1,62 +1,99 @@
-    #menu {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+#menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
-        > .title {
-            font-size: 0.75em;
-            font-weight: 600;
-            color: var(--color-dark-grey);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+  > .title {
+    font-size: 0.75em;
+    font-weight: 600;
+    color: var(--color-dark-grey);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-        > .menu-item {
-            color: var(--color-light-black);
-            padding: 12px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition:
-                background-color 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease,
-                transform 0.2s ease;
+  > .menu-item {
+    color: var(--color-light-black);
+    padding: 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease,
+      border-color 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent; // Remove highlight no mobile
+    touch-action: manipulation; // Melhora resposta ao toque no mobile
 
-            &:hover {
-                color: var(--color-blue);
-                border-color: var(--color-blue);
-                background-color: rgba(0, 115, 230, 0.05);
-                transform: translateX(2px);
-            }
-
-            &.on {
-                background-color: var(--color-light-blue);
-                color: var(--color-blue);
-                font-weight: 600;
-                border-color: var(--color-blue);
-            }
-        }
-
-        > .menu-item.logout {
-            color: var(--color-red);
-            border-color: transparent;
-
-            &:hover {
-                background-color: rgba(255, 0, 0, 0.05);
-                border-color: var(--color-red);
-                color: var(--color-red);
-            }
-
-            &.on {
-                background-color: rgba(255, 0, 0, 0.08);
-                color: var(--color-red);
-                border-color: var(--color-red);
-            }
-        }
-
+    &:hover,
+    &:active {
+      color: var(--color-blue);
+      border-color: var(--color-blue);
+      background-color: rgba(0, 115, 230, 0.05);
+      transform: translateX(2px);
     }
+
+    // Melhor feedback visual no mobile
+    @media (max-width: 1023px) {
+      padding: 14px 12px;
+      min-height: 48px; // Tamanho mínimo recomendado para touch targets
+
+      &:active {
+        background-color: rgba(0, 115, 230, 0.1);
+        transform: translateX(4px);
+      }
+    }
+
+    &.on {
+      background-color: var(--color-light-blue);
+      color: var(--color-blue);
+      font-weight: 600;
+      border-color: var(--color-blue);
+    }
+  }
+
+  > .menu-item.logout {
+    color: var(--color-red);
+    border-color: transparent;
+
+    &:hover {
+      background-color: rgba(255, 0, 0, 0.05);
+      border-color: var(--color-red);
+      color: var(--color-red);
+    }
+
+    &.on {
+      background-color: rgba(255, 0, 0, 0.08);
+      color: var(--color-red);
+      border-color: var(--color-red);
+    }
+  }
+
+  > .caixa-info {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.875rem 1rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: 8px;
+    border: 1px solid #86efac;
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.1);
+
+    .caixa-label {
+      margin: 0 0 0.25rem 0;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #166534;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .caixa-name {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #16a34a;
+      line-height: 1.2;
+    }
+  }
+}

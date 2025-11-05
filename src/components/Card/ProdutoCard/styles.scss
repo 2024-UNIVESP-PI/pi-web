@@ -16,5 +16,16 @@ li.produto-card {
             font-weight: 500;
             text-align: left;
         }
+
+        &.reservas-antecipadas {
+            flex: 1.5;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #f59e0b;
+            background: #fef3c7;
+            padding: 0.25em 0.5em;
+            border-radius: 4px;
+            text-align: center;
+        }
     }
 }
