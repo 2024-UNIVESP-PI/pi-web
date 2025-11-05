@@ -58,7 +58,9 @@ export default function AdminDashboardPage() {
   }, []); // Executa apenas uma vez ao montar a página
 
   if (loading) return <p>Carregando...</p>;
-  if (!data) return <p>Erro ao carregar dados</p>;
+  if (!data || data === null || data === undefined) {
+    return <p>Erro ao carregar dados. Verifique se a API está funcionando.</p>;
+  }
 
   const {
     totalVendas,
@@ -80,11 +82,11 @@ export default function AdminDashboardPage() {
   } = data;
 
   // Formatar vendasPorHorario para array para o gráfico
-  const vendasPorHorarioData = Object.entries(vendasPorHorario).map(
+  const vendasPorHorarioData = Object.entries(vendasPorHorario || {}).map(
     ([horario, vendas]) => ({
       horario,
       vendas,
-      predicao: predicaoDemanda[horario] || null,
+      predicao: (predicaoDemanda && predicaoDemanda[horario]) || null,
     })
   );
 
@@ -175,10 +177,12 @@ export default function AdminDashboardPage() {
           <button
             onClick={() =>
               exportCSVGeneric(
-                Object.entries(predicaoDemanda).map(([horario, predicao]) => ({
-                  horario,
-                  predicao,
-                })),
+                Object.entries(predicaoDemanda || {}).map(
+                  ([horario, predicao]) => ({
+                    horario,
+                    predicao,
+                  })
+                ),
                 "predicao-demanda.csv",
                 [
                   { label: "Horário", key: "horario" },

@@ -100,10 +100,21 @@ export default function useDashboard() {
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     dashboardService
       .getDashboardData()
-      .then((res) => setData(res.data))
-      .catch((err) => setError(err))
+      .then((res) => {
+        if (res && res.data) {
+          setData(res.data);
+        } else {
+          setError(new Error("Resposta inválida da API"));
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar dashboard:", err);
+        setError(err);
+        setData(null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
