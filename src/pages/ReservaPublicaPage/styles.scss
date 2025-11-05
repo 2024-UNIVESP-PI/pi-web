@@ -4,18 +4,27 @@
   padding: 2rem 1rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden; // Previne overflow horizontal
+  box-sizing: border-box;
 
   .container {
     max-width: 800px;
+    width: 100%;
     margin: 0 auto;
     background: white;
     border-radius: 16px;
     padding: 2rem;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    overflow-x: hidden; // Previne overflow horizontal
 
     @media (max-width: 768px) {
       padding: 1.5rem;
       border-radius: 12px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem;
     }
   }
 
@@ -31,15 +40,27 @@
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     border-bottom: 2px solid #f0f0f0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden; // Previne overflow horizontal
 
     h1 {
       font-size: 2.5rem;
       color: #333;
       margin: 0 0 1rem 0;
       font-weight: 700;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      max-width: 100%;
+      box-sizing: border-box;
 
       @media (max-width: 768px) {
         font-size: 2rem;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.75rem;
       }
     }
 
@@ -47,12 +68,20 @@
       font-size: 1.1rem;
       color: #666;
       margin: 0.5rem 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .expiracao {
       font-size: 0.9rem;
       color: #999;
       margin: 0.5rem 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      box-sizing: border-box;
     }
   }
 
@@ -78,32 +107,49 @@
   .dados-pessoais,
   .produtos-disponiveis,
   .resumo-pedido {
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+
     h2 {
       font-size: 1.5rem;
       color: #333;
       margin: 0 0 1rem 0;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid #667eea;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+
+      @media (max-width: 480px) {
+        font-size: 1.25rem;
+      }
     }
   }
 
   .form-group {
     margin-bottom: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 
     label {
       display: block;
       margin-bottom: 0.5rem;
       font-weight: 600;
       color: #333;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     input {
       width: 100%;
+      max-width: 100%;
       padding: 0.75rem;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
       font-size: 1rem;
       transition: border-color 0.2s;
+      box-sizing: border-box;
 
       &:focus {
         outline: none;

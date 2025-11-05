@@ -34,8 +34,8 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
   const { createFicha, fetchingCreate } = useFicha();
   const caixaContext = useContext(CaixaContext.Context);
 
-  const [numero, setNumero] = useState(0);
-  const [saldo, setSaldo] = useState(0);
+  const [numero, setNumero] = useState<string>("");
+  const [saldo, setSaldo] = useState<string>("");
   const [cpfReserva, setCpfReserva] = useState("");
   const [reservasPendentes, setReservasPendentes] =
     useState<ReservasPendentesResponse | null>(null);
@@ -47,8 +47,8 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
   const [isClosing, setIsClosing] = useState(false);
 
   function setupForm() {
-    setNumero(0);
-    setSaldo(0);
+    setNumero("");
+    setSaldo("");
     setCpfReserva("");
     setReservasPendentes(null);
     setReservaError(null);
@@ -68,8 +68,9 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
       const data = await reservaService.getReservasPendentesPorCPF(cpfReserva);
       setReservasPendentes(data);
       // Define o saldo mínimo como o valor total das reservas
-      if (saldo < data.valor_total) {
-        setSaldo(data.valor_total);
+      const saldoNum = Number(saldo) || 0;
+      if (saldoNum < data.valor_total) {
+        setSaldo(data.valor_total.toFixed(2));
       }
     } catch (error: unknown) {
       const axiosError = error as {
@@ -92,7 +93,7 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     setCpfReserva("");
     setReservasPendentes(null);
     setReservaError(null);
-    setSaldo(0);
+    setSaldo("");
   }
 
   async function handleCreateFicha(e: FormEvent) {
@@ -101,8 +102,27 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     setFichaCriada(undefined);
     setIsClosing(false);
 
+    // Converte strings para números
+    const numeroNum = Number(numero);
+    const saldoNum = Number(saldo);
+
+    // Validações
+    if (!numero || numeroNum <= 0) {
+      setFormErrors({
+        numero: ["Número da ficha deve ser maior que zero"],
+      });
+      return;
+    }
+
+    if (!saldo || saldoNum <= 0) {
+      setFormErrors({
+        saldo: ["Saldo deve ser maior que zero"],
+      });
+      return;
+    }
+
     // Valida se há reservas e se o saldo é suficiente
-    if (reservasPendentes && saldo < reservasPendentes.valor_total) {
+    if (reservasPendentes && saldoNum < reservasPendentes.valor_total) {
       setFormErrors({
         saldo: [
           `O saldo deve ser no mínimo R$ ${reservasPendentes.valor_total.toFixed(
@@ -114,8 +134,8 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     }
 
     const nF: NovaFicha = {
-      numero: numero,
-      saldo: saldo,
+      numero: numeroNum,
+      saldo: saldoNum,
       caixa_id: caixaContext?.caixa,
       cpf_reserva: reservasPendentes ? cpfReserva : undefined,
     };
@@ -169,7 +189,25 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
               inputMode="numeric"
               label="CPF (11 dígitos)"
               value={cpfReserva}
+              onPaste={(e) => {
+                // Permite colar CPF formatado (ex: 456.466.227-76)
+                e.preventDefault();
+                const pastedText = e.clipboardData.getData("text");
+                // Remove todos os caracteres não numéricos (pontos, hífens, espaços)
+                const digitsOnly = pastedText.replace(/\D/g, "");
+                // Limita a 11 dígitos (garante que pegou todos os dígitos do CPF)
+                const cpfDigits = digitsOnly.slice(0, 11);
+                setCpfReserva(cpfDigits);
+                setReservaError(null);
+                if (cpfDigits.length === 11) {
+                  // Se tem 11 dígitos, tenta buscar automaticamente
+                  buscarReservas();
+                } else {
+                  setReservasPendentes(null);
+                }
+              }}
               onChange={(e) => {
+                // Remove todos os caracteres não numéricos
                 const value = e.target.value.replace(/\D/g, "").slice(0, 11);
                 setCpfReserva(value);
                 setReservaError(null);
@@ -177,8 +215,8 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
                   setReservasPendentes(null);
                 }
               }}
-              placeholder="00000000000"
-              maxLength={11}
+              placeholder="00000000000 ou 000.000.000-00"
+              maxLength={18}
             />
             <div className="reserva-actions">
               <button
@@ -274,12 +312,14 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
             label="Número"
             value={numero}
             onChange={(e) => {
-              setNumero(Number(e.target.value));
+              // Permite campo vazio e apenas números
+              const value = e.target.value.replace(/\D/g, "");
+              setNumero(value);
               setFichaCriada(undefined);
             }}
             required
             min={0}
-            step={0.01}
+            step={1}
             errors={formErrors?.numero}
           />
           <Input
@@ -287,9 +327,17 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
             type="number"
             inputMode="decimal"
             label="Saldo"
-            value={saldo.toFixed(2)}
+            value={saldo}
             onChange={(e) => {
-              setSaldo(cleanDecimal(e.target.value));
+              // Permite campo vazio e processa decimal
+              const value = e.target.value;
+              // Permite campo vazio ou valor numérico válido
+              if (value === "" || value === ".") {
+                setSaldo(value);
+              } else {
+                const cleaned = cleanDecimal(value);
+                setSaldo(cleaned === 0 ? "" : String(cleaned));
+              }
               setFichaCriada(undefined);
             }}
             required
@@ -299,12 +347,14 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
           />
         </div>
 
-        {reservasPendentes && saldo > reservasPendentes.valor_total && (
-          <Tag color="var(--color-info)" className="reserva-saldo-restante">
-            Saldo restante após processar reservas: R${" "}
-            {(saldo - reservasPendentes.valor_total).toFixed(2)}
-          </Tag>
-        )}
+        {reservasPendentes &&
+          saldo &&
+          Number(saldo) > reservasPendentes.valor_total && (
+            <Tag color="var(--color-info)" className="reserva-saldo-restante">
+              Saldo restante após processar reservas: R${" "}
+              {(Number(saldo) - reservasPendentes.valor_total).toFixed(2)}
+            </Tag>
+          )}
 
         <Button
           type="submit"
@@ -333,12 +383,15 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
                   vinculada a <b>{reservasPendentes.quantidade_itens}</b>{" "}
                   reserva(s) totalizando{" "}
                   <b>R${reservasPendentes.valor_total.toFixed(2)}</b>
-                  {saldo > reservasPendentes.valor_total && (
+                  {saldo && Number(saldo) > reservasPendentes.valor_total && (
                     <>
                       {" "}
                       com saldo restante de{" "}
                       <b>
-                        R${(saldo - reservasPendentes.valor_total).toFixed(2)}
+                        R$
+                        {(
+                          Number(saldo) - reservasPendentes.valor_total
+                        ).toFixed(2)}
                       </b>
                     </>
                   )}

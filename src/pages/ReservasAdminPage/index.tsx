@@ -39,7 +39,8 @@ export default function ReservasAdminPage() {
     codigo: "",
     descricao: "",
     produtos_ids: [] as number[],
-    dias_expiracao: 7,
+    data_inicio: "",
+    data_expiracao: "",
   });
 
   useEffect(() => {
@@ -62,13 +63,31 @@ export default function ReservasAdminPage() {
     }
   }
 
+  function formatarDataParaInput(dateString?: string): string {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    // Formata como YYYY-MM-DDTHH:mm no timezone local
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   function abrirPopupCriar() {
     setSelectedQRCode(null);
+    // Define valores padrão: início agora, fim em 7 dias
+    const agora = new Date();
+    const fim = new Date(agora);
+    fim.setDate(fim.getDate() + 7);
+
     setFormData({
       codigo: "",
       descricao: "",
       produtos_ids: [],
-      dias_expiracao: 7,
+      data_inicio: formatarDataParaInput(agora.toISOString()),
+      data_expiracao: formatarDataParaInput(fim.toISOString()),
     });
     setShowPopup(true);
   }
@@ -79,12 +98,8 @@ export default function ReservasAdminPage() {
       codigo: qrCode.codigo,
       descricao: qrCode.descricao,
       produtos_ids: qrCode.produtos_disponiveis?.map((p) => p.id) || [],
-      dias_expiracao: qrCode.data_expiracao
-        ? Math.ceil(
-            (new Date(qrCode.data_expiracao).getTime() - new Date().getTime()) /
-              (1000 * 60 * 60 * 24)
-          )
-        : 7,
+      data_inicio: formatarDataParaInput(qrCode.data_inicio),
+      data_expiracao: formatarDataParaInput(qrCode.data_expiracao),
     });
     setShowPopup(true);
   }
@@ -93,15 +108,53 @@ export default function ReservasAdminPage() {
     e.preventDefault();
 
     try {
+      // Converte datas do formato datetime-local para ISO string
+      // datetime-local não inclui timezone, então precisamos tratar como hora local
+      const submitData = { ...formData };
+
+      if (submitData.data_inicio) {
+        // datetime-local vem no formato "YYYY-MM-DDTHH:mm" sem timezone
+        // Precisamos criar a data como hora local (não UTC)
+        // O campo datetime-local já retorna a data/hora no timezone local do navegador
+        // Criamos um Date object usando os componentes da data (isso será hora local)
+        const [datePart, timePart] = submitData.data_inicio.split("T");
+        const [year, month, day] = datePart.split("-").map(Number);
+        const [hours, minutes] = timePart.split(":").map(Number);
+
+        // Cria data no timezone local (Brasília)
+        const dateInicioLocal = new Date(year, month - 1, day, hours, minutes);
+        // Converte para ISO string (que será UTC)
+        submitData.data_inicio = dateInicioLocal.toISOString();
+      }
+
+      if (submitData.data_expiracao) {
+        // datetime-local vem no formato "YYYY-MM-DDTHH:mm" sem timezone
+        // Precisamos criar a data como hora local (não UTC)
+        const [datePart, timePart] = submitData.data_expiracao.split("T");
+        const [year, month, day] = datePart.split("-").map(Number);
+        const [hours, minutes] = timePart.split(":").map(Number);
+
+        // Cria data no timezone local (Brasília)
+        const dateExpiracaoLocal = new Date(
+          year,
+          month - 1,
+          day,
+          hours,
+          minutes
+        );
+        // Converte para ISO string (que será UTC)
+        submitData.data_expiracao = dateExpiracaoLocal.toISOString();
+      }
+
       if (selectedQRCode) {
         // Editar
         await reservaService.atualizarQRCodeReserva(
           selectedQRCode.id,
-          formData
+          submitData
         );
       } else {
         // Criar
-        await reservaService.criarQRCodeReserva(formData);
+        await reservaService.criarQRCodeReserva(submitData);
       }
       await carregarDados();
       setShowPopup(false);
@@ -230,9 +283,15 @@ export default function ReservasAdminPage() {
                 <div className="qr-code-info">
                   <h3>{qrCode.descricao || qrCode.codigo}</h3>
                   <p className="codigo">Código: {qrCode.codigo}</p>
+                  {qrCode.data_inicio && (
+                    <p className="inicio">
+                      Início:{" "}
+                      {new Date(qrCode.data_inicio).toLocaleString("pt-BR")}
+                    </p>
+                  )}
                   {qrCode.data_expiracao && (
                     <p className="expiracao">
-                      Expira em:{" "}
+                      Fim:{" "}
                       {new Date(qrCode.data_expiracao).toLocaleString("pt-BR")}
                     </p>
                   )}
@@ -427,19 +486,51 @@ export default function ReservasAdminPage() {
             />
 
             <div className="form-group">
-              <label htmlFor="dias_expiracao">Dias até expiração</label>
-              <Input
-                id="dias_expiracao"
-                type="number"
-                value={String(formData.dias_expiracao)}
+              <label htmlFor="data_inicio">Data e Hora de Início *</label>
+              <input
+                id="data_inicio"
+                type="datetime-local"
+                value={formData.data_inicio}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    dias_expiracao: Number(e.target.value),
+                    data_inicio: e.target.value,
                   })
                 }
-                min={1}
                 required
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "2px solid #e0e0e0",
+                  borderRadius: "8px",
+                  fontSize: "1rem",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="data_expiracao">Data e Hora de Fim *</label>
+              <input
+                id="data_expiracao"
+                type="datetime-local"
+                value={formData.data_expiracao}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    data_expiracao: e.target.value,
+                  })
+                }
+                min={formData.data_inicio || undefined}
+                required
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "2px solid #e0e0e0",
+                  borderRadius: "8px",
+                  fontSize: "1rem",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
 

@@ -209,6 +209,11 @@ export default function ReservaPublicaPage() {
           {dadosQR?.descricao && (
             <p className="descricao-qr">{dadosQR.descricao}</p>
           )}
+          {dadosQR?.data_inicio && (
+            <p className="inicio">
+              Início: {new Date(dadosQR.data_inicio).toLocaleString("pt-BR")}
+            </p>
+          )}
           {dadosQR?.data_expiracao && (
             <p className="expiracao">
               Válido até:{" "}

@@ -43,31 +43,56 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
   const { createProduto, fetchingCreate } = useProduto();
 
   const [nome, setNome] = useState("");
-  const [preco, setPreco] = useState(0);
+  const [preco, setPreco] = useState<string>("");
   const [medida, setMedida] = useState(MEDIDA_CHOICES[0][0]);
   const [categoria, setCategoria] = useState(CATEGORIA_CHOICES[0][0]);
-  const [estoqueInicial, setEstoqueInicial] = useState(0);
+  const [estoqueInicial, setEstoqueInicial] = useState<string>("");
 
   const [formErrors, setFormErrors] = useState<Errors>();
 
   function setupForm() {
     setNome("");
-    setPreco(0);
+    setPreco("");
     setMedida(MEDIDA_CHOICES[0][0]);
     setCategoria(CATEGORIA_CHOICES[0][0]);
-    setEstoqueInicial(0);
+    setEstoqueInicial("");
   }
 
   async function handleCreateProduto(e: FormEvent) {
     e.preventDefault();
     setFormErrors(undefined);
     if (caixaContext?.caixa) {
+      // Validações
+      if (!nome.trim()) {
+        setFormErrors({ nome: ["Nome é obrigatório"] });
+        return;
+      }
+
+      const precoNum = Number(preco);
+      if (!preco || precoNum <= 0) {
+        setFormErrors({ preco: ["Preço deve ser maior que zero"] });
+        return;
+      }
+
+      // Estoque inicial é obrigatório (mesmo que seja 0)
+      if (estoqueInicial === "") {
+        setFormErrors({ estoque: ["Estoque inicial é obrigatório"] });
+        return;
+      }
+      const estoqueNum = Number(estoqueInicial);
+      if (isNaN(estoqueNum) || estoqueNum < 0) {
+        setFormErrors({
+          estoque: ["Estoque inicial deve ser um número válido (≥ 0)"],
+        });
+        return;
+      }
+
       const nP: NovoProduto = {
-        nome,
-        preco,
+        nome: nome.trim(),
+        preco: precoNum,
         medida,
         categoria,
-        estoque: estoqueInicial,
+        estoque: estoqueNum,
         caixa: caixaContext.caixa,
       };
       const response = await createProduto(nP);
@@ -133,8 +158,17 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
             inputMode="decimal"
             label="Preço"
             placeholder="Insira o preço"
-            value={preco.toFixed(2)}
-            onChange={(e) => setPreco(cleanDecimal(e.target.value))}
+            value={preco}
+            onChange={(e) => {
+              // Permite campo vazio ou valor numérico válido
+              const value = e.target.value;
+              if (value === "" || value === ".") {
+                setPreco(value);
+              } else {
+                const cleaned = cleanDecimal(value);
+                setPreco(cleaned === 0 ? "" : String(cleaned));
+              }
+            }}
             required
             min={0}
             step={0.01}
@@ -145,9 +179,15 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
             type="intenger"
             inputMode="numeric"
             label="Estoque inicial"
-            placeholder="Opcional"
-            value={String(estoqueInicial)}
-            onChange={(e) => setEstoqueInicial(Number(e.target.value))}
+            placeholder="Ex: 0"
+            value={estoqueInicial}
+            onChange={(e) => {
+              // Permite campo vazio e apenas números
+              const value = e.target.value.replace(/\D/g, "");
+              setEstoqueInicial(value);
+            }}
+            required
+            min={0}
             errors={formErrors?.estoque}
           />
         </div>

@@ -6,6 +6,7 @@ export type QRCodeReserva = {
   id: number;
   codigo: string;
   descricao: string;
+  data_inicio?: string;
   data_expiracao?: string;
   ativo: boolean;
   data_criacao: string;
@@ -18,7 +19,10 @@ export type NovaQRCodeReserva = {
   codigo?: string;
   descricao?: string;
   produtos_ids?: number[];
-  dias_expiracao?: number;
+  data_inicio?: string;
+  data_expiracao?: string;
+  data_fim?: string; // Alias para data_expiracao
+  dias_expiracao?: number; // Mantido para compatibilidade
 };
 
 export type ProdutoReserva = {
@@ -33,6 +37,7 @@ export type ProdutoReserva = {
 export type QRCodeProdutosResponse = {
   qr_code: string;
   descricao: string;
+  data_inicio?: string;
   data_expiracao?: string;
   produtos: ProdutoReserva[];
 };

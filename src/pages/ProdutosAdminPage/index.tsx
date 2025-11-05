@@ -39,11 +39,13 @@ export default function ProdutosAdminPage() {
     preco: string;
     medida: string;
     categoria: string;
+    estoque: string;
   }>({
     nome: "",
     preco: "",
     medida: "",
     categoria: "doces",
+    estoque: "",
   });
 
   const [showPopupNovo, setShowPopupNovo] = useState(false);
@@ -90,6 +92,7 @@ export default function ProdutosAdminPage() {
       preco: String(produto.preco),
       medida: produto.medida,
       categoria: produto.categoria || "doces",
+      estoque: String(produto.estoque),
     });
     setShowPopup(true);
   }
@@ -106,6 +109,7 @@ export default function ProdutosAdminPage() {
       preco: "",
       medida: "UN",
       categoria: "doces",
+      estoque: "",
     });
     setShowPopupNovo(true);
   }
@@ -118,14 +122,31 @@ export default function ProdutosAdminPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!formData.nome.trim() || !formData.preco || !formData.medida.trim()) {
-      alert("Nome, preço e medida são obrigatórios");
+    // Validações
+    if (!formData.nome.trim()) {
+      alert("Nome é obrigatório");
       return;
     }
 
     const precoNumber = Number(formData.preco);
-    if (isNaN(precoNumber) || precoNumber < 0) {
+    if (!formData.preco || isNaN(precoNumber) || precoNumber < 0) {
       alert("Preço inválido");
+      return;
+    }
+
+    if (!formData.medida.trim()) {
+      alert("Medida é obrigatória");
+      return;
+    }
+
+    // Valida estoque
+    if (formData.estoque === "") {
+      alert("Estoque é obrigatório");
+      return;
+    }
+    const estoqueNumber = Number(formData.estoque);
+    if (isNaN(estoqueNumber) || estoqueNumber < 0) {
+      alert("Estoque deve ser um número válido (≥ 0)");
       return;
     }
 
@@ -137,6 +158,7 @@ export default function ProdutosAdminPage() {
           preco: precoNumber,
           medida: formData.medida.trim(),
           categoria: formData.categoria,
+          estoque: estoqueNumber,
         };
         await produtoService.patchProduto(selectedProduto.id, updateData);
       } else {
@@ -484,6 +506,22 @@ export default function ProdutosAdminPage() {
               }))}
               placeholder="Selecione a categoria"
               required
+            />
+
+            <Input
+              id="estoque"
+              type="intenger"
+              inputMode="numeric"
+              label="Estoque"
+              value={formData.estoque}
+              onChange={(e) => {
+                // Permite campo vazio e apenas números
+                const value = e.target.value.replace(/\D/g, "");
+                setFormData({ ...formData, estoque: value });
+              }}
+              placeholder="Ex: 0"
+              required
+              min={0}
             />
 
             <div className="form-actions">

@@ -67,11 +67,11 @@ export default function FichasAdminPage() {
   const itemsPerPage = 12;
 
   const [formDataNovaFicha, setFormDataNovaFicha] = useState<{
-    numero: number;
-    saldo: number;
+    numero: string;
+    saldo: string;
   }>({
-    numero: 0,
-    saldo: 0,
+    numero: "",
+    saldo: "",
   });
 
   useEffect(() => {
@@ -104,32 +104,36 @@ export default function FichasAdminPage() {
   }
 
   function abrirPopupNovo() {
-    setFormDataNovaFicha({ numero: 0, saldo: 0 });
+    setFormDataNovaFicha({ numero: "", saldo: "" });
     setShowPopupNovo(true);
   }
 
   async function handleCreateFicha(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!formDataNovaFicha.numero || formDataNovaFicha.numero <= 0) {
+    // Converte strings para números
+    const numeroNum = Number(formDataNovaFicha.numero);
+    const saldoNum = Number(formDataNovaFicha.saldo);
+
+    if (!formDataNovaFicha.numero || numeroNum <= 0) {
       alert("Número da ficha é obrigatório e deve ser maior que zero");
       return;
     }
 
-    if (formDataNovaFicha.saldo < 0) {
+    if (!formDataNovaFicha.saldo || saldoNum < 0) {
       alert("Saldo não pode ser negativo");
       return;
     }
 
     try {
       const novaFicha: NovaFicha = {
-        numero: formDataNovaFicha.numero,
-        saldo: formDataNovaFicha.saldo,
+        numero: numeroNum,
+        saldo: saldoNum,
       };
       await fichaService.postFicha(novaFicha);
       await carregarFichas();
       setShowPopupNovo(false);
-      setFormDataNovaFicha({ numero: 0, saldo: 0 });
+      setFormDataNovaFicha({ numero: "", saldo: "" });
     } catch (error: unknown) {
       console.error("Erro ao criar ficha:", error);
       const errorMessage =
@@ -496,15 +500,18 @@ export default function FichasAdminPage() {
           <form onSubmit={handleCreateFicha} className="ficha-form">
             <Input
               id="numero"
-              type="number"
+              type="intenger"
+              inputMode="numeric"
               label="Número da Ficha"
-              value={String(formDataNovaFicha.numero)}
-              onChange={(e) =>
+              value={formDataNovaFicha.numero}
+              onChange={(e) => {
+                // Permite campo vazio e apenas números
+                const value = e.target.value.replace(/\D/g, "");
                 setFormDataNovaFicha({
                   ...formDataNovaFicha,
-                  numero: Number(e.target.value) || 0,
-                })
-              }
+                  numero: value,
+                });
+              }}
               placeholder="Ex: 1"
               min={1}
               required
@@ -513,14 +520,32 @@ export default function FichasAdminPage() {
             <Input
               id="saldo"
               type="number"
+              inputMode="decimal"
               label="Saldo Inicial"
-              value={String(formDataNovaFicha.saldo)}
-              onChange={(e) =>
-                setFormDataNovaFicha({
-                  ...formDataNovaFicha,
-                  saldo: Number(e.target.value) || 0,
-                })
-              }
+              value={formDataNovaFicha.saldo}
+              onChange={(e) => {
+                // Permite campo vazio ou valor numérico válido
+                const value = e.target.value;
+                if (value === "" || value === ".") {
+                  setFormDataNovaFicha({
+                    ...formDataNovaFicha,
+                    saldo: value,
+                  });
+                } else {
+                  // Remove caracteres não numéricos exceto ponto decimal
+                  const cleaned = value.replace(/[^0-9.]/g, "");
+                  // Garante apenas um ponto decimal
+                  const parts = cleaned.split(".");
+                  const finalValue =
+                    parts.length > 2
+                      ? parts[0] + "." + parts.slice(1).join("")
+                      : cleaned;
+                  setFormDataNovaFicha({
+                    ...formDataNovaFicha,
+                    saldo: finalValue === "0" ? "" : finalValue,
+                  });
+                }
+              }}
               placeholder="0.00"
               step={0.01}
               min={0}

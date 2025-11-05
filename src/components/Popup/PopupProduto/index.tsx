@@ -35,13 +35,14 @@ export type PopupProdutoProps = {
 export default function PopupProduto(props: PopupProdutoProps) {
   const caixaContext = useContext(CaixaContext.Context);
 
-  const [entradaEstoque, setEntradaEstoque] = useState(0);
+  const [entradaEstoque, setEntradaEstoque] = useState<string>("");
   const [editando, setEditando] = useState(false);
 
   // Estados para edição
   const [nomeEdit, setNomeEdit] = useState("");
   const [precoEdit, setPrecoEdit] = useState("");
   const [medidaEdit, setMedidaEdit] = useState("");
+  const [estoqueEdit, setEstoqueEdit] = useState<string>("");
 
   const estoqueColor = (estoque: number) => {
     if (estoque >= 10) return "var(--color-green)";
@@ -60,28 +61,47 @@ export default function PopupProduto(props: PopupProdutoProps) {
   // Quando o produto mudar, resetar os campos editáveis
   useEffect(() => {
     if (props.produto) {
-      setEntradaEstoque(0);
+      setEntradaEstoque("");
       setNomeEdit(props.produto.nome);
       setPrecoEdit(String(props.produto.preco));
       setMedidaEdit(props.produto.medida);
+      setEstoqueEdit(String(props.produto.estoque));
       setEditando(false);
     }
   }, [props.produto]);
 
   async function handlePostEntradaEstoque(e: FormEvent) {
     e.preventDefault();
-    if (caixaContext?.caixa && props.produto?.id) {
-      const mE: NovaMovimentacaoEstoque = {
-        quantidade: entradaEstoque,
-        tipo: "E",
-        caixa: caixaContext.caixa,
-        produto: props.produto.id,
-      };
+    if (!caixaContext?.caixa || !props.produto?.id) return;
+
+    // Valida entrada de estoque
+    if (!entradaEstoque || entradaEstoque === "") {
+      alert("Por favor, informe a quantidade a adicionar");
+      return;
+    }
+
+    const quantidadeNum = Number(entradaEstoque);
+    if (isNaN(quantidadeNum) || quantidadeNum <= 0) {
+      alert("Quantidade deve ser maior que zero");
+      return;
+    }
+
+    const mE: NovaMovimentacaoEstoque = {
+      quantidade: quantidadeNum,
+      tipo: "E",
+      caixa: caixaContext.caixa,
+      produto: props.produto.id,
+    };
+
+    try {
       const response = await createMovimentacaoEstoque(mE);
       if (response && response.status === 201) {
-        props.onEntradaEstoque(props.produto, entradaEstoque);
-        setEntradaEstoque(0);
+        props.onEntradaEstoque(props.produto, quantidadeNum);
+        setEntradaEstoque("");
       }
+    } catch (error) {
+      console.error("Erro ao adicionar estoque:", error);
+      alert("Erro ao adicionar estoque");
     }
   }
 
@@ -95,17 +115,31 @@ export default function PopupProduto(props: PopupProdutoProps) {
   async function handleSaveEdicao() {
     if (!props.produto) return;
 
-    const precoNumber = Number(precoEdit);
-    if (isNaN(precoNumber) || precoNumber < 0) {
-      alert("Preço inválido");
-      return;
-    }
+    // Validações
     if (!nomeEdit.trim()) {
       alert("Nome não pode ser vazio");
       return;
     }
+
+    const precoNumber = Number(precoEdit);
+    if (!precoEdit || isNaN(precoNumber) || precoNumber < 0) {
+      alert("Preço inválido");
+      return;
+    }
+
     if (!medidaEdit.trim()) {
       alert("Medida não pode ser vazia");
+      return;
+    }
+
+    // Valida estoque
+    if (estoqueEdit === "") {
+      alert("Estoque não pode ser vazio");
+      return;
+    }
+    const estoqueNumber = Number(estoqueEdit);
+    if (isNaN(estoqueNumber) || estoqueNumber < 0) {
+      alert("Estoque deve ser um número válido (≥ 0)");
       return;
     }
 
@@ -114,6 +148,7 @@ export default function PopupProduto(props: PopupProdutoProps) {
         nome: nomeEdit.trim(),
         preco: precoNumber,
         medida: medidaEdit.trim(),
+        estoque: estoqueNumber,
       };
 
       const response = await patchProduto(props.produto.id, dadosParciais);
@@ -173,6 +208,21 @@ export default function PopupProduto(props: PopupProdutoProps) {
                   onChange={(e) => setMedidaEdit(e.target.value)}
                   required
                 />
+                <Input
+                  id="estoque-produto-edit"
+                  label="Estoque"
+                  type="intenger"
+                  inputMode="numeric"
+                  value={estoqueEdit}
+                  onChange={(e) => {
+                    // Permite campo vazio e apenas números
+                    const value = e.target.value.replace(/\D/g, "");
+                    setEstoqueEdit(value);
+                  }}
+                  placeholder="Ex: 0"
+                  required
+                  min={0}
+                />
               </>
             ) : (
               <>
@@ -214,11 +264,17 @@ export default function PopupProduto(props: PopupProdutoProps) {
                   onSubmit={handlePostEntradaEstoque}
                 >
                   <Input
-                    type="number"
+                    type="intenger"
                     inputMode="numeric"
                     id={"entrada-estoque"}
-                    value={String(entradaEstoque)}
-                    onChange={(e) => setEntradaEstoque(Number(e.target.value))}
+                    label="Quantidade"
+                    value={entradaEstoque}
+                    onChange={(e) => {
+                      // Permite campo vazio e apenas números
+                      const value = e.target.value.replace(/\D/g, "");
+                      setEntradaEstoque(value);
+                    }}
+                    placeholder="Ex: 10"
                     required
                     min={1}
                   />
