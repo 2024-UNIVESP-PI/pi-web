@@ -5,7 +5,6 @@ export type Caixa = {
   id: number;
   nome: string;
   usuario: string;
-  senha?: string; // Disponível apenas para admin
 };
 
 export type NovoCaixa = {

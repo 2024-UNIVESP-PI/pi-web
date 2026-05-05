@@ -8,18 +8,25 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAdmin();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const success = login(username, password);
-    if (success) {
-      navigate("/admin-dashboard");
-    } else {
-      setError("Usuário ou senha inválidos.");
+    try {
+      setLoading(true);
+      setError("");
+      const success = await login(username.trim(), password);
+      if (success) {
+        navigate("/admin-dashboard");
+      } else {
+        setError("Usuário ou senha inválidos.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +53,9 @@ export default function AdminLoginPage() {
             placeholder="Digite a senha"
           />
         </div>
-        <button type="submit">Entrar</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"}
+        </button>
       </form>
     </div>
   );

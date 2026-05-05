@@ -4,8 +4,7 @@ import {
   FaPlus,
   FaTrash,
   FaPen,
-  FaEye,
-  FaEyeSlash,
+  FaLock,
 } from "react-icons/fa6";
 import caixaService, { Caixa, NovoCaixa } from "../../services/caixaService";
 import PageTitle from "../../components/PageTitle";
@@ -19,7 +18,7 @@ import "./styles.scss";
 type SortOption = "nome" | "nome_desc" | "usuario" | "usuario_desc";
 
 export default function CaixasAdminPage() {
-  const [caixas, setCaixas] = useState<(Caixa & { senha?: string })[]>([]);
+  const [caixas, setCaixas] = useState<Caixa[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedCaixa, setSelectedCaixa] = useState<Caixa | null>(null);
@@ -27,12 +26,6 @@ export default function CaixasAdminPage() {
   const [sortBy, setSortBy] = useState<SortOption>("nome");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
-  const [showPasswords, setShowPasswords] = useState<{
-    [key: number]: boolean;
-  }>({});
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState<{
-    [key: number]: boolean;
-  }>({});
   const [formData, setFormData] = useState<NovoCaixa>({
     nome: "",
     usuario: "",
@@ -47,18 +40,7 @@ export default function CaixasAdminPage() {
     try {
       setLoading(true);
       const response = await caixaService.getCaixas();
-      // Carregar senhas individualmente
-      const caixasComSenhas = await Promise.all(
-        response.data.map(async (caixa: Caixa) => {
-          try {
-            const caixaDetalhe = await caixaService.getCaixa(caixa.id);
-            return { ...caixa, senha: caixaDetalhe.data.senha };
-          } catch {
-            return { ...caixa, senha: undefined };
-          }
-        })
-      );
-      setCaixas(caixasComSenhas);
+      setCaixas(response.data);
     } catch (error) {
       console.error("Erro ao carregar caixas:", error);
       alert("Erro ao carregar caixas");
@@ -138,46 +120,6 @@ export default function CaixasAdminPage() {
       console.error("Erro ao deletar caixa:", error);
       alert("Erro ao deletar caixa");
     }
-  }
-
-  function togglePassword(id: number) {
-    // Se ainda não mostrou, pede confirmação
-    if (!showPasswords[id] && !showPasswordConfirm[id]) {
-      setShowPasswordConfirm((prev) => ({
-        ...prev,
-        [id]: true,
-      }));
-      return;
-    }
-
-    // Se confirmou, mostra/esconde
-    setShowPasswords((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-    setShowPasswordConfirm((prev) => ({
-      ...prev,
-      [id]: false,
-    }));
-  }
-
-  function confirmShowPassword(id: number) {
-    setShowPasswords((prev) => ({
-      ...prev,
-      [id]: true,
-    }));
-    setShowPasswordConfirm((prev) => ({
-      ...prev,
-      [id]: false,
-    }));
-  }
-
-  function cancelShowPassword(id: number) {
-    setShowPasswordConfirm((prev) => {
-      const newState = { ...prev };
-      delete newState[id];
-      return newState;
-    });
   }
 
   // Filtros e ordenação
@@ -294,46 +236,9 @@ export default function CaixasAdminPage() {
                 </td>
                 <td>{caixa.usuario}</td>
                 <td className="senha-cell">
-                  {showPasswordConfirm[caixa.id] ? (
-                    <div className="password-confirm-inline">
-                      <p>Deseja exibir a senha?</p>
-                      <div className="confirm-buttons">
-                        <Button
-                          onClick={() => confirmShowPassword(caixa.id)}
-                          color="var(--color-green)"
-                          className="small"
-                        >
-                          Sim
-                        </Button>
-                        <Button
-                          onClick={() => cancelShowPassword(caixa.id)}
-                          color="var(--color-gray)"
-                          className="small"
-                        >
-                          Não
-                        </Button>
-                      </div>
-                    </div>
-                  ) : showPasswords[caixa.id] && caixa.senha ? (
-                    <div className="senha-visible-inline">
-                      <span className="senha-value">{caixa.senha}</span>
-                      <Button
-                        onClick={() => togglePassword(caixa.id)}
-                        color="var(--color-gray)"
-                        className="small"
-                      >
-                        <FaEyeSlash /> Ocultar
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      onClick={() => togglePassword(caixa.id)}
-                      color="var(--color-blue)"
-                      className="small"
-                    >
-                      <FaEye /> Mostrar Senha
-                    </Button>
-                  )}
+                  <span className="senha-value">
+                    <FaLock /> Protegida
+                  </span>
                 </td>
                 <td className="actions-cell">
                   <div className="caixa-actions">
