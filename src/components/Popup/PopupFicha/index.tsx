@@ -126,7 +126,10 @@ export default function PopupFicha(props: PopupFichaProps) {
       ) : (
         <>
           <div className="ficha-infos line">
-            <p className="numero">{props.ficha.numero}</p>
+            <div>
+              <span className="info-label">Ficha selecionada</span>
+              <p className="numero">{props.ficha.numero}</p>
+            </div>
             <Tag
               className="saldo"
               color={props.ficha.saldo <= 0 ? "var(--color-red)" : undefined}
@@ -135,18 +138,28 @@ export default function PopupFicha(props: PopupFichaProps) {
             </Tag>
           </div>
 
-          <div className="line">
-            <form className="line close" onSubmit={handleRecargaFicha}>
+          <section className="transaction-panel">
+            <div className="panel-header">
+              <h4>Adicionar saldo</h4>
+              <p>Informe o crédito recebido para esta ficha.</p>
+            </div>
+            <form className="recarga-form" onSubmit={handleRecargaFicha}>
               <Input
                 type="intenger"
                 inputMode="numeric"
                 id={"credito-adicional"}
+                label="Valor da recarga"
                 value={String(recarga)}
                 onChange={(e) => setRecarga(Number(e.target.value))}
                 min={1}
               />
+              <div className="recarga-preview">
+                <span>Novo saldo</span>
+                <strong>
+                  R${(props.ficha.saldo + Number(recarga || 0)).toFixed(2)}
+                </strong>
+              </div>
               <Button
-                className="flex-2"
                 color="var(--color-green)"
                 type="submit"
                 loading={fetchingRecarga}
@@ -154,6 +167,13 @@ export default function PopupFicha(props: PopupFichaProps) {
                 <p>Recarregar</p>
               </Button>
             </form>
+          </section>
+
+          <div className="danger-row">
+            <div>
+              <strong>Remover ficha</strong>
+              <p>Exige senha de administrador.</p>
+            </div>
             <Button
               color="var(--color-red)"
               onClick={() => setShowDeletePopup(true)}

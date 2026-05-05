@@ -12,19 +12,25 @@ export type VendaCardProps = {
 }
 
 export default function VendaCard(props: VendaCardProps) {
+    const semEstoque = props.produto.estoque <= 0
+
     return (
         <Card
-            className={'venda-card'}
-            lowOpacity={props.produto.estoque <= 0}
-            color={props.produto.estoque <= 0 ? "var(--color-red)" : undefined}
+            className={'venda-card' + (semEstoque ? ' sem-estoque' : '')}
+            lowOpacity={semEstoque}
+            color={semEstoque ? "var(--color-red)" : undefined}
             onClick={props.onClick}
         >
+            <span className="card-kicker">{semEstoque ? 'Indisponível' : 'Vender'}</span>
             <p className="produto">{props.produto.nome}</p>
 
             <div className="produto-data">
                 <Estoque number={props.produto.estoque}/>
                 <p className="preco">R${Number(props.produto.preco).toFixed(2)}</p>
             </div>
+            <span className="action-hint">
+                {semEstoque ? 'Sem estoque' : 'Abrir venda'}
+            </span>
         </Card>
     )
 }

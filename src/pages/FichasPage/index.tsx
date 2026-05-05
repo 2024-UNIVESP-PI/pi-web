@@ -28,6 +28,14 @@ export default function FichasPage() {
     removeStateFicha,
   } = useFichas();
 
+  const fichasAtivas = fichas?.length || 0;
+  const fichasSemSaldo =
+    fichas?.filter((ficha) => ficha.saldo <= 0).length || 0;
+  const proximoNumeroFicha =
+    fichas && fichas.length > 0
+      ? Math.max(...fichas.map((ficha) => ficha.numero)) + 1
+      : 1;
+
   function onRecarga(ficha: Ficha) {
     setSelectedFicha(ficha);
     updateStateFicha(ficha);
@@ -54,6 +62,17 @@ export default function FichasPage() {
         <ActivityIndicator margin />
       ) : (
         <>
+          <section className="caixa-summary" aria-label="Resumo de fichas">
+            <div>
+              <span>Fichas ativas</span>
+              <strong>{fichasAtivas}</strong>
+            </div>
+            <div>
+              <span>Sem saldo</span>
+              <strong>{fichasSemSaldo}</strong>
+            </div>
+          </section>
+
           <section className="fichas">
             <>
               <Button
@@ -61,13 +80,15 @@ export default function FichasPage() {
                 opacity
                 onClick={() => setPopupCreateVisible(true)}
               >
-                <p>Nova ficha</p>
+                <p>Criar nova ficha</p>
                 <FaPlus />
+                <span>Com saldo inicial ou reserva</span>
               </Button>
               <PopupNovaFicha
                 visible={popupCreateVisible}
                 setVisible={setPopupCreateVisible}
                 onCreate={onCreate}
+                nextNumero={proximoNumeroFicha}
               />
             </>
             {fichas?.map((ficha) => (

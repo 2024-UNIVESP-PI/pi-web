@@ -23,11 +23,12 @@ import reservaService, {
 } from "../../../services/reservaService";
 import CaixaContext from "../../../contexts/CaixaContext";
 
-// import './styles.scss'
+import "./styles.scss";
 export type PopupNovaFichaProps = {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   onCreate: (ficha: Ficha) => void;
+  nextNumero?: number;
 };
 
 export default function PopupNovaFicha(props: PopupNovaFichaProps) {
@@ -41,21 +42,23 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     useState<ReservasPendentesResponse | null>(null);
   const [loadingReservas, setLoadingReservas] = useState(false);
   const [reservaError, setReservaError] = useState<string | null>(null);
+  const [lastSearchedCpf, setLastSearchedCpf] = useState("");
 
   const [formErrors, setFormErrors] = useState<Errors>();
   const [fichaCriada, setFichaCriada] = useState<Ficha>();
   const [isClosing, setIsClosing] = useState(false);
 
   function setupForm() {
-    setNumero("");
+    setNumero(String(props.nextNumero || 1));
     setSaldo("");
     setCpfReserva("");
     setReservasPendentes(null);
     setReservaError(null);
+    setLastSearchedCpf("");
   }
 
-  async function buscarReservas() {
-    if (!cpfReserva || cpfReserva.length !== 11) {
+  async function buscarReservas(cpf = cpfReserva) {
+    if (!cpf || cpf.length !== 11) {
       setReservaError("CPF deve ter 11 dígitos");
       setReservasPendentes(null);
       return;
@@ -63,9 +66,10 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
 
     setLoadingReservas(true);
     setReservaError(null);
+    setLastSearchedCpf(cpf);
 
     try {
-      const data = await reservaService.getReservasPendentesPorCPF(cpfReserva);
+      const data = await reservaService.getReservasPendentesPorCPF(cpf);
       setReservasPendentes(data);
       // Define o saldo mínimo como o valor total das reservas
       const saldoNum = Number(saldo) || 0;
@@ -93,6 +97,7 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     setCpfReserva("");
     setReservasPendentes(null);
     setReservaError(null);
+    setLastSearchedCpf("");
     setSaldo("");
   }
 
@@ -103,13 +108,13 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     setIsClosing(false);
 
     // Converte strings para números
-    const numeroNum = Number(numero);
+    const numeroNum = Number(numero || props.nextNumero || 1);
     const saldoNum = Number(saldo);
 
     // Validações
-    if (!numero || numeroNum <= 0) {
+    if (!numeroNum || numeroNum <= 0) {
       setFormErrors({
-        numero: ["Número da ficha deve ser maior que zero"],
+        numero: ["Não foi possível definir o número da ficha"],
       });
       return;
     }
@@ -164,6 +169,24 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
     }
   }, [props.visible, isClosing]);
 
+  useEffect(() => {
+    if (props.visible) {
+      setNumero(String(props.nextNumero || 1));
+    }
+  }, [props.visible, props.nextNumero]);
+
+  useEffect(() => {
+    if (
+      props.visible &&
+      cpfReserva.length === 11 &&
+      cpfReserva !== lastSearchedCpf &&
+      !loadingReservas
+    ) {
+      buscarReservas(cpfReserva);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cpfReserva, props.visible, lastSearchedCpf, loadingReservas]);
+
   return (
     <Popup
       visible={props.visible}
@@ -173,41 +196,33 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
       title="Nova ficha"
     >
       <form onSubmit={handleCreateFicha}>
-        {/* Busca de reserva por CPF */}
         <div className="reserva-section">
           <div className="reserva-header">
-            <h4>Vincular a reserva (opcional)</h4>
+            <h4>Reserva antecipada</h4>
             <p className="reserva-subtitle">
-              Busque reservas pendentes por CPF
+              Digite ou cole o CPF para vincular reservas pendentes.
             </p>
           </div>
 
-          <div className="line">
+          <div className="reserva-search-row">
             <Input
               id="cpf-reserva"
               type="text"
               inputMode="numeric"
-              label="CPF (11 dígitos)"
+              label="CPF"
               value={cpfReserva}
               onPaste={(e) => {
-                // Permite colar CPF formatado (ex: 456.466.227-76)
                 e.preventDefault();
                 const pastedText = e.clipboardData.getData("text");
-                // Remove todos os caracteres não numéricos (pontos, hífens, espaços)
                 const digitsOnly = pastedText.replace(/\D/g, "");
-                // Limita a 11 dígitos (garante que pegou todos os dígitos do CPF)
                 const cpfDigits = digitsOnly.slice(0, 11);
                 setCpfReserva(cpfDigits);
                 setReservaError(null);
-                if (cpfDigits.length === 11) {
-                  // Se tem 11 dígitos, tenta buscar automaticamente
-                  buscarReservas();
-                } else {
+                if (cpfDigits.length !== 11) {
                   setReservasPendentes(null);
                 }
               }}
               onChange={(e) => {
-                // Remove todos os caracteres não numéricos
                 const value = e.target.value.replace(/\D/g, "").slice(0, 11);
                 setCpfReserva(value);
                 setReservaError(null);
@@ -215,36 +230,19 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
                   setReservasPendentes(null);
                 }
               }}
-              placeholder="00000000000 ou 000.000.000-00"
+              placeholder="00000000000"
               maxLength={18}
             />
             <div className="reserva-actions">
-              <button
+              <Button
                 type="button"
-                onClick={buscarReservas}
-                disabled={loadingReservas || cpfReserva.length !== 11}
-                style={{
-                  backgroundColor: "var(--color-blue)",
-                  opacity:
-                    loadingReservas || cpfReserva.length !== 11 ? 0.6 : 1,
-                  cursor:
-                    loadingReservas || cpfReserva.length !== 11
-                      ? "not-allowed"
-                      : "pointer",
-                  padding: "8px 12px",
-                  border: "none",
-                  borderRadius: "4px",
-                  color: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  fontSize: "0.9rem",
-                  fontWeight: 600,
-                }}
+                onClick={() => buscarReservas()}
+                color="var(--color-blue)"
+                opacity={loadingReservas || cpfReserva.length !== 11}
               >
                 <FaSearch />
                 <span>{loadingReservas ? "Buscando..." : "Buscar"}</span>
-              </button>
+              </Button>
               {reservasPendentes && (
                 <Button
                   type="button"
@@ -267,66 +265,44 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
           {reservasPendentes && (
             <div className="reserva-info">
               <div className="reserva-cliente">
-                <p>
-                  <strong>Cliente:</strong> {reservasPendentes.nome_completo}
-                </p>
-                <p>
-                  <strong>CPF:</strong> {reservasPendentes.cpf}
-                </p>
+                <span>Reserva encontrada</span>
+                <strong>{reservasPendentes.nome_completo}</strong>
+                <small>{reservasPendentes.cpf}</small>
               </div>
 
               <div className="reserva-itens">
-                <p className="reserva-itens-title">
-                  <strong>Itens reservados:</strong>
-                </p>
+                <p className="reserva-itens-title">Itens reservados</p>
                 <ul>
                   {reservasPendentes.itens.map((item) => (
                     <li key={item.id}>
-                      {item.produto} - {item.quantidade}x R${" "}
-                      {item.preco_unitario.toFixed(2)} = R${" "}
-                      {item.preco_total.toFixed(2)}
+                      <span>
+                        {item.quantidade}x {item.produto}
+                      </span>
+                      <strong>R$ {item.preco_total.toFixed(2)}</strong>
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div className="reserva-total">
-                <p>
-                  <strong>Valor total:</strong> R${" "}
-                  {reservasPendentes.valor_total.toFixed(2)}
-                </p>
-                <p className="reserva-minimo">
-                  Saldo mínimo necessário: R${" "}
-                  {reservasPendentes.valor_total.toFixed(2)}
-                </p>
+                <span>Total reservado</span>
+                <strong>R$ {reservasPendentes.valor_total.toFixed(2)}</strong>
               </div>
             </div>
           )}
         </div>
 
-        <div className="line">
-          <Input
-            id="numero"
-            type="intenger"
-            inputMode="numeric"
-            label="Número"
-            value={numero}
-            onChange={(e) => {
-              // Permite campo vazio e apenas números
-              const value = e.target.value.replace(/\D/g, "");
-              setNumero(value);
-              setFichaCriada(undefined);
-            }}
-            required
-            min={0}
-            step={1}
-            errors={formErrors?.numero}
-          />
+        <div className="ficha-create-row">
+          <div className="generated-number">
+            <span>Número da ficha</span>
+            <strong>#{numero || props.nextNumero || 1}</strong>
+            <small>Definido automaticamente</small>
+          </div>
           <Input
             id="saldo"
             type="number"
             inputMode="decimal"
-            label="Saldo"
+            label="Saldo inicial"
             value={saldo}
             onChange={(e) => {
               // Permite campo vazio e processa decimal

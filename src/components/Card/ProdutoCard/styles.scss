@@ -5,6 +5,7 @@ li.produto-card {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-height: 72px;
 
     >span {
         flex: 1;
@@ -26,6 +27,25 @@ li.produto-card {
             padding: 0.25em 0.5em;
             border-radius: 4px;
             text-align: center;
+        }
+    }
+
+    .action-hint {
+        flex: 0 0 auto;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--color-light-blue);
+        color: var(--color-blue);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+    }
+
+    @media screen and (max-width: 767px) {
+        flex-wrap: wrap;
+
+        .nome {
+            flex-basis: 100%;
         }
     }
 }

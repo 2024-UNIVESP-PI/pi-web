@@ -244,7 +244,7 @@ export default function PopupProduto(props: PopupProdutoProps) {
 
           <div className="line">
             {editando ? (
-              <>
+              <div className="edit-actions">
                 <Button color="var(--color-green)" onClick={handleSaveEdicao}>
                   <FaCheck />
                   <span>Salvar</span>
@@ -256,13 +256,17 @@ export default function PopupProduto(props: PopupProdutoProps) {
                   <FaXmark />
                   <span>Cancelar</span>
                 </Button>
-              </>
+              </div>
             ) : (
               <>
                 <form
-                  className="line close"
+                  className="stock-panel"
                   onSubmit={handlePostEntradaEstoque}
                 >
+                  <div className="panel-header">
+                    <h4>Entrada de estoque</h4>
+                    <p>Registre unidades recebidas neste caixa.</p>
+                  </div>
                   <Input
                     type="intenger"
                     inputMode="numeric"
@@ -284,30 +288,32 @@ export default function PopupProduto(props: PopupProdutoProps) {
                     type="submit"
                     loading={fetchingMovimentacaoEstoque}
                   >
-                    <p>Adicionar</p>
+                    <p>Adicionar estoque</p>
                   </Button>
                 </form>
-                <Button
-                  color="var(--color-red)"
-                  loading={fetchingDelete}
-                  onClick={() => {
-                    if (
-                      props.produto?.id &&
-                      confirm(
-                        "Essa operação irá deletar também as movimentações de estoque e vendas desse produto. Deletar produto?"
+                <div className="management-actions">
+                  <Button
+                    color="var(--color-blue)"
+                    onClick={() => setEditando(true)}
+                  >
+                    <FaPen /> Editar produto
+                  </Button>
+                  <Button
+                    color="var(--color-red)"
+                    loading={fetchingDelete}
+                    onClick={() => {
+                      if (
+                        props.produto?.id &&
+                        confirm(
+                          "Essa operação irá deletar também as movimentações de estoque e vendas desse produto. Deletar produto?"
+                        )
                       )
-                    )
-                      handleDeleteProduto(props.produto.id);
-                  }}
-                >
-                  <FaTrash />
-                </Button>
-                <Button
-                  color="var(--color-blue)"
-                  onClick={() => setEditando(true)}
-                >
-                  <FaPen />
-                </Button>
+                        handleDeleteProduto(props.produto.id);
+                    }}
+                  >
+                    <FaTrash /> Excluir produto
+                  </Button>
+                </div>
               </>
             )}
           </div>

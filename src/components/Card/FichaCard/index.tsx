@@ -11,15 +11,20 @@ export type FichaCardProps = {
 }
 
 export default function FichaCard(props: FichaCardProps) {
+    const saldoBaixo = props.ficha.saldo <= 0
+
     return (
         <Card
-            className={'ficha-card'}
-            lowOpacity={props.ficha.saldo <= 0}
-            color={props.ficha.saldo <= 0 ? 'var(--color-red)' : undefined}
+            className={'ficha-card' + (saldoBaixo ? ' saldo-baixo' : '')}
+            lowOpacity={saldoBaixo}
+            color={saldoBaixo ? 'var(--color-red)' : undefined}
             onClick={props.onClick}
         >
+            <span className="card-kicker">Ficha</span>
             <p className="numero">{props.ficha.numero}</p>
+            <p className="saldo-label">Saldo atual</p>
             <p className="saldo">R${props.ficha.saldo.toFixed(2)}</p>
+            <span className="action-hint">Recarregar</span>
         </Card>
     )
 }

@@ -1,0 +1,223 @@
+#popup-nova-ficha {
+  > .popup-content {
+    max-width: 560px;
+  }
+
+  .popup-main form {
+    gap: var(--space-3);
+  }
+
+  .reserva-section {
+    margin-bottom: 0;
+    padding: var(--space-3);
+
+    .reserva-header {
+      margin-bottom: var(--space-3);
+
+      h4 {
+        font-size: var(--font-size-md);
+      }
+    }
+  }
+
+  .reserva-search-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3);
+    align-items: end;
+
+    .input-component {
+      font-size: var(--font-size-md);
+    }
+
+    .reserva-actions {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+
+      button {
+        min-height: 2.55rem;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .reserva-info {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+    gap: var(--space-3);
+    align-items: stretch;
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+
+    .reserva-cliente,
+    .reserva-total {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: var(--space-3);
+      background: var(--color-surface-muted);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+
+    span,
+    .reserva-itens-title {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+    }
+
+    strong {
+      font-size: var(--font-size-md);
+      line-height: var(--line-height-tight);
+    }
+
+    small {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+    }
+
+    .reserva-itens {
+      min-width: 0;
+      padding: var(--space-3);
+      background: var(--color-surface-muted);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+
+      ul {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: 6rem;
+        overflow-y: auto;
+        margin-top: var(--space-2);
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-2);
+        color: var(--color-text);
+        font-size: var(--font-size-xs);
+      }
+    }
+
+    .reserva-total {
+      justify-content: center;
+      background: var(--color-light-green);
+      border-color: color-mix(in srgb, var(--color-green) 22%, white);
+
+      strong {
+        color: var(--color-green);
+        font-size: var(--font-size-lg);
+        font-variant-numeric: tabular-nums;
+      }
+    }
+  }
+
+  .ficha-create-row {
+    display: grid;
+    grid-template-columns: 13rem 1fr;
+    gap: var(--space-3);
+    align-items: stretch;
+  }
+
+  .generated-number {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: var(--space-3);
+    background: var(--color-light-blue);
+    border: 1px solid color-mix(in srgb, var(--color-blue) 22%, white);
+    border-radius: var(--radius-lg);
+
+    span,
+    small {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+    }
+
+    strong {
+      color: var(--color-blue);
+      font-size: var(--font-size-xl);
+      line-height: var(--line-height-tight);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .reserva-saldo-restante {
+    padding: var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  @media screen and (max-width: 767px) {
+    > .popup-content {
+      max-width: 100%;
+      max-height: calc(100vh - 1rem);
+      padding: var(--space-3);
+      overflow: hidden;
+    }
+
+    .popup-main {
+      min-height: 0;
+      overflow-y: auto;
+      gap: var(--space-2);
+      padding-right: 2px;
+    }
+
+    .popup-main form {
+      gap: var(--space-2);
+    }
+
+    .reserva-section {
+      padding: var(--space-2);
+
+      .reserva-header {
+        margin-bottom: var(--space-2);
+
+        .reserva-subtitle {
+          display: none;
+        }
+      }
+    }
+
+    .reserva-search-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+
+      .reserva-actions {
+        button {
+          flex: 1;
+        }
+      }
+    }
+
+    .reserva-info {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+      padding: var(--space-2);
+
+      .reserva-cliente,
+      .reserva-total,
+      .reserva-itens {
+        padding: var(--space-2);
+      }
+    }
+
+    .ficha-create-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+
+    .generated-number {
+      padding: var(--space-2);
+    }
+  }
+}

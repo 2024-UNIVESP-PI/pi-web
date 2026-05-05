@@ -12,10 +12,6 @@ export type ProdutoCardProps = {
 }
 
 export default function ProdutoCard(props: ProdutoCardProps) {
-    const options = <>
-        <p>Teste</p>
-    </>
-
     const totalReservas = props.produto.total_reservas_antecipadas || 0;
     const temReservas = totalReservas > 0;
 
@@ -24,7 +20,6 @@ export default function ProdutoCard(props: ProdutoCardProps) {
             as={'li'}
             className={'produto-card'}
             onClick={props.onClick}
-            options={options}
         >
             <span className="nome">{props.produto.nome}</span>
             <span className="medida mobile-hide">{props.produto.medida}</span>
@@ -35,6 +30,7 @@ export default function ProdutoCard(props: ProdutoCardProps) {
                 </span>
             )}
             <span className="preco">R${Number(props.produto.preco).toFixed(2)}</span>
+            <span className="action-hint">Gerenciar</span>
         </Card>
     )
 }

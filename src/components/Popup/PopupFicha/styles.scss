@@ -1,8 +1,92 @@
 #popup-ficha {
   .ficha-infos {
+    align-items: center;
+    justify-content: space-between;
+
+    .info-label {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+    }
+
     .numero {
-      font-size: 1.8em;
-      font-weight: 500;
+      font-size: 2rem;
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
+    }
+  }
+
+  .transaction-panel,
+  .danger-row {
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-muted);
+  }
+
+  .panel-header {
+    margin-bottom: var(--space-3);
+
+    h4 {
+      margin: 0;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    p {
+      margin: 2px 0 0;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  .recarga-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-3);
+
+    .input-component {
+      grid-column: 1 / -1;
+      font-size: var(--font-size-md);
+    }
+
+    .recarga-preview {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 9rem;
+      padding: var(--space-3);
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+
+      span {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+      }
+
+      strong {
+        font-size: var(--font-size-lg);
+        font-variant-numeric: tabular-nums;
+      }
+    }
+  }
+
+  .danger-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    background: var(--color-light-red);
+    border-color: color-mix(in srgb, var(--color-red) 20%, white);
+
+    p {
+      margin-top: 2px;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -21,6 +105,15 @@
       display: flex;
       gap: 0.5rem;
       margin-top: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .recarga-form,
+    .danger-row {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
     }
   }
 }

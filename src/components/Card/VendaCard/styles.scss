@@ -1,15 +1,31 @@
 .venda-card {
     position: relative;
     height: 160px;
-    padding: 8px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     justify-content: end;
+    gap: 8px;
+
+    .card-kicker,
+    .action-hint {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+    }
+
+    .card-kicker {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+    }
 
     .produto {
         margin: auto;
-        font-size: 1.2em;
-        font-weight: 600;
+        font-size: 1.2rem;
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
         text-align: center;
     }
 
@@ -24,5 +40,33 @@
         display: flex;
         justify-content: space-between;
         align-items: end;
+    }
+
+    .action-hint {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: var(--color-light-green);
+        color: var(--color-green);
+        opacity: 0;
+        transform: translateY(4px);
+        transition: .2s;
+    }
+
+    &:hover,
+    &:focus-within {
+        .action-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    &.sem-estoque {
+        .action-hint {
+            background: var(--color-light-red);
+            color: var(--color-red);
+        }
     }
 }

@@ -1,20 +1,61 @@
 .ficha-card {
     text-align: center;
     height: 160px;
-    padding: 8px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 4px;
+    position: relative;
+
+    .card-kicker,
+    .saldo-label,
+    .action-hint {
+        color: var(--color-text-muted);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
+    }
 
     .numero {
-        font-size: 1.8em;
-        font-weight: 600;
-        margin: 8px 0;
+        font-size: 2rem;
+        font-weight: var(--font-weight-semibold);
+        margin: 2px 0 8px;
+        line-height: var(--line-height-tight);
     }
 
     .saldo {
-        font-size: 1.2em;
-        font-weight: 500;
+        font-size: 1.1rem;
+        font-weight: var(--font-weight-semibold);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .action-hint {
+        position: absolute;
+        right: 12px;
+        bottom: 10px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: var(--color-light-blue);
+        color: var(--color-blue);
+        opacity: 0;
+        transform: translateY(4px);
+        transition: .2s;
+    }
+
+    &:hover,
+    &:focus-within {
+        .action-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    &.saldo-baixo {
+        .action-hint {
+            background: var(--color-light-red);
+            color: var(--color-red);
+        }
     }
 }

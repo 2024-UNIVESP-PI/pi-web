@@ -29,5 +29,10 @@
 
     &.clickable {
         cursor: pointer;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-soft);
+        }
     }
 }
