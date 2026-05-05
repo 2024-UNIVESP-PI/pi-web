@@ -125,6 +125,13 @@
         font-size: 1.25rem;
       }
     }
+
+    .section-helper {
+      margin: -0.5rem 0 1rem;
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
   }
 
   .form-group {
@@ -207,10 +214,16 @@
       }
 
       .produto-disponivel,
-      .produto-limite {
+      .produto-limite,
+      .produto-reservado {
         font-size: 0.9rem;
         color: #666;
         margin: 0.25rem 0;
+      }
+
+      .produto-reservado {
+        color: #764ba2;
+        font-weight: 600;
       }
     }
 

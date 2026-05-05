@@ -4,6 +4,7 @@ import reservaService, {
   QRCodeProdutosResponse,
   ReservaPublicaResponse,
 } from "../../services/reservaService";
+import { formatCurrency } from "../../functions/formatters";
 import "./styles.scss";
 
 export default function ReservaPublicaPage() {
@@ -51,11 +52,15 @@ export default function ReservaPublicaPage() {
   }, [qrCode, carregarProdutos]);
 
   function atualizarQuantidade(produtoId: number, quantidade: number) {
+    const produto = dadosQR?.produtos.find((p) => p.id === produtoId);
+    const quantidadeSegura = produto
+      ? Math.min(quantidade, produto.limite_reserva, produto.disponivel)
+      : quantidade;
     const novos = new Map(produtosSelecionados);
-    if (quantidade <= 0) {
+    if (quantidadeSegura <= 0) {
       novos.delete(produtoId);
     } else {
-      novos.set(produtoId, quantidade);
+      novos.set(produtoId, quantidadeSegura);
     }
     setProdutosSelecionados(novos);
   }
@@ -76,6 +81,16 @@ export default function ReservaPublicaPage() {
     if (produtosSelecionados.size === 0) {
       setError("Selecione pelo menos um produto");
       return;
+    }
+
+    for (const [produtoId, quantidade] of produtosSelecionados.entries()) {
+      const produto = dadosQR?.produtos.find((item) => item.id === produtoId);
+      if (!produto || quantidade > produto.disponivel) {
+        setError(
+          "Algum produto selecionado não está mais disponível. Atualize a página e tente novamente."
+        );
+        return;
+      }
     }
 
     try {
@@ -170,10 +185,10 @@ export default function ReservaPublicaPage() {
                     </div>
                     <div className="item-valores">
                       <span className="item-preco-unitario">
-                        R$ {item.preco_unitario.toFixed(2)} cada
+                        {formatCurrency(item.preco_unitario)} cada
                       </span>
                       <span className="item-preco-total">
-                        R$ {item.preco_total.toFixed(2)}
+                        {formatCurrency(item.preco_total)}
                       </span>
                     </div>
                   </div>
@@ -182,9 +197,7 @@ export default function ReservaPublicaPage() {
 
               <div className="total-reserva">
                 <span className="total-label">Total:</span>
-                <span className="total-value">
-                  R$ {reservaConfirmada.total.toFixed(2)}
-                </span>
+                <span className="total-value">{formatCurrency(reservaConfirmada.total)}</span>
               </div>
 
               <div className="info-importante">
@@ -259,8 +272,18 @@ export default function ReservaPublicaPage() {
 
             <div className="produtos-disponiveis">
               <h2>Produtos Disponíveis</h2>
+              <p className="section-helper">
+                Escolha os itens que deseja reservar. A quantidade respeita o
+                limite por pessoa e a cota disponível.
+              </p>
               <div className="produtos-grid">
-                {dadosQR.produtos.map((produto) => {
+                {dadosQR.produtos
+                  .slice()
+                  .sort(
+                    (a, b) =>
+                      Number(b.disponivel > 0) - Number(a.disponivel > 0)
+                  )
+                  .map((produto) => {
                   const quantidade = produtosSelecionados.get(produto.id) || 0;
                   const disponivel = produto.disponivel > 0;
 
@@ -274,7 +297,7 @@ export default function ReservaPublicaPage() {
                       <div className="produto-info">
                         <h3>{produto.nome}</h3>
                         <p className="produto-preco">
-                          R$ {produto.preco.toFixed(2)}
+                          {formatCurrency(produto.preco)}
                         </p>
                         <p className="produto-disponivel">
                           Disponível: {produto.disponivel} unidades
@@ -282,6 +305,11 @@ export default function ReservaPublicaPage() {
                         <p className="produto-limite">
                           Limite: {produto.limite_reserva} por pessoa
                         </p>
+                        {produto.reservado > 0 && (
+                          <p className="produto-reservado">
+                            {produto.reservado} já reservado(s)
+                          </p>
+                        )}
                       </div>
 
                       {disponivel && (
@@ -325,7 +353,7 @@ export default function ReservaPublicaPage() {
 
                       {quantidade > 0 && (
                         <div className="produto-subtotal">
-                          Subtotal: R${(produto.preco * quantidade).toFixed(2)}
+                          Subtotal: {formatCurrency(produto.preco * quantidade)}
                         </div>
                       )}
                     </div>
@@ -337,6 +365,9 @@ export default function ReservaPublicaPage() {
             {produtosSelecionados.size > 0 && (
               <div className="resumo-pedido">
                 <h2>Resumo do Pedido</h2>
+                <p className="section-helper">
+                  {produtosSelecionados.size} produto(s) selecionado(s)
+                </p>
                 <div className="itens-selecionados">
                   {Array.from(produtosSelecionados.entries()).map(
                     ([produtoId, quantidade]) => {
@@ -351,7 +382,7 @@ export default function ReservaPublicaPage() {
                             {produto.nome} x{quantidade}
                           </span>
                           <span>
-                            R$ {(produto.preco * quantidade).toFixed(2)}
+                            {formatCurrency(produto.preco * quantidade)}
                           </span>
                         </div>
                       );
@@ -360,7 +391,7 @@ export default function ReservaPublicaPage() {
                 </div>
                 <div className="total-pedido">
                   <span>Total:</span>
-                  <span>R$ {calcularTotal().toFixed(2)}</span>
+                  <span>{formatCurrency(calcularTotal())}</span>
                 </div>
               </div>
             )}

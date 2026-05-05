@@ -31,6 +31,8 @@ export type ProdutoReserva = {
   preco: number;
   limite_reserva: number;
   disponivel: number;
+  reservado: number;
+  quantidade_reserva_disponivel: number;
   categoria: string;
 };
 

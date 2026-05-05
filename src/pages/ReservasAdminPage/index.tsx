@@ -6,6 +6,7 @@ import {
   FaTrash,
   FaPen,
   FaEye,
+  FaCopy,
 } from "react-icons/fa6";
 import reservaService, {
   QRCodeReserva,
@@ -22,6 +23,7 @@ export default function ReservasAdminPage() {
   const [qrCodes, setQrCodes] = useState<QRCodeReserva[]>([]);
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [feedback, setFeedback] = useState<string>();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedQRCode, setSelectedQRCode] = useState<QRCodeReserva | null>(
     null
@@ -50,6 +52,7 @@ export default function ReservasAdminPage() {
   async function carregarDados() {
     try {
       setLoading(true);
+      setFeedback(undefined);
       const [qrCodesData, produtosData] = await Promise.all([
         reservaService.getQRCodesReserva(),
         produtoService.getProdutos(),
@@ -58,6 +61,7 @@ export default function ReservasAdminPage() {
       setProdutos(produtosData.data);
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
+      setFeedback("Erro ao carregar QR codes e produtos.");
     } finally {
       setLoading(false);
     }
@@ -106,6 +110,12 @@ export default function ReservasAdminPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setFeedback(undefined);
+
+    if (formData.produtos_ids.length === 0) {
+      setFeedback("Selecione pelo menos um produto disponível para este QR code.");
+      return;
+    }
 
     try {
       // Converte datas do formato datetime-local para ISO string
@@ -165,11 +175,12 @@ export default function ReservasAdminPage() {
           ? (error as { response?: { data?: { error?: string } } }).response
               ?.data?.error
           : undefined;
-      alert(errorMessage || "Erro ao salvar QR code");
+      setFeedback(errorMessage || "Erro ao salvar QR code");
     }
   }
 
   async function handleGerarPDF(id: number) {
+    setFeedback(undefined);
     try {
       const blob = await reservaService.gerarPDFQRCode(id);
       const url = window.URL.createObjectURL(blob);
@@ -182,7 +193,7 @@ export default function ReservasAdminPage() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
-      alert("Erro ao gerar PDF");
+      setFeedback("Erro ao gerar PDF");
     }
   }
 
@@ -190,12 +201,19 @@ export default function ReservasAdminPage() {
     if (!confirm("Tem certeza que deseja excluir este QR code?")) return;
 
     try {
+      setFeedback(undefined);
       await reservaService.deletarQRCodeReserva(id);
       await carregarDados();
     } catch (error) {
       console.error("Erro ao deletar QR code:", error);
-      alert("Erro ao deletar QR code");
+      setFeedback("Erro ao deletar QR code");
     }
+  }
+
+  async function copiarURL(codigo: string) {
+    const url = `${window.location.origin}/reservas/${codigo}`;
+    await navigator.clipboard.writeText(url);
+    setFeedback("URL copiada para a área de transferência.");
   }
 
   async function toggleReservas(qrCode: QRCodeReserva) {
@@ -275,6 +293,8 @@ export default function ReservasAdminPage() {
         </Button>
       </div>
 
+      {feedback && <div className="feedback-message">{feedback}</div>}
+
       <div className="qr-codes-container">
         {qrCodes.map((qrCode) => (
           <div key={qrCode.id} className="qr-code-wrapper">
@@ -336,6 +356,13 @@ export default function ReservasAdminPage() {
                   className="small"
                 >
                   <FaDownload /> PDF
+                </Button>
+                <Button
+                  onClick={() => copiarURL(qrCode.codigo)}
+                  color="var(--color-grey)"
+                  className="small"
+                >
+                  <FaCopy /> Copiar URL
                 </Button>
                 <Button
                   onClick={() => abrirPopupEditar(qrCode)}
@@ -536,37 +563,47 @@ export default function ReservasAdminPage() {
 
             <div className="form-group">
               <label>Produtos disponíveis para reserva</label>
+              <div className="selection-summary">
+                {formData.produtos_ids.length} produto(s) selecionado(s)
+              </div>
               <div className="produtos-checklist">
                 {produtos
                   .filter((p) => p.disponivel_reserva)
-                  .map((produto) => (
-                    <div key={produto.id} className="produto-item">
-                      <label className="checkbox-label">
-                        <input
-                          type="checkbox"
-                          checked={formData.produtos_ids.includes(produto.id)}
-                          onChange={() => toggleProduto(produto.id)}
-                        />
-                        <span className="produto-info">
-                          <strong>{produto.nome}</strong>
-                          <span className="produto-details">
-                            R$ {produto.preco.toFixed(2)} | Estoque:{" "}
-                            {produto.estoque} | Limite:{" "}
-                            {produto.limite_reserva || 2} por pessoa
-                            {produto.quantidade_reserva_disponivel !==
-                              undefined &&
-                              produto.quantidade_reserva_disponivel > 0 && (
-                                <>
-                                  {" "}
-                                  | Disponível:{" "}
-                                  {produto.quantidade_reserva_disponivel}
-                                </>
-                              )}
+                  .map((produto) => {
+                    const reservado = produto.total_reservas_antecipadas || 0;
+                    const capacidade =
+                      produto.quantidade_reserva_disponivel || 0;
+                    const disponivelReserva = Math.max(
+                      0,
+                      capacidade - reservado
+                    );
+                    const semCota = disponivelReserva <= 0;
+
+                    return (
+                      <div
+                        key={produto.id}
+                        className={`produto-item ${semCota ? "sem-cota" : ""}`}
+                      >
+                        <label className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={formData.produtos_ids.includes(produto.id)}
+                            disabled={semCota}
+                            onChange={() => toggleProduto(produto.id)}
+                          />
+                          <span className="produto-info">
+                            <strong>{produto.nome}</strong>
+                            <span className="produto-details">
+                              R$ {produto.preco.toFixed(2)} | Estoque:{" "}
+                              {produto.estoque} | Limite:{" "}
+                              {produto.limite_reserva || 2} por pessoa | Cota:{" "}
+                              {disponivelReserva}/{capacidade}
+                            </span>
                           </span>
-                        </span>
-                      </label>
-                    </div>
-                  ))}
+                        </label>
+                      </div>
+                    );
+                  })}
                 {produtos.filter((p) => p.disponivel_reserva).length === 0 && (
                   <p className="sem-produtos-disponiveis">
                     Nenhum produto marcado como disponível para reserva. Marque
