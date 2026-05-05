@@ -14,7 +14,7 @@ api.interceptors.response.use(
     return response;
   },
   async function (error) {
-    console.log(error.request);
+    if (import.meta.env.VITE_DEBUG) console.error(error);
     return Promise.reject(error);
   }
 );

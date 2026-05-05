@@ -96,6 +96,50 @@
   }
 }
 
+.dashboard-state {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  color: var(--color-text-medium);
+
+  .state-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    font-size: 1.25rem;
+  }
+
+  strong {
+    color: var(--color-text-dark);
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0;
+    max-width: 420px;
+    line-height: 1.45;
+  }
+
+  &.error .state-icon {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+  }
+}
+
 #admin-dashboard-page header {
   display: flex;
   justify-content: space-between;
@@ -218,9 +262,11 @@ section.overview .card {
     border-radius: 8px;
     font-weight: 500;
 
-    &::before {
-      content: "📈 ";
-      margin-right: 0.25rem;
+    span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--color-text-light);
+      font-size: 0.75rem;
     }
   }
 
@@ -406,6 +452,16 @@ section.vendas-por-categoria.card h2 {
         background: var(--color-primary);
         border-radius: 2px;
       }
+
+      .model-confidence {
+        margin-left: auto;
+        padding: 0.25rem 0.5rem;
+        border-radius: 999px;
+        background: var(--color-info-light);
+        color: var(--color-primary);
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
     }
   }
 
@@ -485,6 +541,17 @@ section.vendas-por-categoria.card h2 {
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border-light);
 
+  .export-title {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-medium);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
   button {
     background-color: var(--color-primary);
     color: white;
@@ -509,6 +576,16 @@ section.vendas-por-categoria.card h2 {
     &:active {
       transform: translateY(0);
     }
+
+    &.primary-export {
+      background-color: var(--color-success);
+      font-weight: 700;
+      font-size: 0.9375rem;
+
+      &:hover {
+        background-color: #059669;
+      }
+    }
   }
 
   @media (max-width: 768px) {
@@ -520,6 +597,41 @@ section.vendas-por-categoria.card h2 {
       padding: 0.5rem 1rem;
     }
   }
+}
+
+.category-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+}
+
+.category-swatch {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border-radius: 4px;
+}
+
+.category-name {
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 0.875rem;
+}
+
+.category-value {
+  font-size: 0.75rem;
+  color: var(--color-text-medium);
+  margin-top: 0.25rem;
 }
 
 .tabs {

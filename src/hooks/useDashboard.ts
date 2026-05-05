@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import dashboardService from "../services/dashboardService";
+import { toNumber } from "../functions/formatters";
 
 export interface VendaPorCategoria {
   name: string;
@@ -38,6 +39,7 @@ export interface ProdutoEstoquePrevisao {
   estoque_recomendado: number;
   media_diaria: number;
   necessita_reposicao: boolean;
+  confianca?: number;
 }
 
 export interface ProdutoRiscoEstoque {
@@ -45,6 +47,7 @@ export interface ProdutoRiscoEstoque {
   estoque_atual: number;
   dias_restantes: number;
   demanda_media: number;
+  confianca?: number;
 }
 
 export interface HorarioPico {
@@ -90,7 +93,58 @@ export interface DashboardData {
   produtosRiscoEstoque: ProdutoRiscoEstoque[];
   horariosPico: HorarioPico[];
   tendenciaVendas: TendenciaVendas;
+  confiancaPredicoes: {
+    demanda: number;
+    receita: number;
+  };
   reservas: ReservaML;
+}
+
+const emptyTendencia: TendenciaVendas = {
+  dias: [],
+  vendas: [],
+  receita: [],
+};
+
+const emptyReservas: ReservaML = {
+  total_pendentes: 0,
+  total_finalizadas: 0,
+  taxa_conversao: 0,
+  produtos_mais_reservados: [],
+  tendencia_7dias: [],
+};
+
+function normalizeDashboardData(raw: Partial<DashboardData>): DashboardData {
+  return {
+    totalVendas: toNumber(raw.totalVendas),
+    receita: toNumber(raw.receita),
+    clientesAtivos: toNumber(raw.clientesAtivos),
+    ticketMedio: toNumber(raw.ticketMedio),
+    crescimentoPercentual: toNumber(raw.crescimentoPercentual),
+    vendasPorHorario: raw.vendasPorHorario || {},
+    vendasPorCategoria: Array.isArray(raw.vendasPorCategoria)
+      ? raw.vendasPorCategoria
+      : [],
+    topProdutos: Array.isArray(raw.topProdutos) ? raw.topProdutos : [],
+    vendasDetalhadas: Array.isArray(raw.vendasDetalhadas)
+      ? raw.vendasDetalhadas
+      : [],
+    predicaoDemanda: raw.predicaoDemanda || {},
+    predicaoReceita3Dias: toNumber(raw.predicaoReceita3Dias),
+    produtosEstoquePrevisao: Array.isArray(raw.produtosEstoquePrevisao)
+      ? raw.produtosEstoquePrevisao
+      : [],
+    produtosRiscoEstoque: Array.isArray(raw.produtosRiscoEstoque)
+      ? raw.produtosRiscoEstoque
+      : [],
+    horariosPico: Array.isArray(raw.horariosPico) ? raw.horariosPico : [],
+    tendenciaVendas: raw.tendenciaVendas || emptyTendencia,
+    confiancaPredicoes: {
+      demanda: toNumber(raw.confiancaPredicoes?.demanda),
+      receita: toNumber(raw.confiancaPredicoes?.receita),
+    },
+    reservas: raw.reservas || emptyReservas,
+  };
 }
 
 export default function useDashboard() {
@@ -105,7 +159,7 @@ export default function useDashboard() {
       .getDashboardData()
       .then((res) => {
         if (res && res.data) {
-          setData(res.data);
+          setData(normalizeDashboardData(res.data));
         } else {
           setError(new Error("Resposta inválida da API"));
         }

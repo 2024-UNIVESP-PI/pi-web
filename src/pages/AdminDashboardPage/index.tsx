@@ -3,6 +3,26 @@ import { VendaPorCategoria } from "../../hooks/useDashboard";
 import useDashboard from "../../hooks/useDashboard";
 import CaixaContext from "../../contexts/CaixaContext";
 import {
+  formatCurrency,
+  formatDecimal,
+  formatInteger,
+  formatShortDate,
+} from "../../functions/formatters";
+import {
+  FaBoxOpen,
+  FaChartColumn,
+  FaChartLine,
+  FaClock,
+  FaDownload,
+  FaFileCsv,
+  FaSackDollar,
+  FaTicket,
+  FaTriangleExclamation,
+  FaTrophy,
+  FaUsers,
+  FaClipboardList,
+} from "react-icons/fa6";
+import {
   PieChart,
   Pie,
   Cell,
@@ -46,7 +66,7 @@ function exportCSVGeneric<T>(
 const COLORS = ["#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F"];
 
 export default function AdminDashboardPage() {
-  const { data, loading } = useDashboard();
+  const { data, loading, error } = useDashboard();
   const caixaContext = useContext(CaixaContext.Context);
 
   // Desloga o caixa quando o admin acessa a dashboard
@@ -57,9 +77,36 @@ export default function AdminDashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Executa apenas uma vez ao montar a página
 
-  if (loading) return <p>Carregando...</p>;
+  if (loading) {
+    return (
+      <div id="admin-dashboard-page">
+        <div className="dashboard-state">
+          <span className="state-icon">
+            <FaChartLine />
+          </span>
+          <strong>Carregando dashboard</strong>
+          <p>Buscando vendas, estoque e reservas.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!data || data === null || data === undefined) {
-    return <p>Erro ao carregar dados. Verifique se a API está funcionando.</p>;
+    return (
+      <div id="admin-dashboard-page">
+        <div className="dashboard-state error">
+          <span className="state-icon">
+            <FaTriangleExclamation />
+          </span>
+          <strong>Erro ao carregar dados</strong>
+          <p>
+            {error
+              ? "A API respondeu com erro. Tente recarregar a página."
+              : "Não foi possível montar os dados do dashboard."}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const {
@@ -78,6 +125,7 @@ export default function AdminDashboardPage() {
     produtosRiscoEstoque,
     horariosPico,
     tendenciaVendas,
+    confiancaPredicoes,
     reservas,
   } = data;
 
@@ -94,10 +142,7 @@ export default function AdminDashboardPage() {
   const tendenciaData =
     tendenciaVendas && tendenciaVendas.dias && tendenciaVendas.dias.length > 0
       ? tendenciaVendas.dias.map((dia, index) => ({
-          dia: new Date(dia).toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-          }),
+          dia: formatShortDate(dia),
           vendas: tendenciaVendas.vendas[index] || 0,
           receita: tendenciaVendas.receita[index] || 0,
         }))
@@ -107,10 +152,7 @@ export default function AdminDashboardPage() {
             const date = new Date();
             date.setDate(date.getDate() - (6 - i));
             return {
-              dia: date.toLocaleDateString("pt-BR", {
-                day: "2-digit",
-                month: "2-digit",
-              }),
+              dia: formatShortDate(date.toISOString()),
               vendas: 0,
               receita: 0,
             };
@@ -121,10 +163,14 @@ export default function AdminDashboardPage() {
     <div id="admin-dashboard-page">
       <div className="dashboard-header">
         <h1>Dashboard</h1>
-        <p>Análise de vendas e predições para tomada de decisões</p>
+        <p>Vendas, estoque e reservas em tempo real</p>
       </div>
 
       <div className="export-buttons">
+        <div className="export-title">
+          <FaDownload />
+          <span>Exportações</span>
+        </div>
         <button
           onClick={() =>
             exportCSVGeneric(vendasPorHorarioData, "vendas-por-horario.csv", [
@@ -133,6 +179,7 @@ export default function AdminDashboardPage() {
             ])
           }
         >
+          <FaFileCsv />
           Exportar Vendas por Horário
         </button>
 
@@ -144,6 +191,7 @@ export default function AdminDashboardPage() {
             ])
           }
         >
+          <FaFileCsv />
           Exportar Vendas por Categoria
         </button>
 
@@ -155,6 +203,7 @@ export default function AdminDashboardPage() {
             ])
           }
         >
+          <FaFileCsv />
           Exportar Top Produtos
         </button>
 
@@ -170,6 +219,7 @@ export default function AdminDashboardPage() {
             ])
           }
         >
+          <FaFileCsv />
           Exportar Vendas Detalhadas
         </button>
 
@@ -191,6 +241,7 @@ export default function AdminDashboardPage() {
               )
             }
           >
+            <FaFileCsv />
             Exportar Predições de Demanda
           </button>
         )}
@@ -211,6 +262,7 @@ export default function AdminDashboardPage() {
               )
             }
           >
+            <FaFileCsv />
             Exportar Previsão de Estoque
           </button>
         )}
@@ -236,13 +288,10 @@ export default function AdminDashboardPage() {
                 { label: "Valor Total", key: "valorTotal" },
               ])
             }
-            style={{
-              backgroundColor: "var(--color-success)",
-              fontWeight: 700,
-              fontSize: "0.9375rem",
-            }}
+            className="primary-export"
           >
-            📊 Exportar Todas as Vendas (Completo)
+            <FaFileCsv />
+            Exportar Todas as Vendas
           </button>
         )}
       </div>
@@ -255,10 +304,10 @@ export default function AdminDashboardPage() {
               className="card-icon"
               style={{ background: "var(--color-primary-light)" }}
             >
-              📊
+              <FaChartColumn />
             </span>
           </h3>
-          <p className="number">{totalVendas.toLocaleString("pt-BR")}</p>
+          <p className="number">{formatInteger(totalVendas)}</p>
           {crescimentoPercentual !== 0 && (
             <p
               className={`indicator ${
@@ -266,7 +315,7 @@ export default function AdminDashboardPage() {
               }`}
             >
               {crescimentoPercentual > 0 ? "↑" : "↓"}{" "}
-              {Math.abs(crescimentoPercentual).toFixed(1)}%
+              {formatDecimal(Math.abs(crescimentoPercentual), 1)}%
               {crescimentoPercentual > 0
                 ? " vs período anterior"
                 : " vs período anterior"}
@@ -280,23 +329,16 @@ export default function AdminDashboardPage() {
               className="card-icon"
               style={{ background: "var(--color-success-light)" }}
             >
-              💰
+              <FaSackDollar />
             </span>
           </h3>
-          <p className="number">
-            R${" "}
-            {Number(receita).toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
+          <p className="number">{formatCurrency(receita)}</p>
           {predicaoReceita3Dias > 0 && (
             <p className="prediction">
-              Previsão 3 dias: R${" "}
-              {predicaoReceita3Dias.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+              Previsão 3 dias: {formatCurrency(predicaoReceita3Dias)}
+              <span>
+                Confiança {formatDecimal(confiancaPredicoes.receita * 100, 0)}%
+              </span>
             </p>
           )}
         </div>
@@ -307,10 +349,10 @@ export default function AdminDashboardPage() {
               className="card-icon"
               style={{ background: "var(--color-info-light)" }}
             >
-              👥
+              <FaUsers />
             </span>
           </h3>
-          <p className="number">{clientesAtivos.toLocaleString("pt-BR")}</p>
+          <p className="number">{formatInteger(clientesAtivos)}</p>
         </div>
         <div className="card">
           <h3>
@@ -319,22 +361,19 @@ export default function AdminDashboardPage() {
               className="card-icon"
               style={{ background: "var(--color-warning-light)" }}
             >
-              🎫
+              <FaTicket />
             </span>
           </h3>
-          <p className="number">
-            R${" "}
-            {Number(ticketMedio).toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </p>
+          <p className="number">{formatCurrency(ticketMedio)}</p>
         </div>
       </section>
 
       <section className="graficos">
         <div className="card grafico-tendencia">
-          <h2>📈 Tendência de Vendas (Últimos 7 Dias)</h2>
+          <h2>
+            <FaChartLine />
+            Tendência de Vendas
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart
               data={tendenciaData}
@@ -378,7 +417,13 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="card grafico-horario">
-          <h2>🕐 Vendas por Horário (com Predições ML)</h2>
+          <h2>
+            <FaClock />
+            Vendas por Horário
+            <span className="model-confidence">
+              Confiança {formatDecimal(confiancaPredicoes.demanda * 100, 0)}%
+            </span>
+          </h2>
           <ResponsiveContainer width="100%" height={350}>
             <ComposedChart
               data={vendasPorHorarioData}
@@ -439,7 +484,10 @@ export default function AdminDashboardPage() {
 
         <div className="graficos-grid">
           <div className="card grafico-categoria">
-            <h2>📦 Distribuição de Vendas por Categoria</h2>
+            <h2>
+              <FaBoxOpen />
+              Vendas por Categoria
+            </h2>
             {vendasPorCategoria && vendasPorCategoria.length > 0 ? (
               <div
                 style={{
@@ -500,52 +548,22 @@ export default function AdminDashboardPage() {
                   >
                     Detalhes por Categoria
                   </h3>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.75rem",
-                    }}
-                  >
+                  <div className="category-detail-list">
                     {vendasPorCategoria.map((categoria, index) => (
                       <div
                         key={index}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "0.75rem",
-                          padding: "0.75rem",
-                          background: "#f8fafc",
-                          borderRadius: "8px",
-                          border: "1px solid var(--color-border-light)",
-                        }}
+                        className="category-detail-item"
                       >
                         <div
-                          style={{
-                            width: "16px",
-                            height: "16px",
-                            borderRadius: "4px",
-                            background: COLORS[index % COLORS.length],
-                          }}
+                          className="category-swatch"
+                          style={{ background: COLORS[index % COLORS.length] }}
                         />
-                        <div style={{ flex: 1 }}>
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              color: "var(--color-text-dark)",
-                              fontSize: "0.875rem",
-                            }}
-                          >
+                        <div>
+                          <div className="category-name">
                             {categoria.name.replace(/^[^\s]+\s/, "")}
                           </div>
-                          <div
-                            style={{
-                              fontSize: "0.75rem",
-                              color: "var(--color-text-medium)",
-                              marginTop: "0.25rem",
-                            }}
-                          >
-                            {categoria.value} unidades
+                          <div className="category-value">
+                            {formatInteger(categoria.value)} unidades
                           </div>
                         </div>
                       </div>
@@ -562,7 +580,7 @@ export default function AdminDashboardPage() {
                 }}
               >
                 <p style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
-                  📊 Nenhuma venda registrada ainda
+                  Nenhuma venda registrada ainda
                 </p>
                 <p style={{ fontSize: "0.875rem" }}>
                   As categorias aparecerão aqui quando houver vendas
@@ -572,7 +590,10 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="card grafico-top-produtos">
-            <h2>🏆 Top Produtos Mais Vendidos</h2>
+            <h2>
+              <FaTrophy />
+              Top Produtos Mais Vendidos
+            </h2>
             {topProdutos && topProdutos.length > 0 ? (
               <ResponsiveContainer width="100%" height={350}>
                 <BarChart
@@ -622,7 +643,7 @@ export default function AdminDashboardPage() {
                 }}
               >
                 <p style={{ fontSize: "1rem", marginBottom: "0.5rem" }}>
-                  🏆 Nenhum produto vendido ainda
+                  Nenhum produto vendido ainda
                 </p>
                 <p style={{ fontSize: "0.875rem" }}>
                   Os produtos mais vendidos aparecerão aqui quando houver vendas
@@ -635,7 +656,10 @@ export default function AdminDashboardPage() {
 
       {produtosRiscoEstoque && produtosRiscoEstoque.length > 0 && (
         <section className="card alertas-estoque">
-          <h2>⚠️ Alertas de Estoque</h2>
+          <h2>
+            <FaTriangleExclamation />
+            Alertas de Estoque
+          </h2>
           <div className="produtos-risco">
             {produtosRiscoEstoque.map((produto, index) => (
               <div key={index} className="produto-risco-item">
@@ -657,7 +681,10 @@ export default function AdminDashboardPage() {
 
       {produtosEstoquePrevisao && produtosEstoquePrevisao.length > 0 && (
         <section className="card previsao-estoque">
-          <h2>📊 Previsão de Estoque Necessário</h2>
+          <h2>
+            <FaChartColumn />
+            Previsão de Estoque Necessário
+          </h2>
           <div className="table-container">
             <table className="estoque-table">
               <thead>
@@ -666,6 +693,7 @@ export default function AdminDashboardPage() {
                   <th>Estoque Atual</th>
                   <th>Média Diária</th>
                   <th>Estoque Recomendado</th>
+                  <th>Confiança</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -676,13 +704,14 @@ export default function AdminDashboardPage() {
                     <td>{produto.estoque_atual}</td>
                     <td>{produto.media_diaria}</td>
                     <td>{produto.estoque_recomendado}</td>
+                    <td>{formatDecimal((produto.confianca || 0) * 100, 0)}%</td>
                     <td>
                       <span
                         className={`status-badge ${
                           produto.necessita_reposicao ? "warning" : "ok"
                         }`}
                       >
-                        {produto.necessita_reposicao ? "⚠️ Reposição" : "✅ OK"}
+                        {produto.necessita_reposicao ? "Reposição" : "OK"}
                       </span>
                     </td>
                   </tr>
@@ -695,7 +724,10 @@ export default function AdminDashboardPage() {
 
       {horariosPico && horariosPico.length > 0 && (
         <section className="card horarios-pico">
-          <h2>⏰ Horários de Pico</h2>
+          <h2>
+            <FaClock />
+            Horários de Pico
+          </h2>
           <div className="pico-list">
             {horariosPico.map((pico, index) => (
               <div key={index} className="pico-item">
@@ -712,7 +744,9 @@ export default function AdminDashboardPage() {
       {reservas && (
         <section className="reservas-ml card">
           <h2>
-            <span className="card-icon">📋</span>
+            <span className="card-icon">
+              <FaClipboardList />
+            </span>
             Análise de Reservas
           </h2>
 
