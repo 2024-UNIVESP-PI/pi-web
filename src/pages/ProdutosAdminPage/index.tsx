@@ -11,6 +11,7 @@ import useCaixas from "../../hooks/useCaixas";
 import PopupNovoProduto from "../../components/Popup/PopupNovoProduto";
 import PopupReservasProduto from "../../components/Popup/PopupReservasProduto";
 import "./styles.scss";
+import "../admin-tables.scss";
 
 type SortOption =
   | "nome"
@@ -21,6 +22,23 @@ type SortOption =
   | "estoque_desc";
 type FilterReserva = "all" | "sim" | "nao";
 type FilterEstoque = "all" | "baixo" | "medio" | "alto";
+type FilterCategoria = "all" | string;
+
+const CATEGORIA_LABELS: Record<string, string> = {
+  doce: "Doce",
+  doces: "Doces",
+  salgado: "Salgado",
+  salgados: "Salgados",
+  bebida: "Bebida",
+  bebidas: "Bebidas",
+  jogo: "Jogo",
+  jogos: "Jogos",
+};
+
+function getCategoriaLabel(categoria?: string) {
+  if (!categoria) return "Sem categoria";
+  return CATEGORIA_LABELS[categoria] || categoria;
+}
 
 export default function ProdutosAdminPage() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -31,6 +49,8 @@ export default function ProdutosAdminPage() {
   const [sortBy, setSortBy] = useState<SortOption>("nome");
   const [filterReserva, setFilterReserva] = useState<FilterReserva>("all");
   const [filterEstoque, setFilterEstoque] = useState<FilterEstoque>("all");
+  const [filterCategoria, setFilterCategoria] =
+    useState<FilterCategoria>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
@@ -208,6 +228,11 @@ export default function ProdutosAdminPage() {
       filtered = filtered.filter((p) => !p.disponivel_reserva);
     }
 
+    // Filtro por categoria
+    if (filterCategoria !== "all") {
+      filtered = filtered.filter((p) => p.categoria === filterCategoria);
+    }
+
     // Filtro por estoque
     if (filterEstoque !== "all") {
       filtered = filtered.filter((p) => {
@@ -240,7 +265,14 @@ export default function ProdutosAdminPage() {
     });
 
     return filtered;
-  }, [produtos, searchTerm, sortBy, filterReserva, filterEstoque]);
+  }, [
+    produtos,
+    searchTerm,
+    sortBy,
+    filterReserva,
+    filterEstoque,
+    filterCategoria,
+  ]);
 
   // Paginação
   const paginatedProdutos = useMemo(() => {
@@ -252,10 +284,26 @@ export default function ProdutosAdminPage() {
   }, [filteredAndSortedProdutos, currentPage, itemsPerPage]);
 
   const totalPages = Math.ceil(filteredAndSortedProdutos.length / itemsPerPage);
+  const produtosComEstoqueBaixo = produtos.filter((p) => p.estoque < 50).length;
+  const produtosParaReserva = produtos.filter((p) => p.disponivel_reserva).length;
+  const categoriaFilterOptions = useMemo(() => {
+    const categorias = Array.from(
+      new Set(
+        produtos
+          .map((produto) => produto.categoria)
+          .filter((categoria): categoria is string => Boolean(categoria))
+      )
+    ).sort((a, b) => getCategoriaLabel(a).localeCompare(getCategoriaLabel(b)));
+
+    return categorias.map((categoria) => ({
+      value: categoria,
+      label: getCategoriaLabel(categoria),
+    }));
+  }, [produtos]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, sortBy, filterReserva, filterEstoque]);
+  }, [searchTerm, sortBy, filterReserva, filterEstoque, filterCategoria]);
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -267,6 +315,7 @@ export default function ProdutosAdminPage() {
     setSortBy("nome");
     setFilterReserva("all");
     setFilterEstoque("all");
+    setFilterCategoria("all");
     setCurrentPage(1);
   }
 
@@ -294,6 +343,25 @@ export default function ProdutosAdminPage() {
         </Button>
       </div>
 
+      <section className="admin-summary" aria-label="Resumo de produtos">
+        <div className="summary-item">
+          <span className="summary-label">Produtos</span>
+          <strong>{produtos.length}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Estoque baixo</span>
+          <strong>{produtosComEstoqueBaixo}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Com reserva</span>
+          <strong>{produtosParaReserva}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Exibindo</span>
+          <strong>{filteredAndSortedProdutos.length}</strong>
+        </div>
+      </section>
+
       <AdminFilters
         searchValue={searchTerm}
         onSearchChange={(e) => setSearchTerm(e.target.value)}
@@ -318,6 +386,16 @@ export default function ProdutosAdminPage() {
               { value: "all", label: "Todos" },
               { value: "sim", label: "Disponível" },
               { value: "nao", label: "Indisponível" },
+            ],
+          },
+          {
+            label: "Categoria",
+            value: filterCategoria,
+            onChange: (e) =>
+              setFilterCategoria(e.target.value as FilterCategoria),
+            options: [
+              { value: "all", label: "Todas" },
+              ...categoriaFilterOptions,
             ],
           },
           {
@@ -351,23 +429,25 @@ export default function ProdutosAdminPage() {
           <tbody>
             {paginatedProdutos.map((produto) => (
               <tr key={produto.id}>
-                <td className="nome-cell">
+                <td className="nome-cell" data-label="Nome">
                   <strong>{produto.nome}</strong>
                 </td>
-                <td className="categoria-cell">
-                  {produto.categoria
-                    ? CATEGORIA_CHOICES.find(
-                        ([value]) => value === produto.categoria
-                      )?.[1] || produto.categoria
-                    : "-"}
+                <td className="categoria-cell" data-label="Categoria">
+                  <span className={`category-tag category-${produto.categoria || "sem-categoria"}`}>
+                    {getCategoriaLabel(produto.categoria)}
+                  </span>
                 </td>
-                <td>R$ {produto.preco.toFixed(2)}</td>
-                <td>{produto.medida}</td>
-                <td>{produto.estoque}</td>
-                <td className="reserva-cell">
+                <td className="numeric-cell" data-label="Preço">
+                  R$ {produto.preco.toFixed(2)}
+                </td>
+                <td data-label="Medida">{produto.medida}</td>
+                <td className="numeric-cell" data-label="Estoque">
+                  {produto.estoque}
+                </td>
+                <td className="reserva-cell" data-label="Reserva">
                   {produto.disponivel_reserva ? (
                     <div className="reserva-info-inline">
-                      <span className="disponivel">✓ Disponível</span>
+                      <span className="disponivel">Disponível</span>
                       <span className="limite">
                         Limite: {produto.limite_reserva || 2}
                       </span>
@@ -389,7 +469,7 @@ export default function ProdutosAdminPage() {
                     <span className="nao-disponivel">Não disponível</span>
                   )}
                 </td>
-                <td className="actions-cell">
+                <td className="actions-cell" data-label="Ações">
                   <div className="produto-actions">
                     <Button
                       onClick={() => abrirPopupReservas(produto)}

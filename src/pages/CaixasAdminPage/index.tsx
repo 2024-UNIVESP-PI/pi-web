@@ -14,6 +14,7 @@ import Input from "../../components/Input";
 import AdminFilters from "../../components/AdminFilters";
 import Pagination from "../../components/Pagination";
 import "./styles.scss";
+import "../admin-tables.scss";
 
 type SortOption = "nome" | "nome_desc" | "usuario" | "usuario_desc";
 
@@ -202,6 +203,17 @@ export default function CaixasAdminPage() {
         </Button>
       </div>
 
+      <section className="admin-summary" aria-label="Resumo de caixas">
+        <div className="summary-item">
+          <span className="summary-label">Caixas</span>
+          <strong>{caixas.length}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Exibindo</span>
+          <strong>{filteredAndSortedCaixas.length}</strong>
+        </div>
+      </section>
+
       <AdminFilters
         searchValue={searchTerm}
         onSearchChange={(e) => setSearchTerm(e.target.value)}
@@ -231,16 +243,16 @@ export default function CaixasAdminPage() {
           <tbody>
             {paginatedCaixas.map((caixa) => (
               <tr key={caixa.id}>
-                <td className="nome-cell">
+                <td className="nome-cell" data-label="Nome">
                   <strong>{caixa.nome}</strong>
                 </td>
-                <td>{caixa.usuario}</td>
-                <td className="senha-cell">
+                <td data-label="Usuário">{caixa.usuario}</td>
+                <td className="senha-cell" data-label="Senha">
                   <span className="senha-value">
                     <FaLock /> Protegida
                   </span>
                 </td>
-                <td className="actions-cell">
+                <td className="actions-cell" data-label="Ações">
                   <div className="caixa-actions">
                     <Button
                       onClick={() => abrirPopupEditar(caixa)}

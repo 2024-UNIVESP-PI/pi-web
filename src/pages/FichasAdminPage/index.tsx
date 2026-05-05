@@ -8,6 +8,7 @@ import Input from "../../components/Input";
 import AdminFilters from "../../components/AdminFilters";
 import Pagination from "../../components/Pagination";
 import "./styles.scss";
+import "../admin-tables.scss";
 
 export type Venda = {
   id: number;
@@ -243,6 +244,8 @@ export default function FichasAdminPage() {
   }, [filteredAndSortedFichas, currentPage, itemsPerPage]);
 
   const totalPages = Math.ceil(filteredAndSortedFichas.length / itemsPerPage);
+  const fichasAtivas = fichas.filter((f) => f.is_active).length;
+  const fichasDeletadas = fichas.length - fichasAtivas;
 
   useEffect(() => {
     setCurrentPage(1);
@@ -283,6 +286,25 @@ export default function FichasAdminPage() {
           <FaPlus /> Nova Ficha
         </Button>
       </div>
+
+      <section className="admin-summary" aria-label="Resumo de fichas">
+        <div className="summary-item">
+          <span className="summary-label">Fichas</span>
+          <strong>{fichas.length}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Ativas</span>
+          <strong>{fichasAtivas}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Deletadas</span>
+          <strong>{fichasDeletadas}</strong>
+        </div>
+        <div className="summary-item">
+          <span className="summary-label">Exibindo</span>
+          <strong>{filteredAndSortedFichas.length}</strong>
+        </div>
+      </section>
 
       <AdminFilters
         searchValue={searchTerm}
@@ -332,22 +354,22 @@ export default function FichasAdminPage() {
                 key={ficha.id}
                 className={!ficha.is_active ? "deleted-row" : ""}
               >
-                <td className="numero-cell">
+                <td className="numero-cell" data-label="Número">
                   <strong>#{ficha.numero}</strong>
                 </td>
-                <td>R$ {Number(ficha.saldo).toFixed(2)}</td>
-                <td>
+                <td className="numeric-cell" data-label="Saldo">R$ {Number(ficha.saldo).toFixed(2)}</td>
+                <td data-label="Status">
                   {ficha.is_active ? (
                     <span className="status-active">Ativa</span>
                   ) : (
                     <span className="status-deleted">Deletada</span>
                   )}
                 </td>
-                <td>
+                <td data-label="Deletada em">
                   {ficha.deleted_at ? formatarData(ficha.deleted_at) : "-"}
                 </td>
-                <td>{ficha.deleted_by_caixa_nome || "-"}</td>
-                <td className="actions-cell">
+                <td data-label="Deletada por">{ficha.deleted_by_caixa_nome || "-"}</td>
+                <td className="actions-cell" data-label="Ações">
                   <div className="ficha-actions">
                     <Button
                       onClick={() => carregarHistorico(ficha)}

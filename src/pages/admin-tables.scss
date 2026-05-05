@@ -1,0 +1,327 @@
+.produtos-admin-page,
+.caixas-admin-page,
+.fichas-admin-page {
+  padding: var(--space-8);
+
+  .page-header {
+    align-items: center;
+    margin-bottom: var(--space-5);
+  }
+
+  .admin-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+
+  .summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+
+    .summary-label {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      text-transform: uppercase;
+    }
+
+    strong {
+      color: var(--color-text);
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
+    }
+  }
+
+  .produtos-table-container,
+  .caixas-table-container,
+  .fichas-table-container {
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-soft);
+
+    .produtos-table,
+    .caixas-table,
+    .fichas-table {
+      min-width: 760px;
+
+      thead {
+        background: var(--color-surface-muted);
+        border-bottom: 1px solid var(--color-border);
+
+        th {
+          padding: var(--space-3) var(--space-4);
+          color: var(--color-text-muted);
+          font-size: var(--font-size-xs);
+          font-weight: var(--font-weight-semibold);
+          line-height: var(--line-height-base);
+          text-transform: uppercase;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid var(--color-border);
+
+          &:hover {
+            background-color: #f9fbff;
+          }
+        }
+
+        td {
+          padding: var(--space-4);
+          color: var(--color-text);
+          font-size: var(--font-size-sm);
+          line-height: var(--line-height-base);
+
+          &.numeric-cell {
+            font-weight: var(--font-weight-semibold);
+            font-variant-numeric: tabular-nums;
+          }
+
+          &.nome-cell,
+          &.numero-cell {
+            strong {
+              font-weight: var(--font-weight-semibold);
+            }
+          }
+
+          &.actions-cell {
+            width: 10.5rem;
+            max-width: 10.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  .category-tag {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.2rem var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text);
+    background: var(--color-surface-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    text-transform: capitalize;
+  }
+
+  .category-doces,
+  .category-doce {
+    border-color: #fbcfe8;
+    background: #fdf2f8;
+    color: #9d174d;
+  }
+
+  .category-salgados,
+  .category-salgado {
+    border-color: #fed7aa;
+    background: #fff7ed;
+    color: #9a3412;
+  }
+
+  .category-bebidas,
+  .category-bebida {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .category-jogos,
+  .category-jogo {
+    border-color: #ddd6fe;
+    background: #f5f3ff;
+    color: #6d28d9;
+  }
+
+  .reserva-info-inline {
+    .disponivel,
+    .reservas-total {
+      width: fit-content;
+      padding: 0.125rem var(--space-2);
+      border-radius: 999px;
+      background: var(--color-light-green);
+    }
+  }
+
+  .status-active,
+  .status-deleted,
+  .senha-value,
+  .nao-disponivel {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    width: fit-content;
+    padding: 0.2rem var(--space-2);
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+  }
+
+  .status-active {
+    background: var(--color-light-green);
+    color: var(--color-green);
+  }
+
+  .status-deleted {
+    background: var(--color-light-yellow);
+    color: #8a6500;
+  }
+
+  .senha-value {
+    background: var(--color-surface-muted);
+    color: var(--color-text-muted);
+    font-family: inherit;
+  }
+
+  .nao-disponivel {
+    background: var(--color-extra-light-grey);
+    color: var(--color-text-muted);
+    font-style: normal;
+  }
+
+  .produto-actions,
+  .caixa-actions,
+  .ficha-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
+    width: 9rem;
+    margin-left: auto;
+
+    .button-component.small {
+      width: 100%;
+      min-height: 2rem;
+      padding: 0.4rem 0.55rem;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      white-space: nowrap;
+    }
+  }
+
+  .empty-state {
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-soft);
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .produtos-admin-page,
+  .caixas-admin-page,
+  .fichas-admin-page {
+    padding: var(--space-4);
+
+    .page-header {
+      align-items: stretch;
+      margin-bottom: var(--space-4);
+    }
+
+    .admin-summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+    }
+
+    .summary-item {
+      padding: var(--space-3);
+    }
+
+    .produtos-table-container,
+    .caixas-table-container,
+    .fichas-table-container {
+      overflow: visible;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+
+      .produtos-table,
+      .caixas-table,
+      .fichas-table {
+        min-width: 0;
+
+        thead {
+          display: none;
+        }
+
+        tbody {
+          display: grid;
+          gap: var(--space-3);
+
+          tr {
+            display: grid;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+          }
+
+          td {
+            display: grid;
+            grid-template-columns: minmax(6.5rem, 40%) 1fr;
+            gap: var(--space-3);
+            align-items: start;
+            padding: 0;
+            font-size: var(--font-size-sm);
+
+            &::before {
+              content: attr(data-label);
+              color: var(--color-text-muted);
+              font-size: var(--font-size-xs);
+              font-weight: var(--font-weight-semibold);
+              text-transform: uppercase;
+            }
+
+            &.actions-cell {
+              display: block;
+              width: auto;
+              max-width: none;
+
+              &::before {
+                display: block;
+                margin-bottom: var(--space-2);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .produto-actions,
+    .caixa-actions,
+    .ficha-actions {
+      justify-content: stretch;
+      width: 100%;
+      margin-left: 0;
+
+      .button-component.small {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .produtos-admin-page,
+  .caixas-admin-page,
+  .fichas-admin-page {
+    .admin-summary {
+      grid-template-columns: 1fr;
+    }
+  }
+}
