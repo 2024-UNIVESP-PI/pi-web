@@ -9,6 +9,7 @@ import {
   FaQrcode,
   FaStore,
   FaUsers,
+  FaMoneyBillTransfer,
 } from "react-icons/fa6";
 
 import { useAdmin } from "../../../../contexts/AdminContext";
@@ -161,6 +162,11 @@ export default function Menu() {
             text="Gerenciar Fichas"
             to="/admin-fichas"
             icon={<FaMoneyCheckDollar />}
+          />
+          <MenuItem
+            text="Movimentações"
+            to="/admin-movimentacoes"
+            icon={<FaMoneyBillTransfer />}
           />
           <MenuItem
             text="Sair do Dashboard"

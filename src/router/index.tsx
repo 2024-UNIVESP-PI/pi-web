@@ -17,6 +17,7 @@ import ReservasAdminPage from "../pages/ReservasAdminPage";
 import CaixasAdminPage from "../pages/CaixasAdminPage";
 import ProdutosAdminPage from "../pages/ProdutosAdminPage";
 import FichasAdminPage from "../pages/FichasAdminPage";
+import MovimentacoesAdminPage from "../pages/MovimentacoesAdminPage";
 
 import { useAdmin } from "../contexts/AdminContext";
 import { CaixaProvider } from "../contexts/CaixaContext";
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
       {
         path: "/admin-fichas",
         element: <ProtectedRoute element={<FichasAdminPage />} />,
+      },
+      {
+        path: "/admin-movimentacoes",
+        element: <ProtectedRoute element={<MovimentacoesAdminPage />} />,
       },
     ],
   },
