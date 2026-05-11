@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import CaixaContext, { CaixaProvider } from "../../contexts/CaixaContext";
+import CaixaContext from "../../contexts/CaixaContext";
 
 import Header from "./components/Header";
 import ActivityIndicator from "../../components/ActivityIndicator";
@@ -14,9 +14,7 @@ export default function Layout() {
     location.pathname === "/admin-login" ||
     location.pathname === "/caixa-login";
 
-  // Note: Admin routes now use CaixaProvider (via LayoutWithCaixaProtected) to allow logout caixa on admin access
   if (isPublicRoute) {
-    // For public login routes, render layout *without* CaixaProvider (unless needed for login)
     return (
       <div id="layout">
         <Header />
@@ -28,12 +26,7 @@ export default function Layout() {
     );
   }
 
-  // For other routes, wrap with CaixaProvider and use CaixaContext
-  return (
-    <CaixaProvider>
-      <LayoutContent />
-    </CaixaProvider>
-  );
+  return <LayoutContent />;
 }
 
 function LayoutContent() {

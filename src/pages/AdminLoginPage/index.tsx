@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "../../contexts/AdminContext";
+import CaixaContext from "../../contexts/CaixaContext";
 
 import "./styles.scss";
 
@@ -12,6 +13,7 @@ export default function AdminLoginPage() {
 
   const navigate = useNavigate();
   const { login } = useAdmin();
+  const caixaContext = useContext(CaixaContext.Context);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +23,8 @@ export default function AdminLoginPage() {
       setError("");
       const success = await login(username.trim(), password);
       if (success) {
-        navigate("/admin-dashboard");
+        caixaContext?.logout();
+        navigate("/admin-dashboard", { replace: true });
       } else {
         setError("Usuário ou senha inválidos.");
       }

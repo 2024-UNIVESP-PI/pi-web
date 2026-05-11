@@ -51,10 +51,16 @@ export default function Header() {
 
   return (
     <header>
-      <Link to="/">
-        <h1 className="arraia-tech">
-          <strong>Arraiá</strong>Tech
-        </h1>
+      <Link to="/" className="brand-link">
+        <div className="brand-block">
+          <h1 className="arraia-tech">
+            <strong>Arraiá</strong>Tech
+          </h1>
+          <p className="school-signature">
+            Desenvolvido para
+            <strong>E.E. Luiz Carlos Gomes</strong>
+          </p>
+        </div>
       </Link>
 
       <button className="open-options" onClick={() => setOptionsVisible(true)}>
@@ -71,6 +77,11 @@ export default function Header() {
           Fechar
         </Button>
       </div>
+
+      <footer className="school-footer">
+        <span>Desenvolvido para</span>
+        <strong>Escola Estadual Luiz Carlos Gomes</strong>
+      </footer>
     </header>
   );
 }

@@ -6,12 +6,56 @@ header {
   flex-direction: column;
   gap: 16px;
 
+  .brand-link {
+    color: inherit;
+  }
+
+  .brand-block {
+    padding: 28px 16px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+  }
+
   h1.arraia-tech {
     color: var(--color-black);
     font-size: 1.5em;
     font-weight: 300;
-    text-align: center;
-    padding: 32px 16px;
+    line-height: var(--line-height-tight);
+  }
+
+  .school-signature {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 8px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-base);
+
+    strong {
+      color: var(--color-light-black);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+    }
+  }
+
+  .school-footer {
+    margin-top: auto;
+    padding: 14px 12px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-base);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong {
+      color: var(--color-light-black);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+    }
   }
 
   button.open-options,
@@ -32,6 +76,7 @@ header {
 
   div.options {
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -59,10 +104,30 @@ header {
     justify-content: space-between;
     align-items: center;
 
+    .brand-block {
+      padding: unset;
+      border-bottom: 0;
+      text-align: left;
+    }
+
     h1.arraia-tech {
       font-size: 1.5em;
       padding: unset;
-      margin: 4px 8px 4px 12px;
+      margin: 4px 8px 0 12px;
+    }
+
+    .school-signature {
+      margin: 0 8px 4px 12px;
+      font-size: 0.65rem;
+
+      strong {
+        font-size: 0.72rem;
+      }
+    }
+
+    .school-footer {
+      margin-top: auto;
+      padding: 12px 0 0;
     }
 
     button.open-options,

@@ -1,5 +1,5 @@
 import { ReactNode, useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaCashRegister,
   FaMoneyCheckDollar,
@@ -58,22 +58,41 @@ function MenuItem(props: MenuItemProps) {
 export default function Menu() {
   const { isAdmin, logout: logoutAdmin } = useAdmin();
   const caixaContext = useContext(CaixaContext.Context);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isLoginRoute =
+    location.pathname === "/caixa-login" || location.pathname === "/admin-login";
 
   // Verifica se o caixa está realmente logado - verificações diretas no JSX
 
   const handleLogoutAdmin = () => {
     logoutAdmin();
-    // Hard refresh para garantir que o logout funcione corretamente
-    window.location.href = "/";
+    caixaContext?.logout();
+    navigate("/admin-login", { replace: true });
   };
 
   const handleLogoutCaixa = () => {
-    if (caixaContext?.logout) {
-      caixaContext.logout();
-      // Hard refresh para garantir que o logout funcione corretamente
-      window.location.href = "/caixa-login";
-    }
+    caixaContext?.logout();
+    logoutAdmin();
+    navigate("/caixa-login", { replace: true });
   };
+
+  if (isLoginRoute) {
+    return (
+      <nav id="menu" className="login-menu">
+        <MenuItem
+          text="Logar como Caixa"
+          to="/caixa-login"
+          icon={<FaCashRegister />}
+        />
+        <MenuItem
+          text="Logar como Admin"
+          to="/admin-login"
+          icon={<FaUserShield />}
+        />
+      </nav>
+    );
+  }
 
   return (
     <nav id="menu">
@@ -113,15 +132,6 @@ export default function Menu() {
                 />
               </>
             )}
-
-          <p className="title" style={{ marginTop: "24px" }}>
-            DASHBOARD
-          </p>
-          <MenuItem
-            text="Logar como Admin"
-            to="/admin-login"
-            icon={<FaUserShield />}
-          />
 
           {/* Só mostra Sair se o caixa estiver realmente logado */}
           {/* Verificação rigorosa: DEVE estar logado */}

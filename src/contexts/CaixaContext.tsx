@@ -10,6 +10,12 @@ import React, {
 import { Caixa } from "../services/caixaService";
 import caixaService from "../services/caixaService";
 import useLocalStorage from "../hooks/useLocalStorage";
+import {
+  AUTH_SESSION_CHANGED_EVENT,
+  CAIXA_LOGGED_ID_STORAGE_KEY,
+  clearAdminSessionStorage,
+  clearCaixaSessionStorage,
+} from "./authStorage";
 
 type CaixaContextType = {
   caixa: number | undefined;
@@ -43,6 +49,35 @@ export const CaixaProvider = (props: CaixaProviderType) => {
   // Usa uma ref para garantir que não execute novamente após logout
   const hasInitialized = React.useRef(false);
   const isLoggingOut = React.useRef(false);
+
+  useEffect(() => {
+    const syncClearedCaixaSession = () => {
+      const hasStoredCaixa = localStorage.getItem(CAIXA_LOGGED_ID_STORAGE_KEY);
+
+      if (!hasStoredCaixa) {
+        deleteStoredCaixaId();
+        setCaixa(undefined);
+        setCaixaData(undefined);
+        setIsLoggedIn(false);
+        setHasChecked(true);
+      }
+    };
+
+    window.addEventListener("storage", syncClearedCaixaSession);
+    window.addEventListener(
+      AUTH_SESSION_CHANGED_EVENT,
+      syncClearedCaixaSession
+    );
+
+    return () => {
+      window.removeEventListener("storage", syncClearedCaixaSession);
+      window.removeEventListener(
+        AUTH_SESSION_CHANGED_EVENT,
+        syncClearedCaixaSession
+      );
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // Só executa uma vez na montagem inicial
@@ -105,12 +140,7 @@ export const CaixaProvider = (props: CaixaProviderType) => {
 
       // Garante que o localStorage também esteja limpo
       // Executa de forma síncrona para evitar race conditions
-      try {
-        localStorage.removeItem("caixa_logged_id");
-        localStorage.removeItem("caixa");
-      } catch {
-        // Ignora erros
-      }
+      clearCaixaSessionStorage();
 
       // Se storedCaixaId ainda existir, força a limpeza
       // Isso previne que o useLocalStorage recarregue o valor do localStorage
@@ -144,6 +174,7 @@ export const CaixaProvider = (props: CaixaProviderType) => {
       const response = await caixaService.loginCaixa({ usuario, senha });
       if (response.status === 200) {
         const caixaLogado = response.data;
+        clearAdminSessionStorage();
         // Define os dados antes de atualizar o localStorage
         setCaixa(caixaLogado.id);
         setCaixaData(caixaLogado);
@@ -165,20 +196,7 @@ export const CaixaProvider = (props: CaixaProviderType) => {
 
     // IMPORTANTE: Ordem das operações - primeiro limpa o localStorage, depois os estados
     // Limpa o localStorage PRIMEIRO de forma síncrona e FORÇA a limpeza
-    try {
-      // Remove diretamente do localStorage
-      localStorage.removeItem("caixa_logged_id");
-      localStorage.removeItem("caixa");
-      // Força a remoção novamente para garantir
-      if (localStorage.getItem("caixa_logged_id")) {
-        localStorage.removeItem("caixa_logged_id");
-      }
-      if (localStorage.getItem("caixa")) {
-        localStorage.removeItem("caixa");
-      }
-    } catch {
-      // Ignora erros de localStorage
-    }
+    clearCaixaSessionStorage();
 
     // Usa deleteLocalStorage para garantir que o estado do hook também seja limpo
     // Chama múltiplas vezes para garantir que funcione
@@ -201,14 +219,8 @@ export const CaixaProvider = (props: CaixaProviderType) => {
     setTimeout(() => {
       isLoggingOut.current = false;
       // Verificação final - se ainda houver algo no localStorage, limpa novamente
-      try {
-        if (localStorage.getItem("caixa_logged_id")) {
-          localStorage.removeItem("caixa_logged_id");
-          deleteStoredCaixaId();
-        }
-      } catch {
-        // Ignora erros
-      }
+      clearCaixaSessionStorage();
+      deleteStoredCaixaId();
     }, 300);
   };
 

@@ -46,17 +46,26 @@
       font-variant-numeric: tabular-nums;
     }
 
+    small {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-base);
+    }
+
     &.entradas strong {
       color: var(--color-green);
     }
 
-    &.saidas strong {
-      color: var(--color-red);
+    &.receita strong {
+      color: var(--color-black);
     }
 
-    &.saldo strong,
-    &.saldo-fichas strong {
+    &.saldo strong {
       color: var(--color-blue);
+    }
+
+    &.saldo-fichas strong {
+      color: var(--color-yellow);
     }
   }
 
@@ -203,8 +212,8 @@
     }
 
     &.venda {
-      background: var(--color-light-red);
-      color: var(--color-red);
+      background: var(--color-light-blue);
+      color: var(--color-blue);
     }
   }
 
@@ -217,7 +226,7 @@
     }
 
     &.saida {
-      color: var(--color-red);
+      color: var(--color-blue);
     }
   }
 

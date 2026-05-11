@@ -1,6 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
-  FaArrowDown,
   FaArrowUp,
   FaMagnifyingGlass,
   FaMoneyBillTransfer,
@@ -41,8 +40,11 @@ function formatDateTime(value: string) {
 const emptySummary: MovimentacoesFinanceirasSummary = {
   entradas: 0,
   saidas: 0,
+  receita_reconhecida: 0,
   saldo_movimentado: 0,
   saldo_fichas: 0,
+  caixa_disponivel: 0,
+  diferenca_conciliacao: 0,
   total_movimentacoes: 0,
 };
 
@@ -131,7 +133,7 @@ export default function MovimentacoesAdminPage() {
       <div className="page-header">
         <PageTitle
           title="Movimentações"
-          subtitle="Extrato financeiro de recargas e vendas por ficha"
+          subtitle="Visão econômica de caixa, receita reconhecida e saldo ainda carregado em fichas"
         />
         <Button onClick={carregarMovimentacoes} color="var(--color-blue)">
           Atualizar
@@ -141,27 +143,37 @@ export default function MovimentacoesAdminPage() {
       <section className="money-summary" aria-label="Resumo financeiro">
         <div className="summary-card entradas">
           <span>
-            <FaArrowUp /> Entradas
+            <FaArrowUp /> Caixa recebido
           </span>
           <strong>{formatCurrency(summary.entradas)}</strong>
+          <small>Recargas feitas nas fichas</small>
         </div>
-        <div className="summary-card saidas">
+        <div className="summary-card receita">
           <span>
-            <FaArrowDown /> Saídas
+            <FaReceipt /> Receita reconhecida
           </span>
-          <strong>{formatCurrency(summary.saidas)}</strong>
-        </div>
-        <div className="summary-card saldo">
-          <span>
-            <FaMoneyBillTransfer /> Balanço
-          </span>
-          <strong>{formatCurrency(summary.saldo_movimentado)}</strong>
+          <strong>
+            {formatCurrency(summary.receita_reconhecida ?? summary.saidas)}
+          </strong>
+          <small>Vendas consumidas nas fichas</small>
         </div>
         <div className="summary-card saldo-fichas">
           <span>
             <FaWallet /> Saldo em fichas
           </span>
           <strong>{formatCurrency(summary.saldo_fichas)}</strong>
+          <small>Obrigação com clientes</small>
+        </div>
+        <div className="summary-card saldo">
+          <span>
+            <FaMoneyBillTransfer /> Caixa disponível
+          </span>
+          <strong>
+            {formatCurrency(
+              summary.caixa_disponivel ?? summary.saldo_movimentado
+            )}
+          </strong>
+          <small>Caixa recebido menos saldo em fichas</small>
         </div>
         <div className="summary-card">
           <span>
@@ -233,7 +245,7 @@ export default function MovimentacoesAdminPage() {
                   <td data-label="Data">{formatDateTime(movimentacao.data)}</td>
                   <td data-label="Tipo">
                     <span className={`type-pill ${movimentacao.tipo}`}>
-                      {movimentacao.tipo === "recarga" ? "Recarga" : "Venda"}
+                      {movimentacao.tipo === "recarga" ? "Recarga" : "Receita"}
                     </span>
                   </td>
                   <td data-label="Ficha">#{movimentacao.ficha_numero}</td>
@@ -250,7 +262,7 @@ export default function MovimentacoesAdminPage() {
                     data-label="Valor"
                     className={`money-value ${movimentacao.direcao}`}
                   >
-                    {movimentacao.direcao === "entrada" ? "+" : "-"}
+                    {movimentacao.direcao === "entrada" ? "+" : ""}
                     {formatCurrency(movimentacao.valor)}
                   </td>
                 </tr>

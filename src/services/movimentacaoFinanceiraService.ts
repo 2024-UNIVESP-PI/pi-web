@@ -21,8 +21,11 @@ export type MovimentacaoFinanceira = {
 export type MovimentacoesFinanceirasSummary = {
   entradas: number;
   saidas: number;
+  receita_reconhecida: number;
   saldo_movimentado: number;
   saldo_fichas: number;
+  caixa_disponivel: number;
+  diferenca_conciliacao: number;
   total_movimentacoes: number;
 };
 

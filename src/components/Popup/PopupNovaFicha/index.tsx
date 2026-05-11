@@ -296,7 +296,6 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
           <div className="generated-number">
             <span>Número da ficha</span>
             <strong>#{numero || props.nextNumero || 1}</strong>
-            <small>Definido automaticamente</small>
           </div>
           <Input
             id="saldo"
