@@ -39,18 +39,22 @@ export default function AdminLoginPage() {
         <h2>Login do Administrador</h2>
         {error && <p className="error">{error}</p>}
         <div>
-          <label>Usuário</label>
+          <label htmlFor="username">Usuário</label>
           <input
+            id="username"
             type="text"
+            autoComplete="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Digite o usuário"
           />
         </div>
         <div>
-          <label>Senha</label>
+          <label htmlFor="password">Senha</label>
           <input
+            id="password"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Digite a senha"
