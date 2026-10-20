@@ -10,6 +10,7 @@ export type NovoProduto = {
   estoque: number;
   caixa: number;
   categoria: string;
+  perecivel?: boolean;
   disponivel_reserva?: boolean;
   limite_reserva?: number;
   quantidade_reserva_disponivel?: number;

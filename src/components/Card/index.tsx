@@ -1,4 +1,4 @@
-import { ReactNode, ElementType } from 'react'
+import { ElementType, MouseEventHandler, ReactNode } from 'react'
 
 import './styles.scss'
 export type CardProps = {
@@ -6,7 +6,7 @@ export type CardProps = {
     className?: string
     lowOpacity?: boolean
     color?: string
-    onClick?: Function
+    onClick?: MouseEventHandler<HTMLElement>
     children: ReactNode | ReactNode[]
     options?: ReactNode | ReactNode[]
 }

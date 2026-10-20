@@ -50,6 +50,17 @@ export interface ProdutoRiscoEstoque {
   confianca?: number;
 }
 
+export interface PrevisaoDemandaProduto {
+  produtoId: number;
+  produto: string;
+  categoria: string;
+  demandaPrevista3Dias: number;
+  reservasAtivas: number;
+  fichasRelacionadas: number;
+  estoqueAtual: number;
+  producaoSugerida: number;
+}
+
 export interface HorarioPico {
   horario: string;
   vendas: number;
@@ -91,6 +102,21 @@ export interface DashboardData {
   predicaoReceita3Dias: number;
   produtosEstoquePrevisao: ProdutoEstoquePrevisao[];
   produtosRiscoEstoque: ProdutoRiscoEstoque[];
+  previsaoDemandaProdutos: PrevisaoDemandaProduto[];
+  metadadosModeloDemanda: {
+    modelo: string;
+    fonteDados: string;
+    aviso: string;
+    premissa: string;
+    avaliacao: {
+      metrica: string;
+      mae_holdout: number;
+      mae_baseline: number;
+      eventos_treino: number;
+      eventos_holdout: number;
+      particao: string;
+    };
+  } | null;
   horariosPico: HorarioPico[];
   tendenciaVendas: TendenciaVendas;
   confiancaPredicoes: {
@@ -137,6 +163,10 @@ function normalizeDashboardData(raw: Partial<DashboardData>): DashboardData {
     produtosRiscoEstoque: Array.isArray(raw.produtosRiscoEstoque)
       ? raw.produtosRiscoEstoque
       : [],
+    previsaoDemandaProdutos: Array.isArray(raw.previsaoDemandaProdutos)
+      ? raw.previsaoDemandaProdutos
+      : [],
+    metadadosModeloDemanda: raw.metadadosModeloDemanda || null,
     horariosPico: Array.isArray(raw.horariosPico) ? raw.horariosPico : [],
     tendenciaVendas: raw.tendenciaVendas || emptyTendencia,
     confiancaPredicoes: {

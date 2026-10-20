@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 
 import Card from '..'
 
@@ -6,7 +6,7 @@ import './styles.scss'
 export type HomeCardProps = {
     icon: ReactNode
     title: string
-    onClick?: Function
+    onClick?: MouseEventHandler<HTMLDivElement>
 }
 
 export default function HomeCard(props: HomeCardProps) {

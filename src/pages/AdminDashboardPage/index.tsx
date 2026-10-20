@@ -123,6 +123,8 @@ export default function AdminDashboardPage() {
     predicaoReceita3Dias,
     produtosEstoquePrevisao,
     produtosRiscoEstoque,
+    previsaoDemandaProdutos,
+    metadadosModeloDemanda,
     horariosPico,
     tendenciaVendas,
     confiancaPredicoes,
@@ -676,6 +678,50 @@ export default function AdminDashboardPage() {
               </div>
             ))}
           </div>
+        </section>
+      )}
+
+      {previsaoDemandaProdutos.length > 0 && (
+        <section className="card previsao-demanda-produtos">
+          <h2>
+            <FaChartLine />
+            Demanda prevista para o evento
+          </h2>
+          {metadadosModeloDemanda && (
+            <p role="note">
+              {metadadosModeloDemanda.aviso} {metadadosModeloDemanda.premissa}
+            </p>
+          )}
+          <div className="table-container">
+            <table className="estoque-table">
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Demanda em 3 dias</th>
+                  <th>Reservas ativas</th>
+                  <th>Estoque atual</th>
+                  <th>Produção sugerida</th>
+                </tr>
+              </thead>
+              <tbody>
+                {previsaoDemandaProdutos.map((produto) => (
+                  <tr key={produto.produtoId}>
+                    <td>{produto.produto}</td>
+                    <td>{produto.demandaPrevista3Dias}</td>
+                    <td>{produto.reservasAtivas}</td>
+                    <td>{produto.estoqueAtual}</td>
+                    <td>{produto.producaoSugerida}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {metadadosModeloDemanda && (
+            <small>
+              {metadadosModeloDemanda.modelo}; MAE holdout: {metadadosModeloDemanda.avaliacao.mae_holdout}
+              ; baseline: {metadadosModeloDemanda.avaliacao.mae_baseline}.
+            </small>
+          )}
         </section>
       )}
 
