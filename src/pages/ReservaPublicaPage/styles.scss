@@ -255,6 +255,11 @@
           opacity: 0.3;
           cursor: not-allowed;
         }
+
+        &:focus-visible {
+          outline: 2px solid #5a4fcf;
+          outline-offset: 2px;
+        }
       }
 
       .quantidade {

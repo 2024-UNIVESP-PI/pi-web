@@ -324,6 +324,7 @@ export default function ReservaPublicaPage() {
                             }
                             disabled={quantidade === 0}
                             className="btn-quantidade"
+                            aria-label={`Diminuir quantidade de ${produto.nome}`}
                           >
                             -
                           </button>
@@ -345,6 +346,7 @@ export default function ReservaPublicaPage() {
                               quantidade >= produto.disponivel
                             }
                             className="btn-quantidade"
+                            aria-label={`Aumentar quantidade de ${produto.nome}`}
                           >
                             +
                           </button>
