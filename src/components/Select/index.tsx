@@ -1,7 +1,7 @@
 import { ChangeEventHandler } from "react"
 
 export type Option = {
-    value: any
+    value: string | number
     content: string | number
     disabled?: boolean
 }

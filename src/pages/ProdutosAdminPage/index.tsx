@@ -60,12 +60,14 @@ export default function ProdutosAdminPage() {
     medida: string;
     categoria: string;
     estoque: string;
+    perecivel: boolean;
   }>({
     nome: "",
     preco: "",
     medida: "",
     categoria: "doces",
     estoque: "",
+    perecivel: false,
   });
 
   const [showPopupNovo, setShowPopupNovo] = useState(false);
@@ -113,6 +115,7 @@ export default function ProdutosAdminPage() {
       medida: produto.medida,
       categoria: produto.categoria || "doces",
       estoque: String(produto.estoque),
+      perecivel: produto.perecivel || false,
     });
     setShowPopup(true);
   }
@@ -130,6 +133,7 @@ export default function ProdutosAdminPage() {
       medida: "UN",
       categoria: "doces",
       estoque: "",
+      perecivel: false,
     });
     setShowPopupNovo(true);
   }
@@ -179,6 +183,7 @@ export default function ProdutosAdminPage() {
           medida: formData.medida.trim(),
           categoria: formData.categoria,
           estoque: estoqueNumber,
+          perecivel: formData.perecivel,
         };
         await produtoService.patchProduto(selectedProduto.id, updateData);
       } else {
@@ -603,6 +608,17 @@ export default function ProdutosAdminPage() {
               required
               min={0}
             />
+
+            <label>
+              <input
+                type="checkbox"
+                checked={formData.perecivel}
+                onChange={(e) =>
+                  setFormData({ ...formData, perecivel: e.target.checked })
+                }
+              />
+              Produto perecível (incluir na previsão de demanda)
+            </label>
 
             <div className="form-actions">
               <Button

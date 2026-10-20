@@ -47,6 +47,7 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
   const [medida, setMedida] = useState(MEDIDA_CHOICES[0][0]);
   const [categoria, setCategoria] = useState(CATEGORIA_CHOICES[0][0]);
   const [estoqueInicial, setEstoqueInicial] = useState<string>("");
+  const [perecivel, setPerecivel] = useState(false);
 
   const [formErrors, setFormErrors] = useState<Errors>();
 
@@ -56,6 +57,7 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
     setMedida(MEDIDA_CHOICES[0][0]);
     setCategoria(CATEGORIA_CHOICES[0][0]);
     setEstoqueInicial("");
+    setPerecivel(false);
   }
 
   async function handleCreateProduto(e: FormEvent) {
@@ -94,6 +96,7 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
         categoria,
         estoque: estoqueNum,
         caixa: caixaContext.caixa,
+        perecivel,
       };
       const response = await createProduto(nP);
       if (response && response.status === 201) {
@@ -191,6 +194,15 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
             errors={formErrors?.estoque}
           />
         </div>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={perecivel}
+            onChange={(e) => setPerecivel(e.target.checked)}
+          />
+          Produto perecível (incluir na previsão de demanda)
+        </label>
 
         <Button
           type="submit"

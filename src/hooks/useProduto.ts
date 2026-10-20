@@ -1,12 +1,8 @@
 import { useState } from "react"
-import { AxiosError } from "axios"
+import { AxiosError, isAxiosError } from "axios"
 import produtoService from "../services/produtoService"
 import estoqueServices, { NovaMovimentacaoEstoque } from "../services/estoqueService"
 import { NovoProduto, Produto } from "../services/produtoService"
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return typeof error === 'object' && error !== null && 'isAxiosError' in error && (error as any).isAxiosError === true
-}
 
 export default function useProduto() {
     const [fetchingCreate, setFetchingCreate] = useState<boolean>(false)
