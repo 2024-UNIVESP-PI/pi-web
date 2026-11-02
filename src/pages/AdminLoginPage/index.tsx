@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
       setError("");
       const success = await login(username.trim(), password);
       if (success) {
-        caixaContext?.logout();
+        caixaContext?.logout(true);
         navigate("/admin-dashboard", { replace: true });
       } else {
         setError("Usuário ou senha inválidos.");

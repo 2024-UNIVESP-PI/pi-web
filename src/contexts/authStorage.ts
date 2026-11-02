@@ -48,12 +48,12 @@ export function clearAuthToken() {
   localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
 }
 
-export function clearCaixaSessionStorage() {
+export function clearCaixaSessionStorage(preserveAuthToken = false) {
   if (!canUseStorage()) return;
 
   localStorage.removeItem(CAIXA_LOGGED_ID_STORAGE_KEY);
   localStorage.removeItem(LEGACY_CAIXA_STORAGE_KEY);
-  localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+  if (!preserveAuthToken) localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
   emitAuthSessionChanged();
 }
 
