@@ -4,6 +4,7 @@ import {
   AUTH_SESSION_CHANGED_EVENT,
   clearAdminSessionStorage,
   clearCaixaSessionStorage,
+  setAuthToken,
   getStoredAdminSession,
   setAdminSessionStorage,
 } from "./authStorage";
@@ -35,8 +36,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string) => {
     try {
-      await adminService.loginAdmin({ username, password });
+      const response = await adminService.loginAdmin({ username, password });
       clearCaixaSessionStorage();
+      if (response.data?.token) setAuthToken(response.data.token);
       setAdminSessionStorage(true);
       setIsAdmin(true);
       return true;

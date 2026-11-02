@@ -1,6 +1,7 @@
 export const ADMIN_STORAGE_KEY = "adminLoggedIn";
 export const CAIXA_LOGGED_ID_STORAGE_KEY = "caixa_logged_id";
 export const LEGACY_CAIXA_STORAGE_KEY = "caixa";
+export const AUTH_TOKEN_STORAGE_KEY = "auth_token";
 export const AUTH_SESSION_CHANGED_EVENT = "auth-session-change";
 
 const canUseStorage = () => typeof window !== "undefined";
@@ -29,6 +30,22 @@ export function setAdminSessionStorage(isAdmin: boolean) {
 
 export function clearAdminSessionStorage() {
   setAdminSessionStorage(false);
+  clearAuthToken();
+}
+
+export function getAuthToken() {
+  if (!canUseStorage()) return null;
+  return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+}
+
+export function setAuthToken(token: string) {
+  if (!canUseStorage()) return;
+  localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
+}
+
+export function clearAuthToken() {
+  if (!canUseStorage()) return;
+  localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
 }
 
 export function clearCaixaSessionStorage() {
@@ -36,5 +53,15 @@ export function clearCaixaSessionStorage() {
 
   localStorage.removeItem(CAIXA_LOGGED_ID_STORAGE_KEY);
   localStorage.removeItem(LEGACY_CAIXA_STORAGE_KEY);
+  localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+  emitAuthSessionChanged();
+}
+
+export function clearAuthSessionStorage() {
+  if (!canUseStorage()) return;
+  localStorage.removeItem(ADMIN_STORAGE_KEY);
+  localStorage.removeItem(CAIXA_LOGGED_ID_STORAGE_KEY);
+  localStorage.removeItem(LEGACY_CAIXA_STORAGE_KEY);
+  localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
   emitAuthSessionChanged();
 }

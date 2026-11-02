@@ -15,6 +15,7 @@ import {
   CAIXA_LOGGED_ID_STORAGE_KEY,
   clearAdminSessionStorage,
   clearCaixaSessionStorage,
+  setAuthToken,
 } from "./authStorage";
 
 type CaixaContextType = {
@@ -173,8 +174,9 @@ export const CaixaProvider = (props: CaixaProviderType) => {
 
       const response = await caixaService.loginCaixa({ usuario, senha });
       if (response.status === 200) {
-        const caixaLogado = response.data;
+        const caixaLogado = response.data.caixa || response.data;
         clearAdminSessionStorage();
+        if (response.data.token) setAuthToken(response.data.token);
         // Define os dados antes de atualizar o localStorage
         setCaixa(caixaLogado.id);
         setCaixaData(caixaLogado);
