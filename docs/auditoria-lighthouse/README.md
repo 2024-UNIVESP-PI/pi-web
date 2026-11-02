@@ -29,6 +29,14 @@ com dispositivo `Desktop`, categoria `accessibility` e Lighthouse 13.4.1:
   contraste.
 - `admin-movimentacoes.png` — `/admin-movimentacoes` (18/19): contraste.
 
+As rotas do caixa foram auditadas em produção com uma sessão de caixa válida,
+também em `Snapshot`, `Desktop`, categoria `accessibility` e Lighthouse 13.4.1:
+
+- `caixa-vendas-com-produtos.png` — `/vendas` (21/21), com os 12 produtos
+  carregados: nenhuma falha automatizada e 10 verificações manuais.
+- `caixa-fichas-com-produtos.png` — `/fichas` (20/21): contraste e 10
+  verificações manuais.
+
 Os PNGs são screenshots do relatório Lighthouse completo para referência no
 relatório final. Nenhuma credencial foi salva nesta pasta. O Lighthouse é uma
 verificação automatizada e não substitui a revisão manual completa de WCAG.
