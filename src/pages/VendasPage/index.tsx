@@ -36,7 +36,7 @@ export default function VendasPage() {
                     :
                     (produtos && produtos.length > 0) ?
                         <>
-                            <section className='produtos'>
+                            <section className='produtos' aria-label="Produtos para venda">
                                 {
                                     produtos?.map(produto => (
                                         <VendaCard

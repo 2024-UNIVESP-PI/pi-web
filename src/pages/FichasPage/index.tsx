@@ -73,7 +73,7 @@ export default function FichasPage() {
             </div>
           </section>
 
-          <section className="fichas">
+          <section className="fichas" aria-label="Fichas disponíveis">
             <>
               <Button
                 className="nova-ficha"
