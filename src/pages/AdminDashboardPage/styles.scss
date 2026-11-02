@@ -764,6 +764,98 @@ section.vendas-por-categoria.card h2 {
 }
 
 // Previsão de Estoque
+.previsao-demanda-produtos {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.75rem;
+
+  h2 {
+    margin: 0 0 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color-border-light);
+    color: var(--color-text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+
+    svg {
+      color: var(--color-primary);
+    }
+  }
+
+  > p[role="note"] {
+    margin: 0 0 1.25rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid var(--color-primary);
+    border-radius: 8px;
+    background: var(--color-primary-light);
+    color: var(--color-text-medium);
+    font-size: 0.875rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    border: 1px solid var(--color-border-light);
+    border-radius: 8px;
+  }
+
+  .estoque-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+
+    thead {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+
+      th {
+        padding: 0.875rem 1rem;
+        color: var(--color-text-dark);
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-align: left;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--color-border-light);
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      &:hover {
+        background: #f8fafc;
+      }
+    }
+
+    td {
+      padding: 0.875rem 1rem;
+      color: var(--color-text-medium);
+      font-weight: 500;
+
+      &:first-child {
+        color: var(--color-text-dark);
+        font-weight: 700;
+      }
+    }
+  }
+
+  > small {
+    display: block;
+    margin-top: 1rem;
+    color: var(--color-text-light);
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.25rem;
+  }
+}
+
 .previsao-estoque {
   background: var(--color-white);
   border-radius: 12px;
