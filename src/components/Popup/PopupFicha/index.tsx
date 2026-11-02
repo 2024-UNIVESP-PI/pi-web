@@ -29,7 +29,7 @@ export type PopupFichaProps = {
 
 export default function PopupFicha(props: PopupFichaProps) {
   const caixaContext = useContext(CaixaContext.Context);
-  const [recarga, setRecarga] = useState(0);
+  const [recarga, setRecarga] = useState("");
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [senhaAdmin, setSenhaAdmin] = useState("");
   const [recargaSucesso, setRecargaSucesso] = useState(false);
@@ -43,13 +43,17 @@ export default function PopupFicha(props: PopupFichaProps) {
     e.preventDefault();
     if (props.ficha?.id && recarga) {
       const caixaId = caixaContext?.caixa;
-      const response = await recargaFicha(props.ficha?.id, recarga, caixaId);
+      const response = await recargaFicha(
+        props.ficha.id,
+        Number(recarga),
+        caixaId
+      );
       if (response.status == 200) {
         // Define a mensagem de sucesso primeiro
-        setValorRecarga(recarga);
+        setValorRecarga(Number(recarga));
         setFichaAtualizada(response.data);
         setRecargaSucesso(true);
-        setRecarga(0);
+        setRecarga("");
 
         // Aguarda um momento para garantir que o estado foi atualizado
         // antes de atualizar o estado pai (que pode disparar o useEffect)
@@ -100,7 +104,7 @@ export default function PopupFicha(props: PopupFichaProps) {
         !fichaAtualizada ||
         fichaAtualizada.id !== props.ficha.id
       ) {
-        setRecarga(0);
+        setRecarga("");
         setShowDeletePopup(false);
         setSenhaAdmin("");
         setRecargaSucesso(false);
@@ -145,13 +149,14 @@ export default function PopupFicha(props: PopupFichaProps) {
             </div>
             <form className="recarga-form" onSubmit={handleRecargaFicha}>
               <Input
-                type="intenger"
-                inputMode="numeric"
+                type="number"
+                inputMode="decimal"
                 id={"credito-adicional"}
                 label="Valor da recarga"
-                value={String(recarga)}
-                onChange={(e) => setRecarga(Number(e.target.value))}
-                min={1}
+                value={recarga}
+                onChange={(e) => setRecarga(e.target.value)}
+                min={0.01}
+                step={0.01}
               />
               <div className="recarga-preview">
                 <span>Novo saldo</span>

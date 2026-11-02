@@ -15,7 +15,6 @@ import Button from "../../Button";
 import Tag from "../../Tag";
 
 import { Errors } from "../../../services";
-import cleanDecimal from "../../../functions/cleanDecimal";
 import useFicha from "../../../hooks/useFicha";
 import { Ficha, NovaFicha } from "../../../services/fichaService";
 import reservaService, {
@@ -304,15 +303,7 @@ export default function PopupNovaFicha(props: PopupNovaFichaProps) {
             label="Saldo inicial"
             value={saldo}
             onChange={(e) => {
-              // Permite campo vazio e processa decimal
-              const value = e.target.value;
-              // Permite campo vazio ou valor numérico válido
-              if (value === "" || value === ".") {
-                setSaldo(value);
-              } else {
-                const cleaned = cleanDecimal(value);
-                setSaldo(cleaned === 0 ? "" : String(cleaned));
-              }
+              setSaldo(e.target.value);
               setFichaCriada(undefined);
             }}
             required
