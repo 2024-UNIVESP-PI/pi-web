@@ -63,7 +63,11 @@ export default function Header() {
         </div>
       </Link>
 
-      <button className="open-options" onClick={() => setOptionsVisible(true)}>
+      <button
+        className="open-options"
+        aria-label="Abrir menu"
+        onClick={() => setOptionsVisible(true)}
+      >
         <FaBars />
       </button>
       <div className={"options" + (optionsVisible ? " visible" : "")}>
