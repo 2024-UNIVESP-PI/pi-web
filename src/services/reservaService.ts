@@ -70,6 +70,7 @@ export type ReservaPublicaResponse = {
   nome_completo: string;
   cpf: string;
   data_reserva: string;
+  consulta_token: string;
 };
 
 // GET
@@ -102,10 +103,11 @@ export type ReservaPorCPF = {
 };
 
 export const getReservasPorCPF = async (
-  cpf: string
+  cpf: string,
+  consultaToken: string
 ): Promise<{ reservas: ReservaPorCPF[]; total: number }> => {
   const response = await api.get("movimentacao/reservas-publicas/por-cpf/", {
-    params: { cpf },
+    params: { cpf, consulta_token: consultaToken },
   });
   return response.data;
 };
