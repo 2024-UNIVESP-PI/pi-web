@@ -28,16 +28,18 @@ export default function AdminLoginPage() {
       } else {
         setError("Usuário ou senha inválidos.");
       }
+    } catch {
+      setError("Não foi possível realizar o login. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div id="admin-login-page">
+    <main id="admin-login-page">
       <form onSubmit={handleSubmit}>
-        <h2>Login do Administrador</h2>
-        {error && <p className="error">{error}</p>}
+        <h1>Login do Administrador</h1>
+        {error && <p className="error" role="alert">{error}</p>}
         <div>
           <label htmlFor="username">Usuário</label>
           <input
@@ -64,6 +66,6 @@ export default function AdminLoginPage() {
           {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>
-    </div>
+    </main>
   );
 }

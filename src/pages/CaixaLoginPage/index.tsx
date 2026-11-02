@@ -29,37 +29,43 @@ export default function CaixaLoginPage() {
       return;
     }
 
-    if (caixaContext?.login) {
-      const success = await caixaContext.login(usuario.trim(), senha.trim());
-      if (success) {
-        logoutAdmin();
-        navigate("/", { replace: true });
+    try {
+      if (caixaContext?.login) {
+        const success = await caixaContext.login(usuario.trim(), senha.trim());
+        if (success) {
+          logoutAdmin();
+          navigate("/", { replace: true });
+        } else {
+          setError("Usuário ou senha inválidos.");
+        }
       } else {
-        setError("Usuário ou senha inválidos.");
+        setError("Erro ao inicializar sistema de login.");
       }
-    } else {
-      setError("Erro ao inicializar sistema de login.");
+    } catch {
+      setError("Não foi possível realizar o login. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div id="caixa-login-page">
+    <main id="caixa-login-page">
       <div className="login-container">
         <div className="login-header">
           <FaCashRegister size={48} />
-          <h2>Login do Caixa</h2>
+          <h1>Login do Caixa</h1>
           <p>Faça login para acessar o sistema</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="error-message" role="alert">{error}</div>}
 
           <Input
             id="usuario"
             type="text"
             label="Usuário"
             value={usuario}
+            autoComplete="username"
             onChange={(e) => setUsuario(e.target.value)}
             placeholder="Digite seu usuário"
             required
@@ -70,6 +76,7 @@ export default function CaixaLoginPage() {
             type="password"
             label="Senha"
             value={senha}
+            autoComplete="current-password"
             onChange={(e) => setSenha(e.target.value)}
             placeholder="Digite sua senha"
             required
@@ -85,6 +92,6 @@ export default function CaixaLoginPage() {
           </Button>
         </form>
       </div>
-    </div>
+    </main>
   );
 }

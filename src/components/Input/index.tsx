@@ -9,6 +9,7 @@ export type InputProps = {
   type?: string;
   inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
   placeholder?: string;
+  autoComplete?: string;
   label?: string;
   message?: string;
   options?: Option[];
@@ -60,6 +61,7 @@ export default function Input(props: InputProps) {
           }
           inputMode={props.inputMode}
           placeholder={props.placeholder}
+          autoComplete={props.autoComplete}
           value={props.value}
           onChange={
             props.type == "intenger"
