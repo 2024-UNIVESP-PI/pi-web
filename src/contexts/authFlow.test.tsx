@@ -30,6 +30,12 @@ function CaixaJourney() {
   );
 }
 
+function CaixaLogoutJourney() {
+  const context = useContext(CaixaContext.Context);
+  if (!context) throw new Error("missing caixa provider");
+  return <button onClick={() => context.logout(true)}>Trocar para admin</button>;
+}
+
 function AdminJourney() {
   const context = useAdmin();
   return (
@@ -77,5 +83,20 @@ describe("authenticated journeys", () => {
 
     await waitFor(() => expect(screen.getByTestId("admin-status")).toHaveTextContent("logged-in"));
     expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBe("admin-token");
+  });
+
+  it("can clear caixa state without removing an admin token", () => {
+    localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, "admin-token");
+    localStorage.setItem(CAIXA_LOGGED_ID_STORAGE_KEY, "7");
+
+    render(
+      <CaixaProvider>
+        <CaixaLogoutJourney />
+      </CaixaProvider>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Trocar para admin" }));
+
+    expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBe("admin-token");
+    expect(localStorage.getItem(CAIXA_LOGGED_ID_STORAGE_KEY)).toBeNull();
   });
 });

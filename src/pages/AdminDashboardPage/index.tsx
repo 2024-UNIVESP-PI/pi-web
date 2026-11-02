@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
   // Desloga o caixa quando o admin acessa a dashboard
   useEffect(() => {
     if (caixaContext?.isLoggedIn) {
-      caixaContext.logout();
+      caixaContext.logout(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Executa apenas uma vez ao montar a página

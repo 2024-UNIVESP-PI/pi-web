@@ -27,7 +27,7 @@ type CaixaContextType = {
   setHasChecked: Dispatch<SetStateAction<boolean>>;
   isLoggedIn: boolean;
   login: (usuario: string, senha: string) => Promise<boolean>;
-  logout: () => void;
+  logout: (preserveAuthToken?: boolean) => void;
 };
 
 type CaixaProviderType = {
@@ -192,13 +192,13 @@ export const CaixaProvider = (props: CaixaProviderType) => {
     }
   };
 
-  const logout = () => {
+  const logout = (preserveAuthToken = false) => {
     // Marca que está fazendo logout para prevenir que outros useEffects executem
     isLoggingOut.current = true;
 
     // IMPORTANTE: Ordem das operações - primeiro limpa o localStorage, depois os estados
     // Limpa o localStorage PRIMEIRO de forma síncrona e FORÇA a limpeza
-    clearCaixaSessionStorage();
+    clearCaixaSessionStorage(preserveAuthToken);
 
     // Usa deleteLocalStorage para garantir que o estado do hook também seja limpo
     // Chama múltiplas vezes para garantir que funcione
@@ -221,7 +221,7 @@ export const CaixaProvider = (props: CaixaProviderType) => {
     setTimeout(() => {
       isLoggingOut.current = false;
       // Verificação final - se ainda houver algo no localStorage, limpa novamente
-      clearCaixaSessionStorage();
+      clearCaixaSessionStorage(preserveAuthToken);
       deleteStoredCaixaId();
     }, 300);
   };
