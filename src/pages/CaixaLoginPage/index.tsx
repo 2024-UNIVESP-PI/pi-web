@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { FaCashRegister } from "react-icons/fa6";
 import CaixaContext from "../../contexts/CaixaContext";
-import { useAdmin } from "../../contexts/AdminContext";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import "./styles.scss";
@@ -16,7 +15,6 @@ export default function CaixaLoginPage() {
 
   const navigate = useNavigate();
   const caixaContext = useContext(CaixaContext.Context);
-  const { logout: logoutAdmin } = useAdmin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +31,6 @@ export default function CaixaLoginPage() {
       if (caixaContext?.login) {
         const success = await caixaContext.login(usuario.trim(), senha.trim());
         if (success) {
-          logoutAdmin();
           navigate("/", { replace: true });
         } else {
           setError("Usuário ou senha inválidos.");
