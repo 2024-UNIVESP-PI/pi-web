@@ -14,7 +14,6 @@ import Button from "../../Button";
 
 import { Errors } from "../../../services";
 import { NovoProduto, Produto } from "../../../services/produtoService";
-import cleanDecimal from "../../../functions/cleanDecimal";
 import useProduto from "../../../hooks/useProduto";
 
 export type PopupNovoProdutoProps = {
@@ -162,16 +161,7 @@ export default function PopupNovoProduto(props: PopupNovoProdutoProps) {
             label="Preço"
             placeholder="Insira o preço"
             value={preco}
-            onChange={(e) => {
-              // Permite campo vazio ou valor numérico válido
-              const value = e.target.value;
-              if (value === "" || value === ".") {
-                setPreco(value);
-              } else {
-                const cleaned = cleanDecimal(value);
-                setPreco(cleaned === 0 ? "" : String(cleaned));
-              }
-            }}
+            onChange={(e) => setPreco(e.target.value)}
             required
             min={0}
             step={0.01}
