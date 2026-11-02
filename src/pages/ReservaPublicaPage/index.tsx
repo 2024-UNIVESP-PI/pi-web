@@ -155,7 +155,7 @@ export default function ReservaPublicaPage() {
     return (
       <div className="reserva-publica-page">
         <div className="container">
-          <div className="loading">Carregando...</div>
+          <div className="loading" role="status" aria-live="polite">Carregando...</div>
         </div>
       </div>
     );
@@ -163,7 +163,7 @@ export default function ReservaPublicaPage() {
 
   if (reservaConfirmada) {
     return (
-      <div className="reserva-publica-page">
+      <main className="reserva-publica-page">
         <div className="container">
           <div className="reserva-confirmada">
             <div className="success-icon">✓</div>
@@ -210,12 +210,12 @@ export default function ReservaPublicaPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="reserva-publica-page">
+    <main className="reserva-publica-page">
       <div className="container">
         <header className="page-header">
           <h1>Reserva Antecipada</h1>
@@ -236,7 +236,12 @@ export default function ReservaPublicaPage() {
         </header>
 
         {error && (
-          <div className="error-message">
+          <div
+            id="reserva-error"
+            className="error-message"
+            role="alert"
+            aria-live="assertive"
+          >
             <p>{error}</p>
           </div>
         )}
@@ -251,6 +256,9 @@ export default function ReservaPublicaPage() {
                   type="text"
                   id="nome"
                   value={nomeCompleto}
+                  autoComplete="name"
+                  aria-invalid={Boolean(error && !nomeCompleto.trim())}
+                  aria-describedby={error && !nomeCompleto.trim() ? "reserva-error" : undefined}
                   onChange={(e) => setNomeCompleto(e.target.value)}
                   required
                   placeholder="Digite seu nome completo"
@@ -262,6 +270,10 @@ export default function ReservaPublicaPage() {
                   type="text"
                   id="cpf"
                   value={formatarCPF(cpf)}
+                  autoComplete="off"
+                  inputMode="numeric"
+                  aria-invalid={Boolean(error && cpf.length !== 11)}
+                  aria-describedby={error && cpf.length !== 11 ? "reserva-error" : undefined}
                   onChange={(e) => setCpf(e.target.value.replace(/\D/g, ""))}
                   required
                   maxLength={14}
@@ -328,7 +340,9 @@ export default function ReservaPublicaPage() {
                           >
                             -
                           </button>
-                          <span className="quantidade">{quantidade}</span>
+                            <span className="quantidade" aria-live="polite">
+                              {quantidade}
+                            </span>
                           <button
                             type="button"
                             onClick={() =>
@@ -408,6 +422,6 @@ export default function ReservaPublicaPage() {
           </form>
         )}
       </div>
-    </div>
+      </main>
   );
 }
