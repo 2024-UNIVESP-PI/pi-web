@@ -29,6 +29,13 @@ com dispositivo `Desktop`, categoria `accessibility` e Lighthouse 13.4.1:
   contraste.
 - `admin-movimentacoes.png` — `/admin-movimentacoes` (18/19): contraste.
 
+As rotas autenticadas do caixa foram auditadas com a sessão de `Caixa Bebidas`,
+também em modo `Snapshot`, dispositivo `Desktop`, categoria `accessibility`:
+
+- `caixa-vendas.png` — `/vendas` (16/16): nenhum achado automatizado; 10 itens
+  permanecem para verificação manual.
+- `caixa-fichas.png` — `/fichas` (20/21): contraste.
+
 Os PNGs são screenshots do relatório Lighthouse completo para referência no
 relatório final. Nenhuma credencial foi salva nesta pasta. O Lighthouse é uma
 verificação automatizada e não substitui a revisão manual completa de WCAG.
