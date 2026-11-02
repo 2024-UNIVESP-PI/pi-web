@@ -14,8 +14,21 @@ focado na categoria `accessibility`. As três rotas públicas obtiveram 100:
 Os PNGs são screenshots do relatório Lighthouse completo e os HTMLs permitem
 revisar os detalhes da auditoria posteriormente.
 
-As rotas protegidas (`/`, `/vendas`, `/fichas`, `/admin-dashboard`,
-`/admin-reservas`, `/admin-caixas`, `/admin-produtos`, `/admin-fichas` e
-`/admin-movimentacoes`) exigem uma sessão válida de produção. Elas ficam
-pendentes até que uma credencial de teste seja disponibilizada; não foram
-simuladas para evitar registrar uma evidência inválida.
+As rotas administrativas abaixo foram auditadas em produção com uma sessão
+administrativa válida. O modo `Snapshot` foi usado para preservar a sessão,
+com dispositivo `Desktop`, categoria `accessibility` e Lighthouse 13.4.1:
+
+- `admin-dashboard.png` — `/admin-dashboard` (22/25): contraste, ordem de
+  headings e alternativa textual de SVG.
+- `admin-reservas.png` — `/admin-reservas` (19/20): contraste.
+- `admin-caixas.png` — `/admin-caixas` (18/20): selects sem labels associados e
+  contraste.
+- `admin-produtos.png` — `/admin-produtos` (18/20): selects sem labels
+  associados e alvos de toque pequenos.
+- `admin-fichas.png` — `/admin-fichas` (18/20): selects sem labels associados e
+  contraste.
+- `admin-movimentacoes.png` — `/admin-movimentacoes` (18/19): contraste.
+
+Os PNGs são screenshots do relatório Lighthouse completo para referência no
+relatório final. Nenhuma credencial foi salva nesta pasta. O Lighthouse é uma
+verificação automatizada e não substitui a revisão manual completa de WCAG.
