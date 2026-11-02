@@ -111,16 +111,26 @@
 
       .filters-section {
         width: 100%;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: initial;
 
         .filter-group {
-          flex: 1;
-          min-width: 0;
+          width: 100%;
+          display: grid;
+          grid-template-columns: minmax(5.5rem, auto) minmax(0, 1fr);
+          align-items: center;
 
           .filter-select {
+            width: 100%;
             flex: 1;
             min-width: 0;
           }
+        }
+
+        .clear-filters-button {
+          width: 100%;
+          justify-content: center;
         }
       }
     }
