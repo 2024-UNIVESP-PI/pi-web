@@ -2,18 +2,20 @@
 
 Esta pasta guarda os screenshots das auditorias Lighthouse usadas como evidência no relatório final.
 
-## Rotas
+## Rotas auditadas
 
-Salvar um screenshot do relatório completo para cada rota, usando o ambiente de produção ou o preview aprovado:
+Auditoria executada em 02/11/2026 no build local da branch, com Lighthouse
+focado na categoria `accessibility`. As três rotas públicas obtiveram 100:
 
-- `login-admin.png` — `/admin/login`
-- `login-caixa.png` — `/caixa/login`
-- `dashboard.png` — `/admin/dashboard`
-- `caixa-vendas.png` — `/vendas`
-- `fichas.png` — `/fichas`
-- `reservas.png` — `/reservas`
-- `reserva-publica.png` — `/reserva/<qr_code>`
+- `caixa-login.png` e `caixa-login.html` — `/caixa-login` (100)
+- `admin-login.png` e `admin-login.html` — `/admin-login` (100)
+- `reserva-publica.png` e `reserva-publica.html` — `/reservas/demo` (100)
 
-Para cada imagem, registrar no relatório final a data, URL/ambiente, estado de autenticação e a pontuação de acessibilidade. Rotas protegidas devem ser auditadas com uma sessão válida; a rota pública deve usar um QR code de teste.
+Os PNGs são screenshots do relatório Lighthouse completo e os HTMLs permitem
+revisar os detalhes da auditoria posteriormente.
 
-Os screenshots ainda não são gerados pelos testes Vitest: Lighthouse precisa executar a aplicação em um navegador. Não usar imagens fictícias como evidência.
+As rotas protegidas (`/`, `/vendas`, `/fichas`, `/admin-dashboard`,
+`/admin-reservas`, `/admin-caixas`, `/admin-produtos`, `/admin-fichas` e
+`/admin-movimentacoes`) exigem uma sessão válida de produção. Elas ficam
+pendentes até que uma credencial de teste seja disponibilizada; não foram
+simuladas para evitar registrar uma evidência inválida.
