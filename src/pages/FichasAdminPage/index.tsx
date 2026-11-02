@@ -564,7 +564,7 @@ export default function FichasAdminPage() {
                       : cleaned;
                   setFormDataNovaFicha({
                     ...formDataNovaFicha,
-                    saldo: finalValue === "0" ? "" : finalValue,
+                    saldo: finalValue,
                   });
                 }
               }}
