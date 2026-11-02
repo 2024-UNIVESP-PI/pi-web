@@ -20,6 +20,8 @@ com dispositivo `Desktop`, categoria `accessibility` e Lighthouse 13.4.1:
 
 - `admin-dashboard.png` — `/admin-dashboard` (22/25): contraste, ordem de
   headings e alternativa textual de SVG.
+- `admin-dashboard-demand-refresh.png` — `/admin-dashboard` pós-deploy em
+  02/11/2026 (22/25): contraste, ordem de headings e alternativa textual de SVG.
 - `admin-reservas.png` — `/admin-reservas` (19/20): contraste.
 - `admin-caixas.png` — `/admin-caixas` (18/20): selects sem labels associados e
   contraste.
